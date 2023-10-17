@@ -1,0 +1,21 @@
+{
+  "name": "inc-game",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "webpack --watch",
+    "build": "webpack",
+    "start": "http-server -c-1",
+    "clean": "rm src/*.js && rm src/*.js.map"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "ts-loader": "^9.5.0",
+    "webpack": "^5.89.0"
+  },
+  "devDependencies": {
+    "webpack-cli": "^5.1.4"
+  }
+}
