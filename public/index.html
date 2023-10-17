@@ -2,25 +2,30 @@
 
 <head>
   <title>:)</title>
-  <!-- <link rel="stylesheet" href="/styles/xp.css" /> -->
+  <link rel="stylesheet" href="/styles/xp.css" />
   <meta charset="UTF-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+
+  </style>
 </head>
 
 <body>
-  <div>
-    <span class="resource-money-label"></span>: <span class="resource-money-amount"></span> / <span
-      class="resource-money-capacity"></span><span class="resource-money-buildStatus"></span><button
-      class="resource-money-generateButton">money!</button>
-  </div>
-  <div><span class="resource-coal-label"></span>: <span class="resource-coal-amount"></span> / <span
-      class="resource-coal-capacity"></span><span class="resource-coal-buildStatus"></span><button
-      class="resource-coal-generateButton">Coal!</button><span class="resource-coal-costs"></span></div>
+  <div class="resource-container">
+    <h1><span class="resource-energy-label"></span>: <span class="resource-energy-amount"></span>/<span
+        class="resource-energy-capacity"></span></h1>&nbsp;<button
+      class="resource-energy-generateButton">Rest</button>&nbsp;<span class="resource-energy-buildStatus"></span>
 
-  <div><span class="resource-coal2-label"></span>: <span class="resource-coal2-amount"></span> / <span
-      class="resource-coal2-capacity"></span><span class="resource-coal2-buildStatus"></span><button
-      class="resource-coal2-generateButton">coal2!</button><span class="resource-coal2-costs"></span></div>
+  </div>
+  <div class="resource-container">
+    <h1><span class="resource-gold-label"></span>: <span class="resource-gold-amount"></span></h1>&nbsp;<button
+      class="resource-gold-generateButton">Raise Gold</button>&nbsp;<span class="resource-gold-buildStatus"></span>
+
+  </div>
+
+
+
   <script src="/scripts/index.js"></script>
 </body>
 

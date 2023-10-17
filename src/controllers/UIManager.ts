@@ -8,6 +8,6 @@ export default class UIManager {
   }
 
   static displayValue(className: string, number: number) {
-    UIManager.displayText(className, number + "");
+    UIManager.displayText(className, number?.toFixed(2) + "");
   }
 }

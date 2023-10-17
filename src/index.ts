@@ -1,32 +1,18 @@
 import Resource from "./models/Resource";
+import "./styles/index.scss";
 
-class Money extends Resource {
+class Energy extends Resource {
   constructor() {
-    super("money", 0, 100, 1, [], 100);
+    super("energy", 100, 100, 1, [], 5 * 1000);
   }
 }
 
-class Coal extends Resource {
+class Gold extends Resource {
   constructor() {
-    super("coal", 0, 1000, 1, [{ resource: "money", amount: 2 }], 2 * 1000);
+    super("gold", 0, null, 0.01, [{ resource: "energy", amount: 1 }], 500);
   }
 }
 
-class Coal2 extends Resource {
-  constructor() {
-    super(
-      "coal2",
-      0,
-      1000,
-      1,
-      [
-        { resource: "money", amount: 2 },
-        { resource: "coal", amount: 4 },
-      ],
-      1 * 1000
-    );
-  }
-}
-const money = new Money();
-const coal = new Coal();
-const coal2 = new Coal2();
+new Energy();
+
+new Gold();

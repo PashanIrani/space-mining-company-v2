@@ -1,5 +1,5 @@
 import UIManager from "../controllers/UIManager";
-import { registerButton } from "../controllers/Button";
+import { registerResourceButton, updateResourceButtonState } from "../controllers/Button";
 
 export interface Cost {
   resource: string;
@@ -13,18 +13,19 @@ export default abstract class Resource {
   private _amount: number;
   private _capacity: number;
   private _generateAmount: number;
-  private _costs: Array<Cost>;
+  private _costs: Array<Cost> = [];
   _buildTimeMs: number;
+  public buildStatus: number = 0;
 
   constructor(label: string, amount: number, capacity: number | null, generateAmount: number, costs: Array<Cost>, buildTimeMs: number) {
     this.label = label.toLowerCase();
-    this.amount = amount;
     this.capacity = capacity;
     this.generateAmount = generateAmount;
     this.costs = costs;
     this._buildTimeMs = buildTimeMs;
+    this.amount = amount;
 
-    registerButton(`resource-${this.label}-generateButton`, () => this.generate());
+    registerResourceButton(this, () => this.generate());
 
     ALL_RESOURCES[this.label] = this;
   }
@@ -38,12 +39,12 @@ export default abstract class Resource {
 
       this.performCostTransaction();
 
-      let buildStatus = 0;
+      this.buildStatus = 0;
       const totalTimeMs = this._buildTimeMs;
 
       let buildPercentageInterval = setInterval(() => {
-        UIManager.displayText(`resource-${this.label}-buildStatus`, buildStatus.toFixed(2) + "%");
-        buildStatus += 1;
+        UIManager.displayText(`resource-${this.label}-buildStatus`, this.buildStatus.toFixed(2) + "%");
+        this.buildStatus += 1;
       }, totalTimeMs / 100);
 
       setTimeout(() => {
@@ -55,7 +56,7 @@ export default abstract class Resource {
         }
 
         clearInterval(buildPercentageInterval);
-        buildStatus = 0;
+        this.buildStatus = 0;
 
         UIManager.displayText(`resource-${this.label}-buildStatus`, "");
         res();
@@ -87,7 +88,7 @@ export default abstract class Resource {
 
   set label(newValue: string) {
     this._label = newValue;
-    UIManager.displayText(`resource-${this.label}-label`, this.label);
+    UIManager.displayText(`resource-${this.label}-label`, this.label.charAt(0).toUpperCase() + this.label.slice(1));
   }
 
   get amount() {
@@ -97,6 +98,7 @@ export default abstract class Resource {
   set amount(newValue: number) {
     this._amount = newValue;
     UIManager.displayValue(`resource-${this.label}-amount`, this.amount);
+    updateResourceButtonState(this);
   }
 
   get capacity() {
@@ -143,8 +145,6 @@ export default abstract class Resource {
 
   // re-runs all sets to update UI
   touch() {
-    console.log(this.label, "touch");
-
     this.label = this.label;
     this.amount = this.amount;
     this.capacity = this.capacity;

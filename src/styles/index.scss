@@ -1,0 +1,49 @@
+@font-face {
+  font-family: "Pixelated MS Sans Serif";
+  src: url('../../public/styles/ms_sans_serif.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: "Pixelated MS Sans Serif";
+  src: url('../../public/styles/ms_sans_serif_bold.woff2') format('woff2');
+  font-weight: bold;
+}
+
+@font-face {
+  font-family: "Firacode";
+  src: url('../../public/styles/FiraMono-Medium.ttf') format('ttf');
+  font-weight: bold;
+}
+
+$text-color: #000000;
+$background-color: #ffffff;
+$container-background-color: #ffffff;
+
+body {
+  background-color: $background-color;
+  color: $text-color;
+  font-family: "Firacode", Arial;
+}
+
+button {
+  font-family: "Pixelated MS Sans Serif", Arial;
+}
+
+.resource-container {
+  background-color: $container-background-color;
+  border-bottom: 1px solid $text-color;
+  padding: 10px;
+
+  display: flex;
+  align-content: center;
+
+  h1 {
+    margin: 0px;
+    font-size: 24px;
+    display: inline;
+  }
+
+  span {
+    align-self: center;
+  }
+}
