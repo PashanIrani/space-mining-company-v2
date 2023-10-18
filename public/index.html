@@ -12,8 +12,9 @@
 </head>
 
 <body>
+  <!-- Energy -->
   <div class="resource-container">
-    <div class="window active">
+    <div class="window active glass">
       <div class="title-bar">
         <div class="title-bar-text"><span class="resource-energy-label"></span></div>
         <div class="title-bar-controls">
@@ -27,8 +28,43 @@
 
         <p>The lifeblood of progress, without it, all crumbles.</p>
 
+        <div role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="40"
+          class="resource-energy-progressbar-container">
+          <div style="width: 0%" class="resource-energy-progressbar progressbar"></div>
+        </div>
+
         <div class="button-container">
+          <span class="resource-energy-buildStatus"></span>
+          <span class="resource-energy-buildStatusSpinner spinner-container"></span>
           <button class="resource-energy-generateButton">Generate <span class="resource-energy-label"></span></button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Funds -->
+  <div class="resource-container">
+    <div class="window active">
+      <div class="title-bar">
+        <div class="title-bar-text"><span class="resource-funds-label"></span>
+        </div>
+        <div class="title-bar-controls">
+          <button aria-label="Minimize"></button>
+          <button aria-label="Maximize"></button>
+          <button aria-label="Close"></button>
+        </div>
+      </div>
+      <div class="window-body has-space">
+        <p><span class="resource-funds-label"></span>: <span class="resource-funds-amount"></span></p>
+
+        <p>The backbone of business operations, essential for growth and stability.</p>
+
+        <p>Cost: <span class="resource-funds-costs"></span></p>
+
+        <div class="button-container">
+          <span class="resource-funds-buildStatus"></span>
+          <span class="resource-funds-buildStatusSpinner spinner-container"></span>
+          <button class="resource-funds-generateButton">Generate <span class="resource-funds-label"></span></button>
         </div>
       </div>
     </div>

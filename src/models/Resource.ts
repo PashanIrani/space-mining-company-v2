@@ -45,6 +45,15 @@ export default abstract class Resource {
   }
 
   generate(): Promise<void> {
+    const calculateProgressPrecision = (totalTime: number) => {
+      const minIntervalDuration = 10;
+      const totalIncrements = Math.ceil(totalTime / minIntervalDuration);
+      const incrementAmount = 100 / totalIncrements;
+      const intervalDuration = totalTime / totalIncrements;
+      const precision = incrementAmount.toString().split(".")[1]?.length || 0;
+      return { intervalDuration, incrementAmount, precision };
+    };
+
     return new Promise((res, rej) => {
       if (!this.canAfford()) {
         res();
@@ -57,12 +66,20 @@ export default abstract class Resource {
 
       const totalTimeMs = this._buildTimeMs;
 
-      let buildPercentageInterval = setInterval(() => {
-        UIManager.displayText(`resource-${this.label}-buildStatus`, this.buildStatus.toFixed(2) + "%");
-        this.buildStatus += 1;
-        this.touch();
-      }, totalTimeMs / 100);
+      const { intervalDuration, incrementAmount, precision } = calculateProgressPrecision(totalTimeMs);
+      console.log("precision:", precision);
 
+      let perBuildPercentageTick = () => {
+        UIManager.displayText(`resource-${this.label}-buildStatus`, this.buildStatus.toFixed(precision) + "%");
+        UIManager.displayText(`resource-${this.label}-buildStatusSpinner`, `<span class="loader animate" aria-label="Processing your request"></span>`);
+        this.buildStatus += incrementAmount;
+        this.touch();
+      };
+
+      perBuildPercentageTick();
+      let buildPercentageInterval = setInterval(perBuildPercentageTick, intervalDuration);
+
+      UIManager.updateProgressBar(this, true);
       setTimeout(() => {
         const newAmount = this.generateAmount + this.amount;
         if (this.capacity) {
@@ -75,6 +92,7 @@ export default abstract class Resource {
         this.buildStatus = 0;
 
         UIManager.displayText(`resource-${this.label}-buildStatus`, "");
+        UIManager.displayText(`resource-${this.label}-buildStatusSpinner`, "");
 
         res();
       }, totalTimeMs);
@@ -115,6 +133,8 @@ export default abstract class Resource {
   set amount(newValue: number) {
     this._amount = newValue;
     UIManager.displayValue(`resource-${this.label}-amount`, this.amount);
+    UIManager.updateProgressBar(this);
+
     this.touch();
     RESOURCES_UPDATE_DEPS[this.label]?.forEach((l) => {
       ALL_RESOURCES[l].touch();
@@ -155,11 +175,11 @@ export default abstract class Resource {
 
     for (let i = 0; i < this.costs.length; i++) {
       const cost = this.costs[i];
-      costDisplayText += `<span class="resource-${ALL_RESOURCES[cost.resource].label}-amount ${
-        ALL_RESOURCES[cost.resource].amount < cost.amount ? "highlight" : ""
-      }">${ALL_RESOURCES[cost.resource].amount}</span> / ${cost.amount} <span class="resource-${ALL_RESOURCES[cost.resource].label}-label">${
+      costDisplayText += `<span class="costs ${ALL_RESOURCES[cost.resource].amount < cost.amount ? "highlight" : ""}"><span class="resource-${
         ALL_RESOURCES[cost.resource].label
-      }</span>`;
+      }-amount">${ALL_RESOURCES[cost.resource].amount}</span> / ${cost.amount} <span class="resource-${ALL_RESOURCES[cost.resource].label}-label">${
+        ALL_RESOURCES[cost.resource].label
+      }</span></span>`;
 
       if (i < this.costs.length - 1) {
         costDisplayText += ", ";

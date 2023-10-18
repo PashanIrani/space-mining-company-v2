@@ -1,4 +1,16 @@
 $background-color: #f0f8ff;
+$background-color-highlight: #91989e;
+
+
+.costs {
+  &.highlight {
+    color: red;
+  }
+}
+
+html {
+  background-color: $background-color-highlight;
+}
 
 body {
   padding: 10px;
@@ -12,9 +24,20 @@ body {
 .resource-container {
   display: flex;
   justify-content: center;
+  padding: 20px;
 }
 
 .button-container {
+  margin: 10px 0px;
   display: flex;
   justify-content: right;
+  align-items: center;
+}
+
+.spinner-container {
+  .loader {
+    width: 20px;
+    height: 20px;
+    background-size: contain;
+  }
 }

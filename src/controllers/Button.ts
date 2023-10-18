@@ -5,10 +5,7 @@ function registerResourceButton(resource: Resource, callback: () => Promise<void
 
   buttons.forEach((button: HTMLButtonElement) => {
     button.addEventListener("click", () => {
-      // button.disabled = true;
-      // updateResourceButtonState(resource);
       callback().then(() => {
-        // button.disabled = false;
         updateResourceButtonState(resource);
       });
     });
