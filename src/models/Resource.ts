@@ -53,9 +53,26 @@ export default abstract class Resource {
     this.amount = desc.initialAmount;
     this._buildDescriptions = desc.buildDescriptions;
 
+    UIManager.displayText(`resource-${this.label}-buildDescription`, this.getBuildDescription());
     registerResourceButton(this, () => this.generate());
     addResource(this);
     this.beginCalculatingRate();
+  }
+
+  getBuildDescription() {
+    if (this.buildStatus == 0) return `-/${this._buildDescriptions.length}: Idle`;
+
+    let index = Math.floor((this.buildStatus / 100) * this._buildDescriptions.length);
+    let currentBuildDescription = this._buildDescriptions[index];
+    let bs = (this.buildStatus / 100 - index * (1 / this._buildDescriptions.length)) / (1 / this._buildDescriptions.length);
+
+    let countText = "";
+
+    if (this._buildDescriptions.length > 1) {
+      countText = `${index + 1}/${this._buildDescriptions.length}`;
+    }
+
+    return `${countText}: ${currentBuildDescription} (${Math.round(bs * 100) + "%"})`;
   }
 
   generate(): Promise<void> {
@@ -97,7 +114,7 @@ export default abstract class Resource {
           countText = `${index + 1}/${this._buildDescriptions.length}`;
         }
 
-        UIManager.displayText(`resource-${this.label}-buildDescription`, `${countText}: ${currentBuildDescription} (${Math.round(bs * 100) + "%"})`);
+        UIManager.displayText(`resource-${this.label}-buildDescription`, this.getBuildDescription());
 
         this.touch();
       };
@@ -114,7 +131,8 @@ export default abstract class Resource {
 
         UIManager.displayText(`resource-${this.label}-buildStatus`, "");
         UIManager.displayText(`resource-${this.label}-buildStatusSpinner`, "");
-        UIManager.displayText(`resource-${this.label}-buildDescription`, "");
+        UIManager.displayText(`resource-${this.label}-buildDescription`, this.getBuildDescription());
+
         res();
       }, totalTimeMs);
     });
@@ -236,12 +254,16 @@ export default abstract class Resource {
       let rate = this.amount - lastValueFast;
       lastValueFast = this.amount;
 
-      if (rate == 0) {
-        UIManager.setProgressBarToYellow(this);
-      } else if (rate > 0) {
+      if (this.buildStatus > 0) {
         UIManager.setProgressBarToGreen(this);
       } else {
-        UIManager.setProgressBarToRed(this);
+        if (rate == 0) {
+          UIManager.setProgressBarToYellow(this);
+        } else if (rate < 0) {
+          UIManager.setProgressBarToRed(this);
+        } else {
+          UIManager.setProgressBarToGreen(this);
+        }
       }
     }, 100);
   }

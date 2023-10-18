@@ -41,7 +41,7 @@ class Coffee extends Resource {
         { resource: "funds", amount: 4 },
       ],
       buildTimeMs: 1000 * 60 * 2,
-      buildDescriptions: ["Boiling water...", "Brewing coffee...", "Preparing cup...", ""],
+      buildDescriptions: ["Boiling water...", "Brewing coffee...", "Preparing cup...", "AYO"],
     });
   }
 }
