@@ -42,6 +42,7 @@ export default abstract class Resource {
 
     registerResourceButton(this, () => this.generate());
     addResource(this);
+    this.beginCalculatingRate();
   }
 
   generate(): Promise<void> {
@@ -50,7 +51,7 @@ export default abstract class Resource {
       const totalIncrements = Math.ceil(totalTime / minIntervalDuration);
       const incrementAmount = 100 / totalIncrements;
       const intervalDuration = totalTime / totalIncrements;
-      const precision = incrementAmount.toString().split(".")[1]?.length || 0;
+      const precision = UIManager.getPrecisionOrMax(incrementAmount, 10);
       return { intervalDuration, incrementAmount, precision };
     };
 
@@ -193,5 +194,15 @@ export default abstract class Resource {
   touch() {
     this.costs = this.costs;
     updateResourceButtonState(this);
+  }
+
+  beginCalculatingRate() {
+    let lastValue = this.amount;
+
+    setInterval(() => {
+      let rate = this.amount - lastValue;
+      lastValue = this.amount;
+      UIManager.displayText(`resource-${this.label}-rate`, `Rate: ${rate.toFixed(UIManager.getPrecisionOrMax(rate, 10))}/s`);
+    }, 1000);
   }
 }

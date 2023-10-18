@@ -35,4 +35,13 @@ export default class UIManager {
   static displayValue(className: string, number: number) {
     UIManager.displayText(className, number?.toFixed(2) + "");
   }
+
+  static getPrecisionOrMax(value: number, max: number, end: boolean = false): number {
+    let precision = value.toString().split(".")[1]?.length || 0;
+    let v = precision > max ? max : precision;
+
+    if (end) return v;
+
+    return this.getPrecisionOrMax(Number.parseFloat(value.toFixed(v)), max, true); // Doing this to remove cases where 0.150000001 -> 0.15000 (max: 5). This will ensure it's 0.15
+  }
 }

@@ -12,6 +12,7 @@
 </head>
 
 <body>
+  <p>Space Mining Company - v0.0.0</p>
   <!-- Energy -->
   <div class="resource-container">
     <div class="window active glass">
@@ -34,8 +35,10 @@
         </div>
 
         <div class="button-container">
-          <span class="resource-energy-buildStatus"></span>
           <span class="resource-energy-buildStatusSpinner spinner-container"></span>
+          &nbsp;
+          <span class="resource-energy-buildStatus"></span>
+          &nbsp;
           <button class="resource-energy-generateButton">Generate <span class="resource-energy-label"></span></button>
         </div>
       </div>
@@ -62,10 +65,19 @@
         <p>Cost: <span class="resource-funds-costs"></span></p>
 
         <div class="button-container">
-          <span class="resource-funds-buildStatus"></span>
           <span class="resource-funds-buildStatusSpinner spinner-container"></span>
+          &nbsp;
+          <span class="resource-funds-buildStatus"></span>
+          &nbsp;
           <button class="resource-funds-generateButton">Generate <span class="resource-funds-label"></span></button>
         </div>
+      </div>
+
+      <div class="status-bar">
+        <p class="status-bar-field">
+          <span class="resource-funds-rate"></span>
+        </p>
+        <p class="status-bar-field"><span class="resource-funds-currentBuildStepDescription"></span></p>
       </div>
     </div>
   </div>

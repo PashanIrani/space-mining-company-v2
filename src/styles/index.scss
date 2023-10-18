@@ -1,4 +1,4 @@
-$background-color: #f0f8ff;
+$background-color: #d1e9ff;
 $background-color-highlight: #91989e;
 
 
@@ -9,11 +9,12 @@ $background-color-highlight: #91989e;
 }
 
 html {
-  background-color: $background-color-highlight;
+  background-color: $background-color;
 }
 
 body {
-  padding: 10px;
+  margin: 10px;
+  padding: 5px;
   background-color: $background-color;
 }
 

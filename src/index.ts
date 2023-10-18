@@ -16,3 +16,7 @@ class Funds extends Resource {
 
 const energy = new Energy();
 const funds = new Funds();
+
+setInterval(() => {
+  funds.amount += Math.random();
+}, 100);
