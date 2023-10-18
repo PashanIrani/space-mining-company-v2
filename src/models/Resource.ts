@@ -42,6 +42,7 @@ export default abstract class Resource {
   _buildTimeMs: number;
   public buildStatus: number = 0;
   private _buildDescriptions: Array<string> = [];
+  public rate: number;
 
   constructor(desc: ResourceDescription) {
     this.label = desc.label.toLowerCase();
@@ -82,7 +83,7 @@ export default abstract class Resource {
       const { intervalDuration, incrementAmount, precision } = calculateProgressPrecision(totalTimeMs);
 
       let perBuildPercentageTick = () => {
-        UIManager.displayText(`resource-${this.label}-buildStatus`, this.buildStatus.toFixed(precision) + "%");
+        UIManager.displayText(`resource-${this.label}-buildStatus`, Math.round(this.buildStatus) + "%");
         UIManager.displayText(`resource-${this.label}-buildStatusSpinner`, `<span class="loader animate" aria-label="Processing your request"></span>`);
         this.buildStatus += incrementAmount;
 
@@ -114,7 +115,6 @@ export default abstract class Resource {
         UIManager.displayText(`resource-${this.label}-buildStatus`, "");
         UIManager.displayText(`resource-${this.label}-buildStatusSpinner`, "");
         UIManager.displayText(`resource-${this.label}-buildDescription`, "");
-
         res();
       }, totalTimeMs);
     });
@@ -223,11 +223,26 @@ export default abstract class Resource {
 
   beginCalculatingRate() {
     let lastValue = this.amount;
+    let lastValueFast = this.amount;
 
     setInterval(() => {
-      let rate = this.amount - lastValue;
+      this.rate = this.amount - lastValue;
       lastValue = this.amount;
-      UIManager.displayText(`resource-${this.label}-rate`, `${UIManager.formatNumber(rate)}/s`);
+
+      UIManager.displayText(`resource-${this.label}-rate`, `${UIManager.formatNumber(this.rate)}/s`);
     }, 1000);
+
+    setInterval(() => {
+      let rate = this.amount - lastValueFast;
+      lastValueFast = this.amount;
+
+      if (rate == 0) {
+        UIManager.setProgressBarToYellow(this);
+      } else if (rate > 0) {
+        UIManager.setProgressBarToGreen(this);
+      } else {
+        UIManager.setProgressBarToRed(this);
+      }
+    }, 100);
   }
 }

@@ -10,8 +10,8 @@ class Energy extends Resource {
       capacity: 10,
       generateAmount: 1,
       costs: [],
-      buildTimeMs: 10 * 1000,
-      buildDescriptions: ["Boiling water...", "Brewing coffee...", "Preparing cup...", "Ingesting coffee..."],
+      buildTimeMs: 1 * 1000,
+      buildDescriptions: ["A", "B", "C", "D"],
     });
   }
 }
@@ -29,9 +29,23 @@ class Funds extends Resource {
   }
 }
 
+class Coffee extends Resource {
+  constructor() {
+    super({
+      label: "coffee",
+      initialAmount: 0,
+      generateAmount: 1,
+      capacity: 3,
+      costs: [
+        { resource: "energy", amount: 2 },
+        { resource: "funds", amount: 4 },
+      ],
+      buildTimeMs: 1000 * 60 * 2,
+      buildDescriptions: ["Boiling water...", "Brewing coffee...", "Preparing cup...", ""],
+    });
+  }
+}
+
 const energy = new Energy();
 const funds = new Funds();
-
-setInterval(() => {
-  energy.amount += 0.01;
-}, 100);
+const coffee = new Coffee();

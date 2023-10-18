@@ -1,5 +1,4 @@
 $background-color: #d1e9ff;
-$background-color-highlight: #91989e;
 
 
 .costs {
@@ -45,4 +44,8 @@ body {
 
 .status-bar-field {
   height: 14px;
+}
+
+.progressbar {
+  transition: width 1s linear, background-color 0.25s linear;
 }

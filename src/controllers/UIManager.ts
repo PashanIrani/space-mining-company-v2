@@ -1,6 +1,33 @@
 import Resource from "../models/Resource";
 
 export default class UIManager {
+  static setProgressBarToYellow(resource: Resource) {
+    const elements = document.querySelectorAll<HTMLElement>(`.resource-${resource.label}-progressbar-container`);
+
+    elements.forEach((element) => {
+      element.classList.remove("error");
+      element.classList.add("paused");
+    });
+  }
+
+  static setProgressBarToRed(resource: Resource) {
+    const elements = document.querySelectorAll<HTMLElement>(`.resource-${resource.label}-progressbar-container`);
+
+    elements.forEach((element) => {
+      element.classList.remove("paused");
+      element.classList.add("error");
+    });
+  }
+
+  static setProgressBarToGreen(resource: Resource) {
+    const elements = document.querySelectorAll<HTMLElement>(`.resource-${resource.label}-progressbar-container`);
+
+    elements.forEach((element) => {
+      element.classList.remove("paused");
+      element.classList.remove("error");
+    });
+  }
+
   static updateProgressBar(resource: Resource, isBegining: boolean = false) {
     if (!resource.capacity) return;
 
@@ -8,7 +35,11 @@ export default class UIManager {
 
     elements.forEach((element) => {
       element.style.width = `${(resource.amount / resource.capacity) * 100}%`;
-      element.style.transition = `width ${resource._buildTimeMs / 1000}s linear`;
+      if (resource.rate < 0) {
+        element.classList.add("paused");
+      } else {
+        element.classList.remove("paused");
+      }
     });
 
     if (isBegining) {

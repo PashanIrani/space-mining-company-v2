@@ -12,7 +12,7 @@
 </head>
 
 <body>
-  <p>Space Mining Company - v0.0.0</p>
+  <p>Space Mining Company</p>
   <!-- Energy -->
   <div class="resource-container">
     <div class="window active glass">
@@ -33,7 +33,6 @@
         </div>
         <p>The backbone of business operations, essential for growth and stability.</p>
         <hr>
-        <p>Cost: <span class="resource-energy-costs"></span></p>
         <p>Rate: <span class="resource-energy-rate"></span></p>
 
 
@@ -85,6 +84,46 @@
 
       <div class="status-bar">
         <p class="status-bar-field"><span class="resource-funds-buildDescription"></span></p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Coffee -->
+  <div class="resource-container">
+    <div class="window active">
+      <div class="title-bar">
+        <div class="title-bar-text"><span class="resource-coffee-label"></span>
+        </div>
+        <div class="title-bar-controls">
+          <button aria-label="Minimize"></button>
+          <button aria-label="Maximize"></button>
+          <button aria-label="Close"></button>
+        </div>
+      </div>
+      <div class="window-body has-space">
+        <p><b><span class="resource-coffee-label"></span></b>: <span class="resource-coffee-amount"></span></p>
+
+        <div role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="40"
+          class="resource-coffee-progressbar-container">
+          <div style="width: 0%" class="resource-coffee-progressbar progressbar"></div>
+        </div>
+
+        <p>A fundamental component critical to the success and sustainability of a space mining company</p>
+        <hr>
+        <p>Cost: <span class="resource-coffee-costs"></span></p>
+        <p>Rate: <span class="resource-coffee-rate"></span></p>
+
+        <div class="button-container">
+          <span class="resource-coffee-buildStatusSpinner spinner-container"></span>
+          &nbsp;
+          <span class="resource-coffee-buildStatus"></span>
+          &nbsp;
+          <button class="resource-coffee-generateButton">Generate <span class="resource-coffee-label"></span></button>
+        </div>
+      </div>
+
+      <div class="status-bar">
+        <p class="status-bar-field"><span class="resource-coffee-buildDescription"></span></p>
       </div>
     </div>
   </div>
