@@ -4,13 +4,28 @@ import "./styles/index.scss";
 
 class Energy extends Resource {
   constructor() {
-    super("energy", 0, 50, 1, [], 200);
+    super({
+      label: "energy",
+      initialAmount: 0,
+      capacity: 10,
+      generateAmount: 1,
+      costs: [],
+      buildTimeMs: 10 * 1000,
+      buildDescriptions: ["Boiling water...", "Brewing coffee...", "Preparing cup...", "Ingesting coffee..."],
+    });
   }
 }
 
 class Funds extends Resource {
   constructor() {
-    super("funds", 0, null, 1, [{ resource: "energy", amount: 1 }], 1000 * 5);
+    super({
+      label: "funds",
+      initialAmount: 0,
+      generateAmount: 1,
+      costs: [{ resource: "energy", amount: 1 }],
+      buildTimeMs: 1000 * 5,
+      buildDescriptions: ["Analyzing market...", "Executing plan...", "Generating funds..."],
+    });
   }
 }
 
@@ -18,5 +33,5 @@ const energy = new Energy();
 const funds = new Funds();
 
 setInterval(() => {
-  funds.amount += Math.random();
+  energy.amount += 0.01;
 }, 100);

@@ -23,6 +23,16 @@ function addResource(resource: Resource) {
   }
 }
 
+export interface ResourceDescription {
+  label: string;
+  initialAmount: number;
+  capacity?: number;
+  generateAmount: number;
+  costs: Array<Cost>;
+  buildTimeMs: number;
+  buildDescriptions: Array<string>;
+}
+
 export default abstract class Resource {
   private _label: string;
   private _amount: number;
@@ -31,14 +41,16 @@ export default abstract class Resource {
   private _costs: Array<Cost> = [];
   _buildTimeMs: number;
   public buildStatus: number = 0;
+  private _buildDescriptions: Array<string> = [];
 
-  constructor(label: string, amount: number, capacity: number | null, generateAmount: number, costs: Array<Cost>, buildTimeMs: number) {
-    this.label = label.toLowerCase();
-    this.capacity = capacity;
-    this.generateAmount = generateAmount;
-    this.costs = costs;
-    this._buildTimeMs = buildTimeMs;
-    this.amount = amount;
+  constructor(desc: ResourceDescription) {
+    this.label = desc.label.toLowerCase();
+    this.capacity = desc.capacity || null;
+    this.generateAmount = desc.generateAmount;
+    this.costs = desc.costs;
+    this._buildTimeMs = desc.buildTimeMs;
+    this.amount = desc.initialAmount;
+    this._buildDescriptions = desc.buildDescriptions;
 
     registerResourceButton(this, () => this.generate());
     addResource(this);
@@ -68,12 +80,24 @@ export default abstract class Resource {
       const totalTimeMs = this._buildTimeMs;
 
       const { intervalDuration, incrementAmount, precision } = calculateProgressPrecision(totalTimeMs);
-      console.log("precision:", precision);
 
       let perBuildPercentageTick = () => {
         UIManager.displayText(`resource-${this.label}-buildStatus`, this.buildStatus.toFixed(precision) + "%");
         UIManager.displayText(`resource-${this.label}-buildStatusSpinner`, `<span class="loader animate" aria-label="Processing your request"></span>`);
         this.buildStatus += incrementAmount;
+
+        let index = Math.floor((this.buildStatus / 100) * this._buildDescriptions.length);
+        let currentBuildDescription = this._buildDescriptions[index];
+        let bs = (this.buildStatus / 100 - index * (1 / this._buildDescriptions.length)) / (1 / this._buildDescriptions.length);
+
+        let countText = "";
+
+        if (this._buildDescriptions.length > 1) {
+          countText = `${index + 1}/${this._buildDescriptions.length}`;
+        }
+
+        UIManager.displayText(`resource-${this.label}-buildDescription`, `${countText}: ${currentBuildDescription} (${Math.round(bs * 100) + "%"})`);
+
         this.touch();
       };
 
@@ -82,18 +106,14 @@ export default abstract class Resource {
 
       UIManager.updateProgressBar(this, true);
       setTimeout(() => {
-        const newAmount = this.generateAmount + this.amount;
-        if (this.capacity) {
-          this.amount = newAmount > this.capacity ? this.capacity : newAmount;
-        } else {
-          this.amount = newAmount;
-        }
+        this.amount += this.generateAmount;
 
         clearInterval(buildPercentageInterval);
         this.buildStatus = 0;
 
         UIManager.displayText(`resource-${this.label}-buildStatus`, "");
         UIManager.displayText(`resource-${this.label}-buildStatusSpinner`, "");
+        UIManager.displayText(`resource-${this.label}-buildDescription`, "");
 
         res();
       }, totalTimeMs);
@@ -132,7 +152,12 @@ export default abstract class Resource {
   }
 
   set amount(newValue: number) {
-    this._amount = newValue;
+    if (this.capacity) {
+      this._amount = newValue > this.capacity ? this.capacity : newValue;
+    } else {
+      this._amount = newValue;
+    }
+
     UIManager.displayValue(`resource-${this.label}-amount`, this.amount);
     UIManager.updateProgressBar(this);
 
@@ -178,9 +203,9 @@ export default abstract class Resource {
       const cost = this.costs[i];
       costDisplayText += `<span class="costs ${ALL_RESOURCES[cost.resource].amount < cost.amount ? "highlight" : ""}"><span class="resource-${
         ALL_RESOURCES[cost.resource].label
-      }-amount">${ALL_RESOURCES[cost.resource].amount}</span> / ${cost.amount} <span class="resource-${ALL_RESOURCES[cost.resource].label}-label">${
+      }-amount">${UIManager.formatNumber(ALL_RESOURCES[cost.resource].amount)}</span> / ${cost.amount} <span class="resource-${
         ALL_RESOURCES[cost.resource].label
-      }</span></span>`;
+      }-label">${ALL_RESOURCES[cost.resource].label}</span></span>`;
 
       if (i < this.costs.length - 1) {
         costDisplayText += ", ";
@@ -202,7 +227,7 @@ export default abstract class Resource {
     setInterval(() => {
       let rate = this.amount - lastValue;
       lastValue = this.amount;
-      UIManager.displayText(`resource-${this.label}-rate`, `Rate: ${rate.toFixed(UIManager.getPrecisionOrMax(rate, 10))}/s`);
+      UIManager.displayText(`resource-${this.label}-rate`, `${UIManager.formatNumber(rate)}/s`);
     }, 1000);
   }
 }

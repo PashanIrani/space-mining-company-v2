@@ -33,7 +33,7 @@ export default class UIManager {
   }
 
   static displayValue(className: string, number: number) {
-    UIManager.displayText(className, number?.toFixed(2) + "");
+    UIManager.displayText(className, this.formatNumber(number) + "");
   }
 
   static getPrecisionOrMax(value: number, max: number, end: boolean = false): number {
@@ -43,5 +43,9 @@ export default class UIManager {
     if (end) return v;
 
     return this.getPrecisionOrMax(Number.parseFloat(value.toFixed(v)), max, true); // Doing this to remove cases where 0.150000001 -> 0.15000 (max: 5). This will ensure it's 0.15
+  }
+
+  static formatNumber(value: number) {
+    return value?.toFixed(UIManager.getPrecisionOrMax(value, 6));
   }
 }
