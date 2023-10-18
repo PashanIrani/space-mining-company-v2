@@ -2,7 +2,7 @@
 
 <head>
   <title>:)</title>
-  <link rel="stylesheet" href="/styles/xp.css" />
+  <!-- <link rel="stylesheet" href="/styles/xp.css" /> -->
   <meta charset="UTF-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -12,36 +12,28 @@
 </head>
 
 <body>
-
-
-
   <div class="resource-container">
-    <h1><span class="resource-credits-label"></span>: <span class="resource-credits-amount"></span></h1>
-    <h2 class="resource-credits-costs"></h2>
-    <button class="resource-credits-generateButton">credits</button>&nbsp;<span
-      class="resource-credits-buildStatus"></span>
+    <div class="window active">
+      <div class="title-bar">
+        <div class="title-bar-text"><span class="resource-energy-label"></span></div>
+        <div class="title-bar-controls">
+          <button aria-label="Minimize"></button>
+          <button aria-label="Maximize"></button>
+          <button aria-label="Close"></button>
+        </div>
+      </div>
+      <div class="window-body has-space">
+        <p><span class="resource-energy-label"></span>: <span class="resource-energy-amount"></span></p>
+
+        <p>The lifeblood of progress, without it, all crumbles.</p>
+
+        <div class="button-container">
+          <button class="resource-energy-generateButton">Generate <span class="resource-energy-label"></span></button>
+        </div>
+      </div>
+    </div>
   </div>
 
-  <div class="resource-container">
-    <h1><span class="resource-quantum-label"></span>: <span class="resource-quantum-amount"></span></h1>
-    <h2 class="resource-quantum-costs"></h2>
-    <button class="resource-quantum-generateButton">Raise quantum</button>&nbsp;<span
-      class="resource-quantum-buildStatus"></span>
-  </div>
-
-  <div class="resource-container">
-    <h1><span class="resource-dark-label"></span>: <span class="resource-dark-amount"></span></h1>
-    <h2 class="resource-dark-costs"></h2>
-    <button class="resource-dark-generateButton">Raise dark</button>&nbsp;<span
-      class="resource-dark-buildStatus"></span>
-  </div>
-
-  <div class="resource-container">
-    <h1><span class="resource-stellar-label"></span>: <span class="resource-stellar-amount"></span></h1>
-    <h2 class="resource-stellar-costs"></h2>
-    <button class="resource-stellar-generateButton">Raise stellar</button>&nbsp;<span
-      class="resource-stellar-buildStatus"></span>
-  </div>
   <script src="/scripts/index.js"></script>
 </body>
 
