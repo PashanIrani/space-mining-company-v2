@@ -1,18 +1,52 @@
 import Resource from "./models/Resource";
 import "./styles/index.scss";
 
-class Energy extends Resource {
+class Credits extends Resource {
   constructor() {
-    super("energy", 100, 100, 1, [], 5 * 1000);
+    super("credits", 0, 100, 1, [], 1 * 1000);
   }
 }
 
-class Gold extends Resource {
+class Quantum extends Resource {
   constructor() {
-    super("gold", 0, null, 0.01, [{ resource: "energy", amount: 1 }], 500);
+    super("quantum", 0, 100, 1, [{ resource: "credits", amount: 2 }], 2 * 1000);
   }
 }
 
-new Energy();
+class Dark extends Resource {
+  constructor() {
+    super(
+      "dark",
+      0,
+      100,
+      1,
+      [
+        { resource: "credits", amount: 2 },
+        { resource: "quantum", amount: 3 },
+      ],
+      3 * 1000
+    );
+  }
+}
 
-new Gold();
+class Stellar extends Resource {
+  constructor() {
+    super(
+      "stellar",
+      0,
+      100,
+      1,
+      [
+        { resource: "dark", amount: 5 },
+        { resource: "credits", amount: 5 },
+        { resource: "quantum", amount: 3 },
+      ],
+      40 * 1000
+    );
+  }
+}
+
+new Credits();
+new Quantum();
+new Dark();
+new Stellar();

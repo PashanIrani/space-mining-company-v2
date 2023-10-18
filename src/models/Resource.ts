@@ -7,6 +7,21 @@ export interface Cost {
 }
 
 let ALL_RESOURCES: { [key: string]: Resource } = {};
+let RESOURCES_UPDATE_DEPS: { [key: string]: Set<string> } = {};
+
+function addResource(resource: Resource) {
+  ALL_RESOURCES[resource.label] = resource;
+
+  for (let i = 0; i < resource.costs.length; i++) {
+    const cost = resource.costs[i];
+
+    if (!RESOURCES_UPDATE_DEPS[cost.resource]) {
+      RESOURCES_UPDATE_DEPS[cost.resource] = new Set();
+    }
+
+    RESOURCES_UPDATE_DEPS[cost.resource].add(resource.label);
+  }
+}
 
 export default abstract class Resource {
   private _label: string;
@@ -26,8 +41,7 @@ export default abstract class Resource {
     this.amount = amount;
 
     registerResourceButton(this, () => this.generate());
-
-    ALL_RESOURCES[this.label] = this;
+    addResource(this);
   }
 
   generate(): Promise<void> {
@@ -40,11 +54,13 @@ export default abstract class Resource {
       this.performCostTransaction();
 
       this.buildStatus = 0;
+
       const totalTimeMs = this._buildTimeMs;
 
       let buildPercentageInterval = setInterval(() => {
         UIManager.displayText(`resource-${this.label}-buildStatus`, this.buildStatus.toFixed(2) + "%");
         this.buildStatus += 1;
+        this.touch();
       }, totalTimeMs / 100);
 
       setTimeout(() => {
@@ -59,6 +75,7 @@ export default abstract class Resource {
         this.buildStatus = 0;
 
         UIManager.displayText(`resource-${this.label}-buildStatus`, "");
+
         res();
       }, totalTimeMs);
     });
@@ -98,7 +115,10 @@ export default abstract class Resource {
   set amount(newValue: number) {
     this._amount = newValue;
     UIManager.displayValue(`resource-${this.label}-amount`, this.amount);
-    updateResourceButtonState(this);
+    this.touch();
+    RESOURCES_UPDATE_DEPS[this.label]?.forEach((l) => {
+      ALL_RESOURCES[l].touch();
+    });
   }
 
   get capacity() {
@@ -135,9 +155,15 @@ export default abstract class Resource {
 
     for (let i = 0; i < this.costs.length; i++) {
       const cost = this.costs[i];
-      costDisplayText += `<span class="resource-${ALL_RESOURCES[cost.resource].label}-label">${
+      costDisplayText += `<span class="resource-${ALL_RESOURCES[cost.resource].label}-amount ${
+        ALL_RESOURCES[cost.resource].amount < cost.amount ? "highlight" : ""
+      }">${ALL_RESOURCES[cost.resource].amount}</span> / ${cost.amount} <span class="resource-${ALL_RESOURCES[cost.resource].label}-label">${
         ALL_RESOURCES[cost.resource].label
-      }</span>: <span class="resource-${ALL_RESOURCES[cost.resource].label}-amount">${ALL_RESOURCES[cost.resource].amount}</span> / ${cost.amount}`;
+      }</span>`;
+
+      if (i < this.costs.length - 1) {
+        costDisplayText += ", ";
+      }
     }
 
     UIManager.displayText(className, costDisplayText);
@@ -145,10 +171,7 @@ export default abstract class Resource {
 
   // re-runs all sets to update UI
   touch() {
-    this.label = this.label;
-    this.amount = this.amount;
-    this.capacity = this.capacity;
-    this.generateAmount = this.generateAmount;
     this.costs = this.costs;
+    updateResourceButtonState(this);
   }
 }
