@@ -1,4 +1,4 @@
-import Resource from "../models/Resource";
+import Resource, { canAfford } from "../models/Resource";
 
 function registerResourceButton(resource: Resource, callback: () => Promise<void>) {
   const buttons = document.querySelectorAll(`.resource-${resource.label}-generateButton`);
@@ -13,7 +13,7 @@ function registerResourceButton(resource: Resource, callback: () => Promise<void
 }
 
 function updateResourceButtonState(resource: Resource) {
-  let disabled = resource.amount == resource.capacity || !resource.canAfford() || resource.buildStatus > 0;
+  let disabled = resource.amount == resource.capacity || !canAfford(resource.costs) || resource.buildStatus > 0;
 
   const buttons = document.querySelectorAll(`.resource-${resource.label}-generateButton`);
 

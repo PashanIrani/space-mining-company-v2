@@ -1,4 +1,4 @@
-import Resource from "../models/Resource";
+import Resource, { Cost } from "../models/Resource";
 
 export default class UIManager {
   static setProgressBarToYellow(resource: Resource) {
@@ -78,5 +78,32 @@ export default class UIManager {
 
   static formatNumber(value: number) {
     return value?.toFixed(UIManager.getPrecisionOrMax(value, 6));
+  }
+
+  static getCostString(costs: Array<Cost>) {
+    if (costs.length == 0) {
+      return "FREE";
+    }
+
+    let costDisplayText = "";
+
+    for (let i = 0; i < costs.length; i++) {
+      const cost = costs[i];
+      costDisplayText += `<span class="costs ${Resource.ALL_RESOURCES[cost.resource].amount < cost.amount ? "highlight" : ""}"><span class="resource-${
+        Resource.ALL_RESOURCES[cost.resource].label
+      }-amount">${UIManager.formatNumber(Resource.ALL_RESOURCES[cost.resource].amount)}</span> / ${UIManager.formatNumber(cost.amount)} <span class="resource-${
+        Resource.ALL_RESOURCES[cost.resource].label
+      }-label">${Resource.ALL_RESOURCES[cost.resource].label}</span></span>`;
+
+      if (i < costs.length - 1) {
+        costDisplayText += ", ";
+      }
+    }
+
+    return costDisplayText;
+  }
+
+  static capitalize(str: string) {
+    return str.charAt(0).toUpperCase() + str.slice(1);
   }
 }

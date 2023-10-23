@@ -1,6 +1,5 @@
 $background-color: #d1e9ff;
 
-
 .costs {
   &.highlight {
     color: red;
@@ -48,4 +47,50 @@ body {
 
 .progressbar {
   transition: width 0.2s linear, background-color 0.2s linear;
+}
+
+
+.store-container {
+
+
+  h1 {
+    font-size: 18px;
+  }
+}
+
+.store-item-container {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px;
+  border: 1px solid #cdd7db;
+  background-color: #ffffff;
+  border-radius: 8px;
+
+  &:not(:first-of-type) {
+    margin-top: 5px;
+  }
+
+  h1 {
+    font-size: 18px;
+    margin: 0px;
+  }
+
+  h2 {
+    font-size: 14px;
+    font-weight: normal;
+    margin: 0px;
+  }
+
+  div.info-container {
+    display: flex;
+    flex-direction: column;
+  }
+
+  p {
+    margin: 5px 0px;
+  }
+
+  button {
+    height: 14px;
+  }
 }

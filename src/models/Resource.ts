@@ -6,23 +6,6 @@ export interface Cost {
   amount: number;
 }
 
-let ALL_RESOURCES: { [key: string]: Resource } = {};
-let RESOURCES_UPDATE_DEPS: { [key: string]: Set<string> } = {};
-
-function addResource(resource: Resource) {
-  ALL_RESOURCES[resource.label] = resource;
-
-  for (let i = 0; i < resource.costs.length; i++) {
-    const cost = resource.costs[i];
-
-    if (!RESOURCES_UPDATE_DEPS[cost.resource]) {
-      RESOURCES_UPDATE_DEPS[cost.resource] = new Set();
-    }
-
-    RESOURCES_UPDATE_DEPS[cost.resource].add(resource.label);
-  }
-}
-
 export interface ResourceDescription {
   label: string;
   initialAmount: number;
@@ -43,6 +26,9 @@ export default abstract class Resource {
   public buildStatus: number = 0;
   private _buildDescriptions: Array<string> = [];
   public rate: number;
+  public passiveGenAmount: number = 0;
+  public static ALL_RESOURCES: { [key: string]: Resource } = {};
+  public static RESOURCES_UPDATE_DEPS: { [key: string]: Set<string> } = {};
 
   constructor(desc: ResourceDescription) {
     this.label = desc.label.toLowerCase();
@@ -55,12 +41,31 @@ export default abstract class Resource {
 
     UIManager.displayText(`resource-${this.label}-buildDescription`, this.getBuildDescription());
     registerResourceButton(this, () => this.generate());
-    addResource(this);
+    this.addResource(this);
     this.beginCalculatingRate();
+
+    setInterval(() => {
+      this.amount += this.passiveGenAmount / 10;
+    }, 100);
+  }
+
+  addResource(resource: Resource) {
+    Resource.ALL_RESOURCES[resource.label] = resource;
+
+    for (let i = 0; i < resource.costs.length; i++) {
+      const cost = resource.costs[i];
+
+      if (!Resource.RESOURCES_UPDATE_DEPS[cost.resource]) {
+        Resource.RESOURCES_UPDATE_DEPS[cost.resource] = new Set();
+      }
+
+      Resource.RESOURCES_UPDATE_DEPS[cost.resource].add(resource.label);
+    }
   }
 
   getBuildDescription() {
-    if (this.buildStatus == 0) return `-/${this._buildDescriptions.length}: Idle`;
+    if (this.buildStatus == 0 && this._buildDescriptions.length > 1) return `-/${this._buildDescriptions.length}: Idle`;
+    if (this.buildStatus == 0 && this._buildDescriptions.length == 1) return `Idle`;
 
     let index = Math.floor((this.buildStatus / 100) * this._buildDescriptions.length);
     let currentBuildDescription = this._buildDescriptions[index];
@@ -69,10 +74,10 @@ export default abstract class Resource {
     let countText = "";
 
     if (this._buildDescriptions.length > 1) {
-      countText = `${index + 1}/${this._buildDescriptions.length}`;
+      countText = `${index + 1}/${this._buildDescriptions.length}: `;
     }
 
-    return `${countText}: ${currentBuildDescription} (${Math.round(bs * 100) + "%"})`;
+    return `${countText}${currentBuildDescription} (${Math.round(bs * 100) + "%"})`;
   }
 
   generate(): Promise<void> {
@@ -86,12 +91,12 @@ export default abstract class Resource {
     };
 
     return new Promise((res, rej) => {
-      if (!this.canAfford()) {
+      if (!canAfford(this.costs)) {
         res();
         return;
       }
 
-      this.performCostTransaction();
+      performCostTransaction(this.costs);
 
       this.buildStatus = 0;
 
@@ -138,31 +143,13 @@ export default abstract class Resource {
     });
   }
 
-  canAfford() {
-    for (let i = 0; i < this.costs.length; i++) {
-      const cost = this.costs[i];
-      if (ALL_RESOURCES[cost.resource].amount < cost.amount) {
-        return false;
-      }
-    }
-
-    return true;
-  }
-
-  performCostTransaction() {
-    for (let i = 0; i < this.costs.length; i++) {
-      const cost = this.costs[i];
-      ALL_RESOURCES[cost.resource].amount -= cost.amount;
-    }
-  }
-
   get label() {
     return this._label;
   }
 
   set label(newValue: string) {
     this._label = newValue;
-    UIManager.displayText(`resource-${this.label}-label`, this.label.charAt(0).toUpperCase() + this.label.slice(1));
+    UIManager.displayText(`resource-${this.label}-label`, UIManager.capitalize(this.label));
   }
 
   get amount() {
@@ -180,8 +167,8 @@ export default abstract class Resource {
     UIManager.updateProgressBar(this);
 
     this.touch();
-    RESOURCES_UPDATE_DEPS[this.label]?.forEach((l) => {
-      ALL_RESOURCES[l].touch();
+    Resource.RESOURCES_UPDATE_DEPS[this.label]?.forEach((l) => {
+      Resource.ALL_RESOURCES[l].touch();
     });
   }
 
@@ -209,27 +196,8 @@ export default abstract class Resource {
 
   set costs(newValue: Array<Cost>) {
     this._costs = newValue;
-
     let className = `resource-${this.label}-costs`;
-    if (this.costs.length == 0) {
-      UIManager.displayText(className, "FREE");
-    }
-
-    let costDisplayText = "";
-
-    for (let i = 0; i < this.costs.length; i++) {
-      const cost = this.costs[i];
-      costDisplayText += `<span class="costs ${ALL_RESOURCES[cost.resource].amount < cost.amount ? "highlight" : ""}"><span class="resource-${
-        ALL_RESOURCES[cost.resource].label
-      }-amount">${UIManager.formatNumber(ALL_RESOURCES[cost.resource].amount)}</span> / ${cost.amount} <span class="resource-${
-        ALL_RESOURCES[cost.resource].label
-      }-label">${ALL_RESOURCES[cost.resource].label}</span></span>`;
-
-      if (i < this.costs.length - 1) {
-        costDisplayText += ", ";
-      }
-    }
-
+    let costDisplayText = UIManager.getCostString(this.costs);
     UIManager.displayText(className, costDisplayText);
   }
 
@@ -266,5 +234,23 @@ export default abstract class Resource {
         }
       }
     }, 100);
+  }
+}
+
+export function canAfford(costs: Array<Cost>) {
+  for (let i = 0; i < costs.length; i++) {
+    const cost = costs[i];
+    if (Resource.ALL_RESOURCES[cost.resource].amount < cost.amount) {
+      return false;
+    }
+  }
+
+  return true;
+}
+
+export function performCostTransaction(costs: Array<Cost>) {
+  for (let i = 0; i < costs.length; i++) {
+    const cost = costs[i];
+    Resource.ALL_RESOURCES[cost.resource].amount -= cost.amount;
   }
 }
