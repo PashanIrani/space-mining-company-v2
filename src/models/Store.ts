@@ -97,7 +97,7 @@ export class Store {
           descriptionText.innerHTML = storeItem.description;
 
           const costP = document.createElement("p");
-          costP.innerHTML = UIManager.getCostString(storeItem.costs);
+          costP.innerHTML = `Cost: ${UIManager.getCostString(storeItem.costs)}`;
 
           const button = document.createElement("button");
           button.innerHTML = `Buy ${storeItem.name}!`;

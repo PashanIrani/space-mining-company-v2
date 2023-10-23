@@ -11,7 +11,7 @@ class Energy extends Resource {
       capacity: 10,
       generateAmount: 1,
       costs: [],
-      buildTimeMs: 1 * 100,
+      buildTimeMs: 1 * 1000,
       buildDescriptions: ["Generating Energy..."],
     });
   }
@@ -24,7 +24,7 @@ class Funds extends Resource {
       initialAmount: 0,
       generateAmount: 1,
       costs: [{ resource: "energy", amount: 1 }],
-      buildTimeMs: 500,
+      buildTimeMs: 2500,
       buildDescriptions: ["Analyzing market...", "Executing plan...", "Generating funds..."],
     });
   }
@@ -60,7 +60,6 @@ new Store([
     costs: [{ resource: "funds", amount: 1 }],
     level: 1,
     onPurchase: (self: StoreItem) => {
-      console.log("PURCHASED!");
       if (energy.passiveGenAmount == 0) {
         energy.passiveGenAmount = 0.1;
       } else {

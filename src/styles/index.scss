@@ -1,4 +1,4 @@
-$background-color: #d1e9ff;
+$background-color: #3c6ea5;
 
 .costs {
   &.highlight {
@@ -71,14 +71,15 @@ body {
   }
 
   h1 {
-    font-size: 18px;
-    margin: 0px;
+    font-size: 14px;
+    margin: 2.5px 0px;
   }
 
   h2 {
-    font-size: 14px;
+    font-size: 12px;
     font-weight: normal;
-    margin: 0px;
+    margin: 2.5px 0px;
+    font-style: italic;
   }
 
   div.info-container {
@@ -93,4 +94,8 @@ body {
   button {
     height: 14px;
   }
+}
+
+hr {
+  border-top: 1px solid #cdd7db;
 }
