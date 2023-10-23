@@ -23,8 +23,8 @@ class Funds extends Resource {
       label: "funds",
       initialAmount: 0,
       generateAmount: 1,
-      costs: [{ resource: "energy", amount: 1 }],
-      buildTimeMs: 2500,
+      costs: [{ resource: "energy", amount: 10 }],
+      buildTimeMs: 1000 * 15,
       buildDescriptions: ["Analyzing market...", "Executing plan...", "Generating funds..."],
     });
   }
@@ -57,7 +57,10 @@ new Store([
     collection: "energy",
     name: "Drink Coffee",
     description: "Drink le coffee",
-    costs: [{ resource: "funds", amount: 1 }],
+    costs: [
+      { resource: "funds", amount: 1 },
+      { resource: "energy", amount: 1 },
+    ],
     level: 1,
     onPurchase: (self: StoreItem) => {
       if (energy.passiveGenAmount == 0) {
@@ -69,7 +72,10 @@ new Store([
       self.purchased = false;
       self.level++;
       self.name = `Drink Cofee ${self.level}`;
+
       self.costs = self.costs.map((cost) => {
+        if (cost.resource == "energy") return cost;
+
         cost.amount *= 1.1;
         return cost;
       });
