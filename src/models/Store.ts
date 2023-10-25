@@ -1,7 +1,8 @@
 import { container } from "webpack";
 import UIManager from "../controllers/UIManager";
-import { Cost, canAfford, performCostTransaction } from "./Resource";
+import Resource, { Cost, canAfford, performCostTransaction } from "./Resource";
 
+type onPurchaseFunction = (storeItem: StoreItem) => void;
 export interface StoreItemDescription {
   id: string;
   collection: string; // groups items
@@ -9,7 +10,7 @@ export interface StoreItemDescription {
   description: string; // describes store item
   costs: Array<Cost>;
   level: number;
-  onPurchase: (storeItem: StoreItem) => void;
+  onPurchase: onPurchaseFunction;
 }
 
 export class StoreItem {
@@ -19,7 +20,7 @@ export class StoreItem {
   costs: Array<Cost>;
   description: string;
   level: number;
-  onPurchase: (storeItem: StoreItem) => void;
+  onPurchase: onPurchaseFunction;
 
   constructor(desc: StoreItemDescription) {
     this.purchased = false;

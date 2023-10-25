@@ -14,6 +14,8 @@ export interface ResourceDescription {
   costs: Array<Cost>;
   buildTimeMs: number;
   buildDescriptions: Array<string>;
+  symbol: string;
+  symbolLeftSide: boolean;
 }
 
 export default abstract class Resource {
@@ -26,9 +28,10 @@ export default abstract class Resource {
   public buildStatus: number = 0;
   private _buildDescriptions: Array<string> = [];
   public rate: number;
-  public passiveGenAmount: number = 0;
   public static ALL_RESOURCES: { [key: string]: Resource } = {};
   public static RESOURCES_UPDATE_DEPS: { [key: string]: Set<string> } = {};
+  public symbol: string;
+  public symbolLeftSide: boolean;
 
   constructor(desc: ResourceDescription) {
     this.label = desc.label.toLowerCase();
@@ -38,15 +41,13 @@ export default abstract class Resource {
     this._buildTimeMs = desc.buildTimeMs;
     this.amount = desc.initialAmount;
     this._buildDescriptions = desc.buildDescriptions;
+    this.symbol = desc.symbol || "";
+    this.symbolLeftSide = desc.symbolLeftSide || false;
 
     UIManager.displayText(`resource-${this.label}-buildDescription`, this.getBuildDescription());
     registerResourceButton(this, () => this.generate());
     this.addResource(this);
     this.beginCalculatingRate();
-
-    setInterval(() => {
-      this.amount += this.passiveGenAmount / 10;
-    }, 100);
   }
 
   addResource(resource: Resource) {
@@ -163,7 +164,7 @@ export default abstract class Resource {
       this._amount = newValue;
     }
 
-    UIManager.displayValue(`resource-${this.label}-amount`, this.amount);
+    UIManager.displayValue(`resource-${this.label}-amount`, this.amount, this.symbol, this.symbolLeftSide);
     UIManager.updateProgressBar(this);
 
     this.touch();
@@ -178,7 +179,7 @@ export default abstract class Resource {
 
   set capacity(newValue: number) {
     this._capacity = newValue;
-    UIManager.displayValue(`resource-${this.label}-capacity`, this.capacity);
+    UIManager.displayValue(`resource-${this.label}-capacity`, this.capacity, this.symbol, this.symbolLeftSide);
   }
 
   get generateAmount() {
@@ -187,7 +188,7 @@ export default abstract class Resource {
 
   set generateAmount(newValue: number) {
     this._generateAmount = newValue;
-    UIManager.displayValue(`resource-${this.label}-generateAmount`, this._generateAmount);
+    UIManager.displayValue(`resource-${this.label}-generateAmount`, this._generateAmount, this.symbol, this.symbolLeftSide);
   }
 
   get costs() {
@@ -208,6 +209,7 @@ export default abstract class Resource {
   }
 
   beginCalculatingRate() {
+    this.capacity = this.capacity; // to re-render if symbol is undefined
     let lastValue = this.amount;
     let lastValueFast = this.amount;
 
@@ -215,7 +217,19 @@ export default abstract class Resource {
       this.rate = this.amount - lastValue;
       lastValue = this.amount;
 
-      UIManager.displayText(`resource-${this.label}-rate`, `${UIManager.formatNumber(this.rate)}/s`);
+      let timeLeftText = null;
+      if (this.rate < 0) {
+        timeLeftText = `${UIManager.convertTime(this.amount / (this.rate * -1))} till empty`;
+      }
+
+      if (this.rate > 0 && this.capacity) {
+        timeLeftText = `${UIManager.convertTime((this.capacity - this.amount) / this.rate)} till full`;
+      }
+
+      UIManager.displayText(
+        `resource-${this.label}-rate`,
+        `${UIManager.formatValueWithSymbol(this.rate, this.symbol, this.symbolLeftSide)}/s ${timeLeftText != null ? `(${timeLeftText})` : ""}`
+      );
     }, 1000);
 
     setInterval(() => {
@@ -237,10 +251,10 @@ export default abstract class Resource {
   }
 }
 
-export function canAfford(costs: Array<Cost>) {
+export function canAfford(costs: Array<Cost>, percentageAmount: number = 1) {
   for (let i = 0; i < costs.length; i++) {
     const cost = costs[i];
-    if (Resource.ALL_RESOURCES[cost.resource].amount < cost.amount) {
+    if (Resource.ALL_RESOURCES[cost.resource].amount < cost.amount * percentageAmount) {
       return false;
     }
   }
@@ -248,9 +262,9 @@ export function canAfford(costs: Array<Cost>) {
   return true;
 }
 
-export function performCostTransaction(costs: Array<Cost>) {
+export function performCostTransaction(costs: Array<Cost>, percentageAmount: number = 1) {
   for (let i = 0; i < costs.length; i++) {
     const cost = costs[i];
-    Resource.ALL_RESOURCES[cost.resource].amount -= cost.amount;
+    Resource.ALL_RESOURCES[cost.resource].amount -= cost.amount * percentageAmount;
   }
 }

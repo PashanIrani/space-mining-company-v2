@@ -63,8 +63,15 @@ export default class UIManager {
     });
   }
 
-  static displayValue(className: string, number: number) {
-    UIManager.displayText(className, this.formatNumber(number) + "");
+  static displayValue(className: string, number: number, symbol: string, symbolLeftSide: boolean) {
+    let string = UIManager.formatValueWithSymbol(number, symbol, symbolLeftSide);
+    UIManager.displayText(className, string);
+  }
+
+  static formatValueWithSymbol(number: number, symbol: string, symbolLeftSide: boolean) {
+    console.log(symbolLeftSide);
+
+    return `${symbolLeftSide ? symbol : ""}${this.formatNumber(number)}${!symbolLeftSide ? symbol : ""}`;
   }
 
   static getPrecisionOrMax(value: number, max: number, end: boolean = false): number {
@@ -76,8 +83,8 @@ export default class UIManager {
     return this.getPrecisionOrMax(Number.parseFloat(value.toFixed(v)), max, true); // Doing this to remove cases where 0.150000001 -> 0.15000 (max: 5). This will ensure it's 0.15
   }
 
-  static formatNumber(value: number) {
-    return value?.toFixed(UIManager.getPrecisionOrMax(value, 6));
+  static formatNumber(value: number, max: number = 4) {
+    return value?.toFixed(UIManager.getPrecisionOrMax(value, max));
   }
 
   static getCostString(costs: Array<Cost>) {
@@ -91,9 +98,17 @@ export default class UIManager {
       const cost = costs[i];
       costDisplayText += `<span class="costs ${Resource.ALL_RESOURCES[cost.resource].amount < cost.amount ? "highlight" : ""}"><span class="resource-${
         Resource.ALL_RESOURCES[cost.resource].label
-      }-amount">${UIManager.formatNumber(Resource.ALL_RESOURCES[cost.resource].amount)}</span> / ${UIManager.formatNumber(cost.amount)} <span class="resource-${
+      }-amount">${UIManager.formatValueWithSymbol(
+        Resource.ALL_RESOURCES[cost.resource].amount,
+        Resource.ALL_RESOURCES[cost.resource].symbol,
+        Resource.ALL_RESOURCES[cost.resource].symbolLeftSide
+      )}</span>/${UIManager.formatValueWithSymbol(
+        cost.amount,
+        Resource.ALL_RESOURCES[cost.resource].symbol,
+        Resource.ALL_RESOURCES[cost.resource].symbolLeftSide
+      )} <span class="resource-${Resource.ALL_RESOURCES[cost.resource].label}-label">${UIManager.capitalize(
         Resource.ALL_RESOURCES[cost.resource].label
-      }-label">${Resource.ALL_RESOURCES[cost.resource].label}</span></span>`;
+      )}</span></span>`;
 
       if (i < costs.length - 1) {
         costDisplayText += ", ";
@@ -105,5 +120,35 @@ export default class UIManager {
 
   static capitalize(str: string) {
     return str.charAt(0).toUpperCase() + str.slice(1);
+  }
+
+  static convertTime(num: number): string {
+    if (isNaN(num)) {
+      return "Invalid Time";
+    }
+
+    if (num < 0) {
+      num *= -1;
+    }
+
+    if (num < 60) {
+      return `${this.formatNumber(num)}s`;
+    }
+    if (num < 3600) {
+      const mins = Math.floor(num / 60);
+      const secs = num % 60;
+      return `${this.formatNumber(mins)}m ${this.formatNumber(secs)}s`;
+    }
+    if (num < 86400) {
+      const hours = Math.floor(num / 3600);
+      const mins = Math.floor((num % 3600) / 60);
+      const secs = num % 60;
+      return `${this.formatNumber(hours)}h ${this.formatNumber(mins)}m ${this.formatNumber(secs)}s`;
+    }
+    const days = Math.floor(num / 86400);
+    const hours = Math.floor((num % 86400) / 3600);
+    const mins = Math.floor((num % 3600) / 60);
+    const secs = num % 60;
+    return `${this.formatNumber(days)}d ${this.formatNumber(hours)}h ${this.formatNumber(mins)}m ${this.formatNumber(secs)}s`;
   }
 }

@@ -50,15 +50,19 @@ body {
 }
 
 
-.store-container {
+.store-container,
+.factory-container {
 
+  max-height: 500px;
+  overflow-y: scroll;
 
   h1 {
     font-size: 18px;
   }
 }
 
-.store-item-container {
+.store-item-container,
+.factory-item-container {
   display: flex;
   justify-content: space-between;
   padding: 10px;
@@ -92,7 +96,7 @@ body {
   }
 
   button {
-    height: 14px;
+    // height: 14px;
   }
 }
 
