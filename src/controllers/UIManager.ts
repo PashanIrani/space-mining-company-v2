@@ -69,8 +69,6 @@ export default class UIManager {
   }
 
   static formatValueWithSymbol(number: number, symbol: string, symbolLeftSide: boolean) {
-    console.log(symbolLeftSide);
-
     return `${symbolLeftSide ? symbol : ""}${this.formatNumber(number)}${!symbolLeftSide ? symbol : ""}`;
   }
 

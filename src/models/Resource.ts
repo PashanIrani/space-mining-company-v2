@@ -34,6 +34,8 @@ export default abstract class Resource {
   public symbolLeftSide: boolean;
 
   constructor(desc: ResourceDescription) {
+    this.symbol = desc.symbol || "";
+    this.symbolLeftSide = desc.symbolLeftSide || false;
     this.label = desc.label.toLowerCase();
     this.capacity = desc.capacity || null;
     this.generateAmount = desc.generateAmount;
@@ -41,8 +43,6 @@ export default abstract class Resource {
     this._buildTimeMs = desc.buildTimeMs;
     this.amount = desc.initialAmount;
     this._buildDescriptions = desc.buildDescriptions;
-    this.symbol = desc.symbol || "";
-    this.symbolLeftSide = desc.symbolLeftSide || false;
 
     UIManager.displayText(`resource-${this.label}-buildDescription`, this.getBuildDescription());
     registerResourceButton(this, () => this.generate());
