@@ -162,7 +162,7 @@ export class Factory {
     this.draw();
     setInterval(() => {
       if (this.allowDrawing) this.draw();
-    }, 1000000);
+    }, 1000);
   }
 
   beginPassiveGeneration() {
