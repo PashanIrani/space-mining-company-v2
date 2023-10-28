@@ -12,9 +12,8 @@
 </head>
 
 <body>
-  <p>Space Mining Company</p>
   <!-- Energy -->
-  <div class="resource-container">
+  <div class="resource-container energy-window">
     <div class="window active glass">
       <div class="title-bar">
         <div class="title-bar-text"><span class="resource-energy-label"></span></div>
@@ -40,7 +39,8 @@
           &nbsp;
           <span class="resource-energy-buildStatus"></span>
           &nbsp;
-          <button class="resource-energy-generateButton">Generate <span class="resource-energy-label"></span></button>
+          <button class="resource-energy-generateButton">Generate <span class="resource-energy-label"></span> (+<span
+              class="resource-energy-generateAmount"></span>)</button>
         </div>
         <div class="factory-energy factory-container"></div>
       </div>
@@ -49,15 +49,13 @@
         <p class="status-bar-field"><span class="resource-energy-buildDescription"></span></p>
       </div>
     </div>
-
   </div>
 
   <!-- Funds -->
-  <div class="resource-container">
-    <div class="window active">
+  <div class="resource-container funds-window">
+    <div class="window active glass">
       <div class="title-bar">
-        <div class="title-bar-text"><span class="resource-funds-label"></span>
-        </div>
+        <div class="title-bar-text"><span class="resource-funds-label"></span></div>
         <div class="title-bar-controls">
           <button aria-label="Minimize"></button>
           <button aria-label="Maximize"></button>
@@ -66,18 +64,24 @@
       </div>
       <div class="window-body has-space">
         <p><b><span class="resource-funds-label"></span></b>: <span class="resource-funds-amount"></span></p>
-
+        <div role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="40"
+          class="resource-funds-progressbar-container">
+          <div style="width: 0%" class="resource-funds-progressbar progressbar"></div>
+        </div>
         <p>The backbone of business operations, essential for growth and stability.</p>
         <p>Cost: <span class="resource-funds-costs"></span></p>
         <p>Rate: <span class="resource-funds-rate"></span></p>
+
 
         <div class="button-container">
           <span class="resource-funds-buildStatusSpinner spinner-container"></span>
           &nbsp;
           <span class="resource-funds-buildStatus"></span>
           &nbsp;
-          <button class="resource-funds-generateButton">Generate <span class="resource-funds-label"></span></button>
+          <button class="resource-funds-generateButton">Generate <span class="resource-funds-label"></span> (+<span
+              class="resource-funds-generateAmount"></span>)</button>
         </div>
+        <div class="factory-funds factory-container"></div>
       </div>
 
       <div class="status-bar">
@@ -86,47 +90,26 @@
     </div>
   </div>
 
-  <!-- Coffee -->
-  <div class="resource-container">
-    <div class="window active">
+  <!-- Store -->
+  <div class="resource-container store-window">
+    <div class="window active glass">
       <div class="title-bar">
-        <div class="title-bar-text"><span class="resource-coffee-label"></span>
-        </div>
+        <div class="title-bar-text">Store</div>
         <div class="title-bar-controls">
           <button aria-label="Minimize"></button>
           <button aria-label="Maximize"></button>
           <button aria-label="Close"></button>
         </div>
       </div>
-      <div class="window-body has-space">
-        <p><b><span class="resource-coffee-label"></span></b>: <span class="resource-coffee-amount"></span></p>
-
-        <div role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="40"
-          class="resource-coffee-progressbar-container">
-          <div style="width: 0%" class="resource-coffee-progressbar progressbar"></div>
-        </div>
-
-        <p>A fundamental component critical to the success and sustainability of a space mining company</p>
-        <p>Cost: <span class="resource-coffee-costs"></span></p>
-        <p>Rate: <span class="resource-coffee-rate"></span></p>
-        <div class="factory-coffee factory-container"></div>
-
-        <div class="button-container">
-          <span class="resource-coffee-buildStatusSpinner spinner-container"></span>
-          &nbsp;
-          <span class="resource-coffee-buildStatus"></span>
-          &nbsp;
-          <button class="resource-coffee-generateButton">Generate <span class="resource-coffee-label"></span></button>
-        </div>
-      </div>
-
-      <div class="status-bar">
-        <p class="status-bar-field"><span class="resource-coffee-buildDescription"></span></p>
+      <div class="window-body has-space store-main">
       </div>
     </div>
-  </div>
 
-  <script src="/scripts/index.js"></script>
+
+
+
+
+    <script src="/scripts/index.js"></script>
 </body>
 
 </html>

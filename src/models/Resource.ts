@@ -6,6 +6,11 @@ export interface Cost {
   amount: number;
 }
 
+export interface UnitSymbolDefination {
+  icon: string;
+  infront: boolean;
+}
+
 export interface ResourceDescription {
   label: string;
   initialAmount: number;
@@ -14,8 +19,7 @@ export interface ResourceDescription {
   costs: Array<Cost>;
   buildTimeMs: number;
   buildDescriptions: Array<string>;
-  symbol: string;
-  symbolLeftSide: boolean;
+  unitSymbol?: UnitSymbolDefination;
 }
 
 export default abstract class Resource {
@@ -30,12 +34,10 @@ export default abstract class Resource {
   public rate: number;
   public static ALL_RESOURCES: { [key: string]: Resource } = {};
   public static RESOURCES_UPDATE_DEPS: { [key: string]: Set<string> } = {};
-  public symbol: string;
-  public symbolLeftSide: boolean;
+  public unitSymbol: UnitSymbolDefination;
 
   constructor(desc: ResourceDescription) {
-    this.symbol = desc.symbol || "";
-    this.symbolLeftSide = desc.symbolLeftSide || false;
+    this.unitSymbol = desc.unitSymbol || { icon: "", infront: false };
     this.label = desc.label.toLowerCase();
     this.capacity = desc.capacity || null;
     this.generateAmount = desc.generateAmount;
@@ -164,7 +166,7 @@ export default abstract class Resource {
       this._amount = newValue;
     }
 
-    UIManager.displayValue(`resource-${this.label}-amount`, this.amount, this.symbol, this.symbolLeftSide);
+    UIManager.displayValue(`resource-${this.label}-amount`, this.amount, this.unitSymbol);
     UIManager.updateProgressBar(this);
 
     this.touch();
@@ -179,7 +181,7 @@ export default abstract class Resource {
 
   set capacity(newValue: number) {
     this._capacity = newValue;
-    UIManager.displayValue(`resource-${this.label}-capacity`, this.capacity, this.symbol, this.symbolLeftSide);
+    UIManager.displayValue(`resource-${this.label}-capacity`, this.capacity, this.unitSymbol);
   }
 
   get generateAmount() {
@@ -188,7 +190,7 @@ export default abstract class Resource {
 
   set generateAmount(newValue: number) {
     this._generateAmount = newValue;
-    UIManager.displayValue(`resource-${this.label}-generateAmount`, this._generateAmount, this.symbol, this.symbolLeftSide);
+    UIManager.displayValue(`resource-${this.label}-generateAmount`, this._generateAmount, this.unitSymbol);
   }
 
   get costs() {
@@ -228,7 +230,7 @@ export default abstract class Resource {
 
       UIManager.displayText(
         `resource-${this.label}-rate`,
-        `${UIManager.formatValueWithSymbol(this.rate, this.symbol, this.symbolLeftSide)}/s ${timeLeftText != null ? `(${timeLeftText})` : ""}`
+        `${UIManager.formatValueWithSymbol(this.rate, this.unitSymbol)}/s ${timeLeftText != null ? `(${timeLeftText})` : ""}`
       );
     }, 1000);
 

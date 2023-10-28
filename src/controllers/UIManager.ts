@@ -1,4 +1,4 @@
-import Resource, { Cost } from "../models/Resource";
+import Resource, { Cost, UnitSymbolDefination } from "../models/Resource";
 
 export default class UIManager {
   static setProgressBarToYellow(resource: Resource) {
@@ -63,13 +63,13 @@ export default class UIManager {
     });
   }
 
-  static displayValue(className: string, number: number, symbol: string, symbolLeftSide: boolean) {
-    let string = UIManager.formatValueWithSymbol(number, symbol, symbolLeftSide);
+  static displayValue(className: string, number: number, unitSymbol: UnitSymbolDefination) {
+    let string = UIManager.formatValueWithSymbol(number, unitSymbol);
     UIManager.displayText(className, string);
   }
 
-  static formatValueWithSymbol(number: number, symbol: string, symbolLeftSide: boolean) {
-    return `${symbolLeftSide ? symbol : ""}${this.formatNumber(number)}${!symbolLeftSide ? symbol : ""}`;
+  static formatValueWithSymbol(number: number, unitSymbol: UnitSymbolDefination) {
+    return `${unitSymbol.infront ? unitSymbol.icon : ""}${this.formatNumber(number)}${!unitSymbol.infront ? unitSymbol.icon : ""}`;
   }
 
   static getPrecisionOrMax(value: number, max: number, end: boolean = false): number {
@@ -98,15 +98,10 @@ export default class UIManager {
         Resource.ALL_RESOURCES[cost.resource].label
       }-amount">${UIManager.formatValueWithSymbol(
         Resource.ALL_RESOURCES[cost.resource].amount,
-        Resource.ALL_RESOURCES[cost.resource].symbol,
-        Resource.ALL_RESOURCES[cost.resource].symbolLeftSide
-      )}</span>/${UIManager.formatValueWithSymbol(
-        cost.amount,
-        Resource.ALL_RESOURCES[cost.resource].symbol,
-        Resource.ALL_RESOURCES[cost.resource].symbolLeftSide
-      )} <span class="resource-${Resource.ALL_RESOURCES[cost.resource].label}-label">${UIManager.capitalize(
+        Resource.ALL_RESOURCES[cost.resource].unitSymbol
+      )}</span>/${UIManager.formatValueWithSymbol(cost.amount, Resource.ALL_RESOURCES[cost.resource].unitSymbol)} <span class="resource-${
         Resource.ALL_RESOURCES[cost.resource].label
-      )}</span></span>`;
+      }-label">${UIManager.capitalize(Resource.ALL_RESOURCES[cost.resource].label)}</span></span>`;
 
       if (i < costs.length - 1) {
         costDisplayText += ", ";
@@ -148,5 +143,26 @@ export default class UIManager {
     const mins = Math.floor((num % 3600) / 60);
     const secs = num % 60;
     return `${this.formatNumber(days)}d ${this.formatNumber(hours)}h ${this.formatNumber(mins)}m ${this.formatNumber(secs)}s`;
+  }
+
+  // Shows HTML element with id of `name`-window
+  static showWindow(name: string) {
+    const elements = document.querySelectorAll<HTMLElement>(`.${name}-window`);
+
+    elements.forEach((element) => {
+      element.style.visibility = "visible";
+      element.style.opacity = "1";
+      element.style.position = "static";
+    });
+  }
+  // Hides HTML element with id of `name`-window
+  static hideWindow(name: string) {
+    const elements = document.querySelectorAll<HTMLElement>(`.${name}-window`);
+
+    elements.forEach((element) => {
+      element.style.visibility = "hidden";
+      element.style.opacity = "0";
+      element.style.position = "absolute";
+    });
   }
 }

@@ -71,22 +71,19 @@ export class Factory {
       }
 
       const description = document.createElement("p");
-      description.innerHTML = `Manufactors ${UIManager.formatValueWithSymbol(
-        this.getGenAmount(),
-        this.resource.symbol,
-        this.resource.symbolLeftSide
-      )} ${UIManager.capitalize(this.resource.label)} per sec.`;
+      description.innerHTML = `Manufactors ${UIManager.formatValueWithSymbol(this.getGenAmount(), this.resource.unitSymbol)} ${UIManager.capitalize(
+        this.resource.label
+      )} per sec.`;
       description.innerHTML = `${UIManager.capitalize(this.resource.label)} is generated at a rate of <b>${UIManager.formatValueWithSymbol(
         this.getGenAmount(),
-        this.resource.symbol,
-        this.resource.symbolLeftSide
+        this.resource.unitSymbol
       )} per second</b> by manufacturers${this.resource.costs.length > 0 ? ` while consuming ${costsContainer.innerHTML} per second.` : "."}`;
 
       const costP = document.createElement("p");
       costP.innerHTML = `Upgrade Cost: ${UIManager.getCostString(this.upgradeCost)}`;
 
       const efficiencyP = document.createElement("p");
-      efficiencyP.innerHTML = `Efficiency: ${UIManager.formatValueWithSymbol(this.efficiency * 100, "%", false)}`;
+      efficiencyP.innerHTML = `Efficiency: ${UIManager.formatValueWithSymbol(this.efficiency * 100, { icon: "%", infront: false })}`;
 
       const levelP = document.createElement("p");
       levelP.innerHTML = `Level: ${this.level}`;
