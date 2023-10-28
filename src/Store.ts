@@ -1,5 +1,5 @@
 import { container } from "webpack";
-import UIManager from "../controllers/UIManager";
+import UIManager from "./UIManager";
 import Resource, { Cost, canAfford, performCostTransaction } from "./Resource";
 
 type onPurchaseFunction = (storeItem: StoreItem) => void;

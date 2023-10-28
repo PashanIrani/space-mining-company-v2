@@ -1,4 +1,4 @@
-import Resource, { canAfford } from "../models/Resource";
+import Resource, { canAfford } from "./Resource";
 
 function registerResourceButton(resource: Resource, callback: () => Promise<void>) {
   const buttons = document.querySelectorAll(`.resource-${resource.label}-generateButton`);

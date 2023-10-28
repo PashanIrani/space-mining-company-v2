@@ -1,4 +1,4 @@
-import Resource, { Cost, UnitSymbolDefination } from "../models/Resource";
+import Resource, { Cost, UnitSymbolDefination } from "./Resource";
 
 export default class UIManager {
   static setProgressBarToYellow(resource: Resource) {

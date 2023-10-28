@@ -1,12 +1,12 @@
-import Resource from "../models/Resource";
+import Resource, { AllResourcesObject } from "./Resource";
 import UIManager from "./UIManager";
 
 export class PacingManager {
   introducedWindows: Set<string> = new Set();
-  resources: { [key: string]: Resource };
+  resources: AllResourcesObject;
   initiallyHiddenWindows = ["funds", "store"];
 
-  constructor(resources: { [key: string]: Resource }) {
+  constructor(resources: AllResourcesObject) {
     this.resources = resources;
 
     this.initiallyHiddenWindows.forEach((windowName) => {

@@ -1,9 +1,9 @@
-import Resource from "./models/Resource";
+import Resource from "./Resource";
 import "7.css/dist/7.css";
 import "./styles/index.scss";
-import { Store, StoreItem } from "./models/Store";
-import { Factory } from "./models/Factory";
-import { PacingManager } from "./controllers/PacingManager";
+import { Store, StoreItem } from "./Store";
+import { Factory } from "./Factory";
+import { PacingManager } from "./PacingManager";
 
 const DEV = true;
 

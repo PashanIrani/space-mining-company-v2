@@ -1,4 +1,4 @@
-import UIManager from "../controllers/UIManager";
+import UIManager from "./UIManager";
 import Resource, { Cost, canAfford, performCostTransaction } from "./Resource";
 
 export class Factory {

@@ -1,5 +1,5 @@
-import UIManager from "../controllers/UIManager";
-import { registerResourceButton, updateResourceButtonState } from "../controllers/Button";
+import UIManager from "./UIManager";
+import { registerResourceButton, updateResourceButtonState } from "./Button";
 
 export interface Cost {
   resource: string;
@@ -22,6 +22,10 @@ export interface ResourceDescription {
   unitSymbol?: UnitSymbolDefination;
 }
 
+export interface AllResourcesObject {
+  [key: string]: Resource;
+}
+
 export default abstract class Resource {
   private _label: string;
   private _amount: number;
@@ -32,7 +36,7 @@ export default abstract class Resource {
   public buildStatus: number = 0;
   private _buildDescriptions: Array<string> = [];
   public rate: number;
-  public static ALL_RESOURCES: { [key: string]: Resource } = {};
+  public static ALL_RESOURCES: AllResourcesObject = {};
   public static RESOURCES_UPDATE_DEPS: { [key: string]: Set<string> } = {};
   public unitSymbol: UnitSymbolDefination;
 
