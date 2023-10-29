@@ -32,7 +32,7 @@ export default abstract class Resource {
   private _capacity: number;
   private _generateAmount: number;
   private _costs: Array<Cost> = [];
-  _buildTimeMs: number;
+  buildTimeMs: number;
   public buildStatus: number = 0;
   private _buildDescriptions: Array<string> = [];
   public rate: number;
@@ -46,7 +46,7 @@ export default abstract class Resource {
     this.capacity = desc.capacity || null;
     this.generateAmount = desc.generateAmount;
     this.costs = desc.costs;
-    this._buildTimeMs = desc.buildTimeMs;
+    this.buildTimeMs = desc.buildTimeMs;
     this.amount = desc.initialAmount;
     this._buildDescriptions = desc.buildDescriptions;
 
@@ -107,7 +107,7 @@ export default abstract class Resource {
 
       this.buildStatus = 0;
 
-      const totalTimeMs = this._buildTimeMs;
+      const totalTimeMs = this.buildTimeMs;
 
       const { intervalDuration, incrementAmount, precision } = calculateProgressPrecision(totalTimeMs);
 

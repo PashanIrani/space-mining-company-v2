@@ -4,6 +4,7 @@ import "./styles/index.scss";
 import { Store, StoreItem } from "./Store";
 import { Factory } from "./Factory";
 import { PacingManager } from "./PacingManager";
+import { SaveManager } from "./SaveManager";
 
 const DEV = true;
 
@@ -39,9 +40,10 @@ class Funds extends Resource {
 const energy = new Energy();
 const funds = new Funds();
 
-let energyFactor;
-
-new Store([
+let energyFactory = new Factory(energy, [], 0);
+let r = { energy, funds };
+const pm = new PacingManager(r);
+let s = new Store([
   {
     id: "1",
     collection: "main",
@@ -53,9 +55,10 @@ new Store([
     ],
     level: 1,
     onPurchase: (self: StoreItem) => {
-      energyFactor = new Factory(energy, [], 1);
+      energyFactory.level = 1;
+      pm.showWindow("energy-factory");
     },
   },
 ]);
 
-const pm = new PacingManager({ energy, funds });
+new SaveManager(r, pm, s, { energyFactory });

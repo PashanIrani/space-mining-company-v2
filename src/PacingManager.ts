@@ -2,16 +2,16 @@ import Resource, { AllResourcesObject } from "./Resource";
 import UIManager from "./UIManager";
 
 export class PacingManager {
-  introducedWindows: Set<string> = new Set();
+  introducedWindows: Set<string> = new Set(["energy"]);
   resources: AllResourcesObject;
   initiallyHiddenWindows = ["funds", "store"];
 
   constructor(resources: AllResourcesObject) {
     this.resources = resources;
 
-    this.initiallyHiddenWindows.forEach((windowName) => {
-      UIManager.hideWindow(windowName);
-    });
+    UIManager.hideWindow("initially-hidden");
+
+    this.check();
 
     setInterval(() => {
       this.check();
@@ -19,10 +19,6 @@ export class PacingManager {
   }
 
   check() {
-    this.introducedWindows.forEach((windowName) => {
-      this.showWindow(windowName);
-    });
-
     if (this.resources["energy"].amount >= 1) {
       this.introducedWindows.add("funds");
     }
@@ -30,6 +26,10 @@ export class PacingManager {
     if (this.resources["funds"].amount >= 5) {
       this.introducedWindows.add("store");
     }
+
+    this.introducedWindows.forEach((windowName) => {
+      this.showWindow(windowName);
+    });
   }
 
   showWindow(name: string) {

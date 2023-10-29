@@ -4,9 +4,9 @@ import Resource, { Cost, canAfford, performCostTransaction } from "./Resource";
 export class Factory {
   private resource: Resource;
   private _level: number;
-  private upgradeCost: Array<Cost>;
-  private efficiency: number;
-  private maxEfficiency: number;
+  public upgradeCost: Array<Cost>;
+  public efficiency: number;
+  public maxEfficiency: number;
   public active: boolean = false;
   private allowDrawing: boolean = true;
 
@@ -33,7 +33,7 @@ export class Factory {
   }
 
   draw() {
-    const factoryContainers = document.querySelectorAll(`.factory-${this.resource.label}`);
+    const factoryContainers = document.querySelectorAll(`.${this.resource.label}-factory-window`);
 
     factoryContainers.forEach((container) => {
       const upgradeButton = document.createElement("button");

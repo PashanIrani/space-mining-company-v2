@@ -50,7 +50,7 @@ export default class UIManager {
 
         setTimeout(() => {
           element.classList.remove("animate");
-        }, resource._buildTimeMs);
+        }, resource.buildTimeMs);
       });
     }
   }

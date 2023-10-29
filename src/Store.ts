@@ -132,6 +132,7 @@ export class Store {
       }
     });
   }
+
   isAllPurchased(items: StoreItem[]) {
     for (let i = 0; i < items.length; i++) {
       const element = items[i];
@@ -139,5 +140,20 @@ export class Store {
     }
 
     return true;
+  }
+
+  loadSave(purchasedStoreItems: any) {
+    Object.keys(purchasedStoreItems).forEach((collection) => {
+      for (let i = 0; i < purchasedStoreItems[collection].length; i++) {
+        const item = purchasedStoreItems[collection][i];
+        this.storeItems[collection][i].costs = item.costs;
+        this.storeItems[collection][i].description = item.description;
+        this.storeItems[collection][i].level = item.level;
+        this.storeItems[collection][i].purchased = item.purchased;
+        this.storeItems[collection][i].name = item.name;
+      }
+    });
+
+    this.drawStore();
   }
 }
