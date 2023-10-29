@@ -65,7 +65,7 @@ export class Store {
 
   drawStore(): void {
     Object.keys(this.storeItems).forEach((collection) => {
-      const storeContainers = document.querySelectorAll(`.store-${collection}`);
+      const storeContainers = document.querySelectorAll(`.${collection}-store`);
 
       // setup containers
       storeContainers.forEach((container) => {
@@ -83,7 +83,7 @@ export class Store {
         this.storeItems[collection].forEach((storeItem: StoreItem) => {
           if (storeItem.purchased) return;
 
-          const storeContainers = document.querySelectorAll(`.store-${collection}`);
+          const storeContainers = document.querySelectorAll(`.${collection}-store`);
 
           storeContainers.forEach((container) => {
             const storeItemContainer = document.createElement("div");
@@ -124,7 +124,7 @@ export class Store {
           });
         });
       } else {
-        const storeContainers = document.querySelectorAll(`.store-${collection}`);
+        const storeContainers = document.querySelectorAll(`.${collection}-store`);
 
         storeContainers.forEach((container) => {
           container.innerHTML = "No Stock";

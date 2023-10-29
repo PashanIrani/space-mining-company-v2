@@ -24,10 +24,10 @@
         </div>
       </div>
       <div class="window-body has-space">
+        <p class="description">The lifeblood of progress, without it, all crumbles.</p>
         <p><b><span class="resource-energy-label"></span></b>: <span class="resource-energy-amount"></span>/<span
             class="resource-energy-capacity"></span></p>
 
-        <p>The lifeblood of progress, without it, all crumbles.</p>
         <p>Rate: <span class="resource-energy-rate"></span></p>
 
         <div role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="40"
@@ -44,6 +44,7 @@
               class="resource-energy-generateAmount"></span>)</button>
         </div>
         <div class="factory-container initially-hidden-window energy-factory-window"></div>
+        <div class="energy-store initially-hidden-window energy-upgrades-window"></div>
       </div>
 
       <div class="status-bar">
@@ -65,11 +66,8 @@
       </div>
       <div class="window-body has-space">
         <p><b><span class="resource-funds-label"></span></b>: <span class="resource-funds-amount"></span></p>
-        <div role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="40"
-          class="resource-funds-progressbar-container">
-          <div style="width: 0%" class="resource-funds-progressbar progressbar"></div>
-        </div>
-        <p>The backbone of business operations, essential for growth and stability.</p>
+
+        <p class="description">The backbone of business operations, essential for growth and stability.</p>
         <p>Cost: <span class="resource-funds-costs"></span></p>
         <p>Rate: <span class="resource-funds-rate"></span></p>
 
@@ -102,7 +100,7 @@
           <button aria-label="Close"></button>
         </div>
       </div>
-      <div class="window-body has-space store-main">
+      <div class="window-body has-space main-store">
       </div>
     </div>
 

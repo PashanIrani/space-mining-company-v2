@@ -19,11 +19,11 @@ export class PacingManager {
   }
 
   check() {
-    if (this.resources["energy"].amount >= 1) {
+    if (this.resources["energy"].amount >= 2) {
       this.introducedWindows.add("funds");
     }
 
-    if (this.resources["funds"].amount >= 5) {
+    if (this.resources["funds"].amount >= 2) {
       this.introducedWindows.add("store");
     }
 
