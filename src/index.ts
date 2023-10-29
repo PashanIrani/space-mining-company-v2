@@ -65,9 +65,24 @@ new SaveManager(r, pm, s, { energyFactory });
 
 // DEV!!!!
 
+let clickCount = 0;
+let lastClickTime = 0;
+
 document.getElementById("dev-hard-reset").addEventListener("click", function () {
-  if (confirm("You are about to hard wipe the game. Continue?")) {
-    localStorage.clear();
-    location.reload();
+  const currentTime = new Date().getTime();
+
+  // Check if it's a triple click within 1 second
+  if (currentTime - lastClickTime < 1000) {
+    clickCount++;
+    if (clickCount === 3) {
+      localStorage.clear();
+
+      // Reload the page
+      location.reload();
+    }
+  } else {
+    clickCount = 1;
   }
+
+  lastClickTime = currentTime;
 });
