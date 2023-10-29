@@ -88,15 +88,6 @@ export default abstract class Resource {
   }
 
   generate(): Promise<void> {
-    const calculateProgressPrecision = (totalTime: number) => {
-      const minIntervalDuration = 10;
-      const totalIncrements = Math.ceil(totalTime / minIntervalDuration);
-      const incrementAmount = 100 / totalIncrements;
-      const intervalDuration = totalTime / totalIncrements;
-      const precision = UIManager.getPrecisionOrMax(incrementAmount, 10);
-      return { intervalDuration, incrementAmount, precision };
-    };
-
     return new Promise((res, rej) => {
       if (!canAfford(this.costs)) {
         res();
@@ -104,10 +95,24 @@ export default abstract class Resource {
       }
 
       performCostTransaction(this.costs);
+      return this.beginBuilding(0);
+    });
+  }
 
-      this.buildStatus = 0;
+  beginBuilding(buildStatus: number): Promise<void> {
+    return new Promise((res) => {
+      const calculateProgressPrecision = (totalTime: number) => {
+        const minIntervalDuration = 10;
+        const totalIncrements = Math.ceil(totalTime / minIntervalDuration);
+        const incrementAmount = (100 * (1 - buildStatus / 100)) / totalIncrements;
+        const intervalDuration = Math.ceil(totalTime / totalIncrements);
+        const precision = UIManager.getPrecisionOrMax(incrementAmount, 10);
+        return { intervalDuration, incrementAmount, precision };
+      };
 
-      const totalTimeMs = this.buildTimeMs;
+      this.buildStatus = buildStatus;
+
+      const totalTimeMs = this.buildTimeMs * (1 - buildStatus / 100);
 
       const { intervalDuration, incrementAmount, precision } = calculateProgressPrecision(totalTimeMs);
 
@@ -115,16 +120,6 @@ export default abstract class Resource {
         UIManager.displayText(`resource-${this.label}-buildStatus`, Math.round(this.buildStatus) + "%");
         UIManager.displayText(`resource-${this.label}-buildStatusSpinner`, `<span class="loader animate" aria-label="Processing your request"></span>`);
         this.buildStatus += incrementAmount;
-
-        let index = Math.floor((this.buildStatus / 100) * this._buildDescriptions.length);
-        let currentBuildDescription = this._buildDescriptions[index];
-        let bs = (this.buildStatus / 100 - index * (1 / this._buildDescriptions.length)) / (1 / this._buildDescriptions.length);
-
-        let countText = "";
-
-        if (this._buildDescriptions.length > 1) {
-          countText = `${index + 1}/${this._buildDescriptions.length}`;
-        }
 
         UIManager.displayText(`resource-${this.label}-buildDescription`, this.getBuildDescription());
 

@@ -81,6 +81,10 @@ export class SaveManager {
         this.resources[key].capacity = parsedLoadedResources[key]._capacity;
         this.resources[key].generateAmount = parsedLoadedResources[key]._generateAmount;
         this.resources[key].costs = parsedLoadedResources[key]._costs;
+
+        if (parsedLoadedResources[key].buildStatus > 0) {
+          this.resources[key].beginBuilding(parsedLoadedResources[key].buildStatus);
+        }
       });
     }
 
