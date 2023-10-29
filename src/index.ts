@@ -62,3 +62,12 @@ let s = new Store([
 ]);
 
 new SaveManager(r, pm, s, { energyFactory });
+
+// DEV!!!!
+
+document.getElementById("dev-hard-reset").addEventListener("click", function () {
+  if (confirm("You are about to hard wipe the game. Continue?")) {
+    localStorage.clear();
+    location.reload();
+  }
+});

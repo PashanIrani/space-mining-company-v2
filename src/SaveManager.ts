@@ -11,6 +11,9 @@ interface loadedResource {
   _generateAmount: number;
   _costs: Array<Cost>;
 }
+
+const SAVE_FREQ = 1000;
+
 export class SaveManager {
   resources: AllResourcesObject;
   introducedWindows: Array<string>;
@@ -30,7 +33,7 @@ export class SaveManager {
   beginSave() {
     setInterval(() => {
       this.save();
-    }, 1000);
+    }, SAVE_FREQ);
   }
 
   save() {
