@@ -16,7 +16,7 @@ class Energy extends Resource {
       capacity: 100,
       generateAmount: 1,
       costs: [],
-      buildTimeMs: DEV ? 100 : 1 * 5000,
+      buildTimeMs: 50,
       buildDescriptions: ["Generating Energy"],
       unitSymbol: { icon: "e", infront: false },
     });
@@ -29,8 +29,8 @@ class Funds extends Resource {
       label: "funds",
       initialAmount: 0,
       generateAmount: 1,
-      costs: [{ resource: "energy", amount: 0.2 }],
-      buildTimeMs: DEV ? 100 : 20 * 1000,
+      costs: [{ resource: "energy", amount: 15 }],
+      buildTimeMs: 10 * 1000,
       buildDescriptions: ["Analyzing Market", "Executing Plan", "Generating Funds"],
       unitSymbol: { icon: "$", infront: true },
     });
@@ -41,6 +41,7 @@ const energy = new Energy();
 const funds = new Funds();
 
 let energyFactory = new Factory(energy, [], 0);
+let fundsFactory = new Factory(funds, [{ resource: "energy", amount: 15 }], 0);
 let resources = { energy, funds };
 const pacingManager = new PacingManager(resources);
 
@@ -51,22 +52,39 @@ let store = new Store([
     name: "OS Update",
     description: "Upgrades... Upgrades... Upgrades...",
     costs: [
-      { resource: "funds", amount: 5 },
-      { resource: "energy", amount: 10 },
+      { resource: "funds", amount: 4.99 },
+      { resource: "energy", amount: 95 },
     ],
     level: 1,
     onPurchase: (self: StoreItem) => {
       pacingManager.showWindow("energy-upgrades");
+      pacingManager.showWindow("funds-upgrades");
     },
   },
   {
     id: "2",
-    collection: "energy",
-    name: "Quantum Energization Module",
-    description: "Quantum Energization Module generates energy, its output finely tuned to efficiency.",
+    collection: "funds",
+    name: "Funds Factory",
+    description: "lalalala",
     costs: [
-      { resource: "funds", amount: 5 },
-      { resource: "energy", amount: 10 },
+      { resource: "funds", amount: 3 },
+      { resource: "energy", amount: 100 },
+    ],
+    level: 1,
+    onPurchase: (self: StoreItem) => {
+      fundsFactory.level = 1;
+      pacingManager.showWindow("funds-factory");
+    },
+  },
+
+  {
+    id: "2-1",
+    collection: "energy",
+    name: "Energy Factory",
+    description: "lalalala",
+    costs: [
+      { resource: "funds", amount: 3 },
+      { resource: "energy", amount: 100 },
     ],
     level: 1,
     onPurchase: (self: StoreItem) => {
@@ -74,6 +92,52 @@ let store = new Store([
       pacingManager.showWindow("energy-factory");
     },
   },
+
+  {
+    id: "2-1",
+    collection: "energy",
+    name: "Energy Gen Amount Increase",
+    description: "lalalala",
+    costs: [
+      { resource: "funds", amount: 0.045 },
+      { resource: "energy", amount: 0.23 },
+    ],
+    level: 1,
+    onPurchase: (self: StoreItem) => {
+      energy.generateAmount *= 1.1;
+
+      self.purchased = false;
+      self.level++;
+      self.name = `funds faster gen ${self.level}`;
+      self.costs = self.costs.map((cost) => {
+        cost.amount *= 1.25;
+        return cost;
+      });
+    },
+  },
+  {
+    id: "3",
+    collection: "funds",
+    name: "Faster generation",
+    description: "Quantum Energization Module generates energy, its output finely tuned to efficiency.",
+    costs: [
+      { resource: "funds", amount: 1 },
+      { resource: "energy", amount: 1 },
+    ],
+    level: 1,
+    onPurchase: (self: StoreItem) => {
+      funds.buildTimeMs *= 0.5;
+
+      self.purchased = false;
+      self.level++;
+      self.name = `funds faster gen ${self.level}`;
+      self.costs = self.costs.map((cost) => {
+        cost.amount *= 1.1;
+        return cost;
+      });
+    },
+  },
+  ,
 ]);
 
 new SaveManager(resources, pacingManager, store, { energyFactory });

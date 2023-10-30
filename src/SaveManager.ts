@@ -101,6 +101,7 @@ export class SaveManager {
         this.factories[key].efficiency = factories[key].efficiency;
         this.factories[key].maxEfficiency = factories[key].maxEfficiency;
         this.factories[key].upgradeCost = factories[key].upgradeCost;
+        this.factories[key].draw();
       });
     }
     this.pacingManager.check();
