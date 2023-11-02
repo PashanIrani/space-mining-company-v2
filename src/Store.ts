@@ -71,11 +71,11 @@ export class Store {
       storeContainers.forEach((container) => {
         container.innerHTML = "";
 
-        if (collection !== "main") {
-          const storeTitle = document.createElement("legend");
-          storeTitle.innerHTML = `${UIManager.capitalize(collection)} Upgrades`;
-          container.appendChild(storeTitle);
-        }
+        // if (collection !== "main") {
+        //   const storeTitle = document.createElement("legend");
+        //   storeTitle.innerHTML = `${UIManager.capitalize(collection)} Upgrades`;
+        //   container.appendChild(storeTitle);
+        // }
       });
 
       // loop each collection and add items to their respective stores
@@ -105,7 +105,7 @@ export class Store {
             costP.innerHTML = `Cost: ${UIManager.getCostString(storeItem.costs)}`;
 
             const button = document.createElement("button");
-            button.innerHTML = `Buy ${storeItem.name}!`;
+            button.innerHTML = `Buy`;
 
             button.disabled = !canAfford(storeItem.costs);
             button.addEventListener("click", () => {

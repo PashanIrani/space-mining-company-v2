@@ -32,7 +32,7 @@ export default abstract class Resource {
   private _capacity: number;
   private _generateAmount: number;
   private _costs: Array<Cost> = [];
-  buildTimeMs: number;
+  private _buildTimeMs: number;
   public buildStatus: number = 0;
   private _buildDescriptions: Array<string> = [];
   public rate: number;
@@ -152,6 +152,15 @@ export default abstract class Resource {
   set label(newValue: string) {
     this._label = newValue;
     UIManager.displayText(`resource-${this.label}-label`, UIManager.capitalize(this.label));
+  }
+
+  get buildTimeMs() {
+    return this._buildTimeMs;
+  }
+
+  set buildTimeMs(newValue: number) {
+    this._buildTimeMs = newValue;
+    UIManager.displayText(`resource-${this.label}-buildTimeMs`, UIManager.convertTime(this.buildTimeMs / 1000));
   }
 
   get amount() {

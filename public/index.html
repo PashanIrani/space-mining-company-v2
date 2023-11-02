@@ -6,9 +6,7 @@
   <meta charset="UTF-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <style>
-
-  </style>
+  <link id="style-link" rel="stylesheet" type="text/css" href="xp.css/dist/xp.css">
 </head>
 
 <body>
@@ -24,15 +22,18 @@
         </div>
       </div>
       <div class="window-body has-space">
-        <p class="description">The lifeblood of progress, without it, all crumbles.</p>
-        <p><b><span class="resource-energy-label"></span></b>: <span class="resource-energy-amount"></span>/<span
+        <p><u><b><span class="resource-energy-label"></span></b></u>: <span class="resource-energy-amount"></span>/<span
             class="resource-energy-capacity"></span></p>
+        <p class="description">The lifeblood of progress, without it, all crumbles.</p>
 
+
+        <p>Cost: <span class="resource-energy-costs"></span></p>
         <p>Rate: <span class="resource-energy-rate"></span></p>
+        <p>Build Time: <span class="resource-energy-buildTimeMs"></span></p>
 
         <div role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="40"
           class="resource-energy-progressbar-container">
-          <div style="width: 0%" class="resource-energy-progressbar progressbar"></div>
+          <div class="resource-energy-progressbar progressbar"></div>
         </div>
 
         <div class="button-container">
@@ -43,8 +44,22 @@
           <button class="resource-energy-generateButton">Generate <span class="resource-energy-label"></span> (+<span
               class="resource-energy-generateAmount"></span>)</button>
         </div>
-        <div class="factory-container initially-hidden-window energy-factory-window"></div>
-        <fieldset class="energy-store initially-hidden-window energy-upgrades-window"></fieldset>
+
+        <section class="tabs initially-hidden-window energy-upgrades-window" style="max-width: 500px">
+          <menu role="tablist" aria-label="Sample Tabs">
+            <button role="tab" aria-selected="true" aria-controls="energy-upgrades-tab"
+              class="initially-hidden-window energy-upgrades-window">Upgrades</button>
+            <button role="tab" aria-controls="energy-factory-tab"
+              class="initially-hidden-window energy-factory-window">Factory</button>
+          </menu>
+          <article role="tabpanel" id="energy-upgrades-tab">
+            <div class="energy-store initially-hidden-window energy-upgrades-window">
+              </fieldset>
+          </article>
+          <article role="tabpanel" hidden id="energy-factory-tab">
+            <div class="factory-container initially-hidden-window energy-factory energy-factory-window"></div>
+          </article>
+        </section>
       </div>
 
       <div class="status-bar">
@@ -65,11 +80,12 @@
         </div>
       </div>
       <div class="window-body has-space">
-        <p><b><span class="resource-funds-label"></span></b>: <span class="resource-funds-amount"></span></p>
+        <p><b><u><span class="resource-funds-label"></span></u></b>: <span class="resource-funds-amount"></span></p>
 
         <p class="description">The backbone of business operations, essential for growth and stability.</p>
         <p>Cost: <span class="resource-funds-costs"></span></p>
         <p>Rate: <span class="resource-funds-rate"></span></p>
+        <p>Build Time: <span class="resource-funds-buildTimeMs"></span></p>
 
 
         <div class="button-container">
@@ -80,8 +96,22 @@
           <button class="resource-funds-generateButton">Generate <span class="resource-funds-label"></span> (+<span
               class="resource-funds-generateAmount"></span>)</button>
         </div>
-        <div class="factory-container initially-hidden-window funds-factory-window"></div>
-        <fieldset class="funds-store initially-hidden-window funds-upgrades-window"></fieldset>
+
+        <section class="tabs initially-hidden-window funds-upgrades-window" style="max-width: 500px">
+          <menu role="tablist" aria-label="Sample Tabs">
+            <button role="tab" aria-selected="true" aria-controls="funds-upgrades-tab"
+              class="initially-hidden-window funds-upgrades-window">Upgrades</button>
+            <button role="tab" aria-controls="funds-factory-tab"
+              class="initially-hidden-window funds-factory-window">Factory</button>
+          </menu>
+          <article role="tabpanel" id="funds-upgrades-tab">
+            <div class="funds-store initially-hidden-window funds-upgrades-window">
+              </fieldset>
+          </article>
+          <article role="tabpanel" hidden id="funds-factory-tab">
+            <div class="factory-container initially-hidden-window funds-factory funds-factory-window"></div>
+          </article>
+        </section>
       </div>
 
       <div class="status-bar">

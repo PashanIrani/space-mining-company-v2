@@ -35,6 +35,7 @@ export default class UIManager {
 
     elements.forEach((element) => {
       element.style.width = `${(resource.amount / resource.capacity) * 100}%`;
+
       if (resource.rate < 0) {
         element.classList.add("paused");
       } else {

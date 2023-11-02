@@ -6,7 +6,7 @@ import { Store } from "./Store";
 interface loadedResource {
   _amount: number;
   buildStatus: number;
-  buildTimeMs: number;
+  _buildTimeMs: number;
   _capacity: number;
   _generateAmount: number;
   _costs: Array<Cost>;
@@ -77,7 +77,7 @@ export class SaveManager {
       Object.keys(this.resources).forEach((key: string) => {
         this.resources[key].amount = parsedLoadedResources[key]._amount;
         this.resources[key].buildStatus = parsedLoadedResources[key].buildStatus;
-        this.resources[key].buildTimeMs = parsedLoadedResources[key].buildTimeMs;
+        this.resources[key].buildTimeMs = parsedLoadedResources[key]._buildTimeMs;
         this.resources[key].capacity = parsedLoadedResources[key]._capacity;
         this.resources[key].generateAmount = parsedLoadedResources[key]._generateAmount;
         this.resources[key].costs = parsedLoadedResources[key]._costs;

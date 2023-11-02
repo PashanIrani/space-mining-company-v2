@@ -1,4 +1,17 @@
+@import url('./progressBar.scss');
 $background-color: #3c6ea5;
+$base-font-size: 14px;
+
+@font-face {
+  font-family: "Pixelated MS Sans Serif";
+  src: url('../../node_modules/xp.css/dist/ms_sans_serif.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: "Pixelated MS Sans Serif";
+  src: url('../../node_modules/xp.css/dist/ms_sans_serif_bold.woff2') format('woff2');
+  font-weight: bold;
+}
 
 .highlight {
   color: red;
@@ -13,10 +26,26 @@ body {
   margin: 10px;
   padding: 5px;
   background-color: $background-color;
+  font-family: "Pixelated MS Sans Serif", Arial;
+  -webkit-font-smoothing: antialiased;
+  font-size: $base-font-size;
+}
+
+button {
+  font-size: $base-font-size;
+  // span {
+  //   font-size: inherit !important;
+  // }
 }
 
 .window {
   width: 500px;
+
+  p,
+  span,
+  label {
+    font-size: $base-font-size;
+  }
 }
 
 .resource-container {
@@ -44,37 +73,32 @@ body {
   height: 14px;
 }
 
-.progressbar {
-  transition: width 0.2s linear, background-color 0.2s linear;
-}
 
 
 .store-container,
 .factory-container {
-
   max-height: 500px;
-  overflow-y: scroll;
 
   h1 {
-    font-size: 18px;
+    font-size: $base-font-size * 1.2;
   }
 }
 
 .store-item-container,
 .factory-item-container {
+  background-color: #fff;
   display: flex;
   justify-content: space-between;
-  padding: 10px;
-  border: 1px solid #cdd7db;
-  background-color: #ffffff;
-  border-radius: 8px;
+  padding: 5px;
+  box-shadow: inset 0 0 0 1px #f3f3f388, 0 0 0 1px #eaeaea88;
+  border: 1px solid #9e9e9e;
 
   &:not(:first-of-type) {
     margin-top: 5px;
   }
 
   h1 {
-    font-size: 14px;
+    font-size: $base-font-size;
     margin: 2.5px 0px;
   }
 
@@ -82,7 +106,6 @@ body {
     font-size: 12px;
     font-weight: normal;
     margin: 2.5px 0px;
-    font-style: italic;
   }
 
   div.info-container {
@@ -101,7 +124,6 @@ body {
     button {
       margin-right: 5px;
     }
-
   }
 
   p {
@@ -109,11 +131,10 @@ body {
   }
 }
 
-
-
 .factory-item-container {
   flex-direction: column;
   display: flex;
+  border: none;
 
   p {
     margin: 2px 0px;
@@ -133,6 +154,13 @@ body {
   margin-bottom: 0px;
 }
 
-.description {
-  font-style: italic;
+.description {}
+
+u {
+  border-bottom: 2px solid #222;
+}
+
+// For the tabbed parts
+[role=tabpanel] {
+  padding: 5px;
 }

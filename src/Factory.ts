@@ -33,7 +33,7 @@ export class Factory {
   }
 
   draw() {
-    const factoryContainers = document.querySelectorAll(`.${this.resource.label}-factory-window`);
+    const factoryContainers = document.querySelectorAll(`.${this.resource.label}-factory`);
 
     factoryContainers.forEach((container) => {
       const upgradeButton = document.createElement("button");
@@ -83,13 +83,16 @@ export class Factory {
       costP.innerHTML = `Upgrade Cost: ${UIManager.getCostString(this.upgradeCost)}`;
 
       const efficiencyP = document.createElement("p");
-      efficiencyP.innerHTML = `Efficiency: ${UIManager.formatValueWithSymbol(this.efficiency * 100, { icon: "%", infront: false })}`;
+      efficiencyP.innerHTML = `Operational Efficiency: ${UIManager.formatValueWithSymbol((this.efficiency / this.maxEfficiency) * 100, {
+        icon: "%",
+        infront: false,
+      })} of the current maximum ${UIManager.formatValueWithSymbol(this.maxEfficiency * 100, { icon: "%", infront: false })}`;
 
       const levelP = document.createElement("p");
-      levelP.innerHTML = `Level: ${this.level}`;
+      levelP.innerHTML = `Production Tier: ${this.level}`;
 
       const statusP = document.createElement("p");
-      statusP.innerHTML = `Status: ${this.active ? "ACTIVE" : "idle"}`;
+      statusP.innerHTML = `Operational Status: ${this.active ? "Active" : "Idle"}`;
 
       const upgradeButtonContainer = document.createElement("div");
       upgradeButtonContainer.classList.add("button-container");
@@ -113,7 +116,7 @@ export class Factory {
       rangeInput.type = "range";
       rangeInput.min = "0";
       rangeInput.max = this.maxEfficiency + "";
-      rangeInput.step = this.maxEfficiency / 10 + "";
+      rangeInput.step = this.maxEfficiency / 25 + "";
       rangeInput.value = this.efficiency + "";
 
       rangeInput.addEventListener("input", () => {
@@ -148,8 +151,9 @@ export class Factory {
       container.innerHTML = "";
       factoryContainer.appendChild(title);
       factoryContainer.appendChild(description);
-      factoryContainer.appendChild(infoContainer);
       factoryContainer.appendChild(sliderContainer);
+      factoryContainer.appendChild(infoContainer);
+
       factoryContainer.appendChild(upgradeButtonContainer);
       container.appendChild(factoryContainer);
     });
@@ -177,13 +181,13 @@ export class Factory {
   }
 
   getGenAmount() {
-    return this.resource.generateAmount * this.efficiency * (1.05 * this.level);
+    return (this.resource.generateAmount * this.efficiency * (1.05 * this.level)) / (this.resource.buildTimeMs / 1000);
   }
+
   upgrade() {
     if (!canAfford(this.upgradeCost)) return;
 
     performCostTransaction(this.upgradeCost);
-
     this.level++;
   }
 }
