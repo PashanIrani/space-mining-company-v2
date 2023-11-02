@@ -1,5 +1,5 @@
 import Resource from "./Resource";
-import "../node_modules/xp.css/dist/xp.css";
+import "xp.css/dist/xp.css";
 import "./styles/index.scss";
 import { Store, StoreItem } from "./Store";
 import { Factory } from "./Factory";
