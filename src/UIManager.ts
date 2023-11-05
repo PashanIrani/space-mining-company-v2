@@ -84,7 +84,7 @@ export default class UIManager {
 
   static formatNumber(value: number, max: number = 4) {
     // return value?.toFixed(UIManager.getPrecisionOrMax(value, max));
-    return value?.toFixed(2);
+    return this.addCommasToNumber(value?.toFixed(2));
   }
 
   static getCostString(costs: Array<Cost>) {
@@ -166,5 +166,13 @@ export default class UIManager {
       element.style.opacity = "0";
       element.style.position = "absolute";
     });
+  }
+
+  static addCommasToNumber(num: string): string {
+    if (!num) return "NAN";
+    const parts = num.split(".");
+    parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+
+    return parts.join(".");
   }
 }
