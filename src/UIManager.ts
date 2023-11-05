@@ -83,7 +83,8 @@ export default class UIManager {
   }
 
   static formatNumber(value: number, max: number = 4) {
-    return value?.toFixed(UIManager.getPrecisionOrMax(value, max));
+    // return value?.toFixed(UIManager.getPrecisionOrMax(value, max));
+    return value?.toFixed(2);
   }
 
   static getCostString(costs: Array<Cost>) {

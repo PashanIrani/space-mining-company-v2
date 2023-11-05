@@ -1,6 +1,7 @@
 import UIManager from "./UIManager";
 import Resource, { Cost, canAfford, performCostTransaction } from "./Resource";
 
+const COST_SCALE_PER_LEVEL = 2;
 export class Factory {
   private resource: Resource;
   private _level: number;
@@ -15,7 +16,7 @@ export class Factory {
     this.upgradeCost = cost;
     this.efficiency = 0;
     this.maxEfficiency = efficiency;
-    this.level = level;
+    this._level = level;
     this.beginPassiveGeneration();
     this.beginDraw();
   }
@@ -25,9 +26,13 @@ export class Factory {
   }
 
   set level(newValue: number) {
+    if (this._level == newValue) {
+      return;
+    }
+
     this._level = newValue;
     this.upgradeCost = this.upgradeCost.map((cost) => {
-      cost.amount *= 1.1;
+      cost.amount *= COST_SCALE_PER_LEVEL;
       return cost;
     });
   }

@@ -1,0 +1,61 @@
+:root {
+  --progress-color-normal: #0bd82c;
+  --progress-color-paused: #e6df1b;
+  --progress-color-error: #ef0000;
+}
+
+[role="progressbar"] {
+  box-shadow: inset 0 0 0 1px #f3f3f3 88, 0 0 0 1px #eaeaea 88;
+  margin: 2px 0;
+  overflow: hidden;
+  background: #fff;
+  height: 12px;
+  border: 1px solid #686868;
+  border-radius: 4px;
+}
+
+[role="progressbar"]>div {
+  overflow: hidden;
+  height: 100%;
+  box-shadow: inset 0 0 0 1px #fff 1f;
+  background-image: repeating-linear-gradient(to right, #fff 0px, #fff 2px, transparent 2px, transparent 10px), linear-gradient(to bottom, #acedad 0%, #7be47d 14%, #4cda50 28%, #2ed330 42%, #42d845 57%, #76e275 71%, #8fe791 85%, #fff 100%);
+}
+
+[role="progressbar"].paused>div {
+  background-image: repeating-linear-gradient(to right, #fff 0px, #fff 2px, transparent 2px, transparent 10px), linear-gradient(to bottom, #fff572 0%, #fe3 14%, #ffd500 28%, #ffc300 42%, #ffb000 57%, #ffc300 71%, #ffd500 85%, #fff 100%);
+  /* New color #e6df1b */
+}
+
+[role="progressbar"].error>div {
+  background-image: repeating-linear-gradient(to right, #fff 0px, #fff 2px, transparent 2px, transparent 10px), linear-gradient(to bottom, #ffb3b3 0%, #ff8c8c 14%, #f66 28%, #f33 42%, #ff1a1a 57%, #f00 71%, #f66 85%, #fff 100%);
+}
+
+[role="progressbar"].animate>div::before,
+[role="progressbar"].marquee::before {
+  content: "";
+  animation: progressbar 3s linear infinite;
+  display: block;
+  height: 100%;
+  background: linear-gradient(to right, transparent, #fff 80, transparent 40%);
+}
+
+[role="progressbar"].marquee::before {
+  opacity: 0.5;
+  background: linear-gradient(to right, transparent, var(--progress-color-normal), transparent 35%);
+}
+
+@keyframes progressbar {
+  0% {
+    transform: translateX(-40%);
+  }
+
+  60% {
+    transform: translateX(100%);
+  }
+
+  100% {
+    /* for faking delay */
+    transform: translateX(100%);
+  }
+}
+

@@ -1,13 +1,14 @@
 import Resource from "./Resource";
-import "xp.css/dist/XP.css";
-import "./styles/index.scss";
+
+// import "xp.css/dist/XP.css";
+
 import { Store, StoreItem } from "./Store";
 import { Factory } from "./Factory";
 import { PacingManager } from "./PacingManager";
 import { SaveManager } from "./SaveManager";
 import "./Tab.js";
 import UIManager from "./UIManager";
-
+import "./styles";
 const DEV = false;
 
 class Energy extends Resource {
@@ -15,7 +16,7 @@ class Energy extends Resource {
     super({
       label: "energy",
       initialAmount: 0,
-      capacity: 100,
+      capacity: 10,
       generateAmount: DEV ? 50 : 1,
       costs: [],
       buildTimeMs: 100,
@@ -31,7 +32,7 @@ class Funds extends Resource {
       label: "funds",
       initialAmount: 0,
       generateAmount: DEV ? 50 : 1,
-      costs: [{ resource: "energy", amount: 5 }],
+      costs: [{ resource: "energy", amount: 4 }],
       buildTimeMs: DEV ? 1000 : 10 * 1000,
       buildDescriptions: ["Analyzing Market", "Executing Plan", "Generating Funds"],
       unitSymbol: { icon: "$", infront: true },
@@ -42,9 +43,10 @@ class Funds extends Resource {
 const energy = new Energy();
 const funds = new Funds();
 
-let energyFactory = new Factory(energy, [], 0);
-let fundsFactory = new Factory(funds, [{ resource: "energy", amount: 15 }], 0);
+// let energyFactory = new Factory(energy, [], 0);
+let fundsFactory = new Factory(funds, JSON.parse(JSON.stringify(funds.costs)), 0);
 let resources = { energy, funds };
+
 const pacingManager = new PacingManager(resources);
 
 let store = new Store([
@@ -54,11 +56,12 @@ let store = new Store([
     name: "OS Update",
     description: "Upgrades... Upgrades... Upgrades...",
     costs: [
-      { resource: "funds", amount: 4.99 },
-      { resource: "energy", amount: 100 },
+      { resource: "funds", amount: 2.99 },
+      { resource: "energy", amount: 10 },
     ],
     level: 1,
     onPurchase: (self: StoreItem) => {
+      pacingManager.showWindow("system");
       pacingManager.showWindow("energy-upgrades");
       pacingManager.showWindow("funds-upgrades");
     },
@@ -67,10 +70,10 @@ let store = new Store([
     id: "2",
     collection: "funds",
     name: "Funds Factory",
-    description: "Generates <u><b>Funds<b></u> Passively",
+    description: "Generates Funds Passively",
     costs: [
-      { resource: "funds", amount: 3 },
-      { resource: "energy", amount: 100 },
+      { resource: "funds", amount: 1000 },
+      { resource: "energy", amount: 250 },
     ],
     level: 1,
     onPurchase: (self: StoreItem) => {
@@ -79,21 +82,21 @@ let store = new Store([
     },
   },
 
-  {
-    id: "2-1",
-    collection: "energy",
-    name: "Energy Factory",
-    description: "Generates Energy Passively",
-    costs: [
-      { resource: "funds", amount: 3 },
-      { resource: "energy", amount: 100 },
-    ],
-    level: 1,
-    onPurchase: (self: StoreItem) => {
-      energyFactory.level = 1;
-      pacingManager.showWindow("energy-factory");
-    },
-  },
+  // {
+  //   id: "2-1",
+  //   collection: "energy",
+  //   name: "Energy Factory",
+  //   description: "Generates Energy Passively",
+  //   costs: [
+  //     { resource: "funds", amount: 50 },
+  //     { resource: "energy", amount: 100 },
+  //   ],
+  //   level: 1,
+  //   onPurchase: (self: StoreItem) => {
+  //     // energyFactory.level = 1;
+  //     // pacingManager.showWindow("energy-factory");
+  //   },
+  // },
 
   {
     id: "2-1",
@@ -102,62 +105,103 @@ let store = new Store([
     description: `Increases the amount of energy generated from ${UIManager.formatValueWithSymbol(
       energy.generateAmount,
       energy.unitSymbol
-    )} to ${UIManager.formatValueWithSymbol(energy.generateAmount * 1.1, energy.unitSymbol)}`,
+    )} to ${UIManager.formatValueWithSymbol(energy.generateAmount * (1 / getDiminisingReturnsAmount(1, 0.9, 0.6)), energy.unitSymbol)}`,
     costs: [
-      { resource: "funds", amount: 0.045 },
-      { resource: "energy", amount: 0.23 },
+      { resource: "funds", amount: 2 },
+      { resource: "energy", amount: 0.25 },
     ],
     level: 1,
     onPurchase: (self: StoreItem) => {
-      energy.generateAmount *= 1.1;
+      let changeAmount = 1 / getDiminisingReturnsAmount(self.level, 0.9, 0.6);
+      energy.generateAmount *= changeAmount;
 
       self.purchased = false;
+
+      self.costs = self.costs.map((cost) => {
+        cost.amount *= 1 / getDiminisingReturnsAmount(self.level, 0.9, 0.7);
+        return cost;
+      });
+
       self.level++;
+
       self.name = `Energy Generation ${self.level}`;
+
       self.description = `Increases the amount of energy generated from ${UIManager.formatValueWithSymbol(
         energy.generateAmount,
         energy.unitSymbol
-      )} to ${UIManager.formatValueWithSymbol(energy.generateAmount * 1.1, energy.unitSymbol)}`;
+      )} to ${UIManager.formatValueWithSymbol(energy.generateAmount * (1 / getDiminisingReturnsAmount(self.level, 0.9, 0.6)), energy.unitSymbol)}`;
+    },
+  },
+  {
+    id: "2-1-yttr",
+    collection: "funds",
+    name: "Funds Generation",
+    description: `Increases the amount of funds generated from ${UIManager.formatValueWithSymbol(
+      funds.generateAmount,
+      funds.unitSymbol
+    )} to ${UIManager.formatValueWithSymbol(funds.generateAmount * (1 / getDiminisingReturnsAmount(1, 0.9, 0.3)), energy.unitSymbol)}`,
+    costs: [
+      { resource: "funds", amount: 2 },
+      { resource: "energy", amount: 0.25 },
+    ],
+    level: 1,
+    onPurchase: (self: StoreItem) => {
+      let changeAmount = 1 / getDiminisingReturnsAmount(self.level, 0.9, 0.3);
+      funds.generateAmount *= changeAmount;
+
+      self.purchased = false;
+
       self.costs = self.costs.map((cost) => {
-        cost.amount *= 1.25;
+        cost.amount *= 1 / getDiminisingReturnsAmount(self.level, 0.9, 0.65);
         return cost;
       });
+
+      self.level++;
+
+      self.name = `Funds Generation ${self.level}`;
+
+      self.description = `Increases the amount of funds generated from ${UIManager.formatValueWithSymbol(
+        funds.generateAmount,
+        funds.unitSymbol
+      )} to ${UIManager.formatValueWithSymbol(funds.generateAmount * (1 / getDiminisingReturnsAmount(self.level, 0.9, 0.3)), funds.unitSymbol)}`;
     },
   },
   {
     id: "2-2",
     collection: "energy",
     name: "Energy Capacity",
-    description: `Increase max capacity of energy to ${UIManager.formatValueWithSymbol(energy.capacity * 2.25, energy.unitSymbol)}`,
+    description: `Increase max capacity of energy to ${UIManager.formatValueWithSymbol(energy.capacity * 10, energy.unitSymbol)}`,
     costs: [
-      { resource: "funds", amount: 50 },
-      { resource: "energy", amount: 100 },
+      { resource: "funds", amount: 100 },
+      { resource: "energy", amount: 10 },
     ],
     level: 1,
     onPurchase: (self: StoreItem) => {
-      energy.capacity *= 2.25;
+      energy.capacity *= 10;
 
       self.purchased = false;
-      self.level++;
-      self.name = `Energy Capacity ${self.level}`;
-      self.description = `Increase max capacity of energy to ${UIManager.formatValueWithSymbol(energy.capacity * 2.25, energy.unitSymbol)}`;
+
       self.costs = self.costs.map((cost) => {
-        cost.amount *= 2.25;
+        cost.amount *= 10;
         return cost;
       });
+
+      self.level++;
+      self.name = `Energy Capacity ${self.level}`;
+      self.description = `Increase max capacity of energy to ${UIManager.formatValueWithSymbol(energy.capacity * 10, energy.unitSymbol)}`;
     },
   },
   {
     id: "3",
     collection: "funds",
     name: `Funds Build Time`,
-    description: `Decreases the amount of time it takes to generate funds from ${UIManager.formatValueWithSymbol(funds.buildTimeMs / 1000, {
+    description: `Decreases the amount of time it takes to generate funds by ${UIManager.formatValueWithSymbol(funds.buildTimeMs / 1000, {
       icon: "s",
       infront: false,
     })} to ${UIManager.formatValueWithSymbol((funds.buildTimeMs * getDiminisingReturnsAmount(2, 0.95, 0.8)) / 1000, { icon: "s", infront: false })}`,
     costs: [
-      { resource: "funds", amount: 0.1 },
-      { resource: "energy", amount: 11 },
+      { resource: "funds", amount: 20 },
+      { resource: "energy", amount: 12.55 },
     ],
     level: 1,
     onPurchase: (self: StoreItem) => {
@@ -166,17 +210,19 @@ let store = new Store([
       if (funds.buildTimeMs <= 100) return;
 
       self.purchased = false;
-      self.level++;
-      self.name = `Funds Build Time ${self.level}`;
-      self.description = `Decreases the amount of time it takes to generate funds from ${UIManager.formatValueWithSymbol(funds.buildTimeMs / 1000, {
-        icon: "s",
-        infront: false,
-      })} to ${UIManager.formatValueWithSymbol((funds.buildTimeMs * getDiminisingReturnsAmount(self.level, 0.95, 0.8)) / 1000, { icon: "s", infront: false })}`;
 
       self.costs = self.costs.map((cost) => {
         cost.amount *= 1 / getDiminisingReturnsAmount(self.level, 0.95, 0.8);
         return cost;
       });
+
+      self.level++;
+
+      self.name = `Funds Build Time ${self.level}`;
+      self.description = `Decreases the amount of time it takes to generate funds from ${UIManager.formatValueWithSymbol(funds.buildTimeMs / 1000, {
+        icon: "s",
+        infront: false,
+      })} to ${UIManager.formatValueWithSymbol((funds.buildTimeMs * getDiminisingReturnsAmount(self.level, 0.95, 0.8)) / 1000, { icon: "s", infront: false })}`;
     },
   },
   ,
@@ -192,15 +238,7 @@ function getDiminisingReturnsAmount(level: number, strength: number, tension: nu
   return strength * (1 - levelEffect) + (1 - strength * (1 - levelEffect)) * tension;
 }
 
-// function getDiminisingIncreaseReturns(level: number, strength: number, tension: number) {
-//   //=1/ROW(C1)
-//   const levelEffect = 1 / (level + 1); // will get smaller as level increases
-
-//   //=(0.9 * (1 - C1)) + ((1 - (0.9 * (1 - C1))) * 0.95)
-//   return strength * (1 - levelEffect) + (1 - strength * (1 - levelEffect)) * tension;
-// }
-
-new SaveManager(resources, pacingManager, store, { energyFactory });
+new SaveManager(resources, pacingManager, store, { fundsFactory });
 
 // DEV!!!! ---------------------------------------------------------------
 let clickCount = 0;

@@ -1,3 +1,6 @@
+const CopyWebpackPlugin = require('copy-webpack-plugin');
+
+
 module.exports = {
   mode: "development",
   entry: "./src/index.ts",
@@ -24,5 +27,21 @@ module.exports = {
         'css-loader',
       ],
     }],
-  }
+  },
+  plugins: [new CopyWebpackPlugin({
+    patterns: [
+      {
+        from: 'node_modules/7.css/dist/7.css',
+        to: 'styles',
+      },
+      {
+        from: 'node_modules/xp.css/dist/XP.css',
+        to: 'styles',
+      },
+      {
+        from: 'src/styles/xpProgressBar.css',
+        to: 'styles',
+      }
+    ],
+  }),]
 };

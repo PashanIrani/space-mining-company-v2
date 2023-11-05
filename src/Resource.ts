@@ -116,6 +116,8 @@ export default abstract class Resource {
 
       const { intervalDuration, incrementAmount, precision } = calculateProgressPrecision(totalTimeMs);
 
+      UIManager.displayText(`resource-${this.label}-nextAdditionIndicator`, ` (+${UIManager.formatValueWithSymbol(this.generateAmount, this.unitSymbol)})`);
+
       let perBuildPercentageTick = () => {
         UIManager.displayText(`resource-${this.label}-buildStatus`, Math.round(this.buildStatus) + "%");
         UIManager.displayText(`resource-${this.label}-buildStatusSpinner`, `<span class="loader animate" aria-label="Processing your request"></span>`);
@@ -139,6 +141,7 @@ export default abstract class Resource {
         UIManager.displayText(`resource-${this.label}-buildStatus`, "");
         UIManager.displayText(`resource-${this.label}-buildStatusSpinner`, "");
         UIManager.displayText(`resource-${this.label}-buildDescription`, this.getBuildDescription());
+        UIManager.displayText(`resource-${this.label}-nextAdditionIndicator`, "");
 
         res();
       }, totalTimeMs);
