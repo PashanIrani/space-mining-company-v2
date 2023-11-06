@@ -3,6 +3,8 @@ import UIManager from "./UIManager";
 import Resource, { Cost, canAfford, performCostTransaction } from "./Resource";
 
 type onPurchaseFunction = (storeItem: StoreItem) => void;
+export type StoreItemDependsOn = Array<[string, string, number]>;
+
 export interface StoreItemDescription {
   id: string;
   collection: string; // groups items
@@ -10,6 +12,7 @@ export interface StoreItemDescription {
   description: string; // describes store item
   costs: Array<Cost>;
   level: number;
+  dependsOn: StoreItemDependsOn;
   onPurchase: onPurchaseFunction;
 }
 
@@ -19,6 +22,7 @@ export class StoreItem {
   id: string;
   costs: Array<Cost>;
   description: string;
+  dependsOn: StoreItemDependsOn;
   level: number;
   onPurchase: onPurchaseFunction;
 
@@ -28,21 +32,22 @@ export class StoreItem {
     this.costs = desc.costs;
     this.id = desc.id;
     this.description = desc.description;
+    this.dependsOn = desc.dependsOn;
     this.level = desc.level;
     this.onPurchase = desc.onPurchase;
   }
 }
 
 export class Store {
-  storeItems: { [key: string]: Array<StoreItem> } = {};
+  storeItems: { [key: string]: { [key: string]: StoreItem } } = {};
 
   constructor(storeDesc: Array<StoreItemDescription>) {
     storeDesc.forEach((desc) => {
-      if (this.storeItems[desc.collection]) {
-        this.storeItems[desc.collection].push(new StoreItem(desc));
-      } else {
-        this.storeItems[desc.collection] = [new StoreItem(desc)];
+      if (!this.storeItems[desc.collection]) {
+        this.storeItems[desc.collection] = {};
       }
+
+      this.storeItems[desc.collection][desc.id] = new StoreItem(desc);
     });
 
     // Done to update costs strings every sec
@@ -78,10 +83,11 @@ export class Store {
         // }
       });
 
+      let storeItemsAsArray = Object.keys(this.storeItems[collection]).map((key) => this.storeItems[collection][key]);
       // loop each collection and add items to their respective stores
-      if (!this.isAllPurchased(this.storeItems[collection])) {
-        this.storeItems[collection].forEach((storeItem: StoreItem) => {
-          if (storeItem.purchased) return;
+      if (!this.isAllPurchased(storeItemsAsArray)) {
+        storeItemsAsArray.forEach((storeItem: StoreItem) => {
+          if (storeItem.purchased || !this.meetsDependency(storeItem)) return;
 
           const storeContainers = document.querySelectorAll(`.${collection}-store`);
 
@@ -131,6 +137,17 @@ export class Store {
         });
       }
     });
+  }
+
+  meetsDependency(storeItem: StoreItem): boolean {
+    for (let i = 0; i < storeItem.dependsOn.length; i++) {
+      debugger;
+      const dependsOnDesc = storeItem.dependsOn[i];
+      if (dependsOnDesc[2] == 0 && !this.storeItems[dependsOnDesc[0]][dependsOnDesc[1]].purchased) return false;
+      if (this.storeItems[dependsOnDesc[0]][dependsOnDesc[1]].level < dependsOnDesc[2]) return false;
+    }
+
+    return true;
   }
 
   isAllPurchased(items: StoreItem[]) {

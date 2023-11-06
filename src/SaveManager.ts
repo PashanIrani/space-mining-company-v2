@@ -49,17 +49,18 @@ export class SaveManager {
     // Save Store items
     let purchasedItemIds: { [key: string]: Array<string> } = {};
 
-    Object.keys(this.store.storeItems).forEach((key) =>
-      this.store.storeItems[key].forEach((item) => {
+    Object.keys(this.store.storeItems).forEach((collection) => {
+      let storeItemsAsArray = Object.keys(this.store.storeItems[collection]).map((key) => this.store.storeItems[collection][key]);
+      storeItemsAsArray.forEach((item) => {
         if (item.purchased) {
-          if (purchasedItemIds[key]) {
-            purchasedItemIds[key].push(item.id);
+          if (purchasedItemIds[collection]) {
+            purchasedItemIds[collection].push(item.id);
           } else {
-            purchasedItemIds[key] = [item.id];
+            purchasedItemIds[collection] = [item.id];
           }
         }
-      })
-    );
+      });
+    });
 
     localStorage.setItem("purchasedStoreItems", JSON.stringify(this.store.storeItems));
   }

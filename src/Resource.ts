@@ -137,6 +137,7 @@ export default abstract class Resource {
 
         clearInterval(buildPercentageInterval);
         this.buildStatus = 0;
+        this.touch();
 
         UIManager.displayText(`resource-${this.label}-buildStatus`, "");
         UIManager.displayText(`resource-${this.label}-buildStatusSpinner`, "");

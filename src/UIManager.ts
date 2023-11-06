@@ -84,7 +84,56 @@ export default class UIManager {
 
   static formatNumber(value: number, max: number = 4) {
     // return value?.toFixed(UIManager.getPrecisionOrMax(value, max));
-    return this.addCommasToNumber(value?.toFixed(2));
+    if (isNaN(value) || value == null) return "NaN";
+
+    const abbreviations = [
+      { value: 1e3, symbol: "K" },
+      { value: 1e6, symbol: "M" },
+      { value: 1e9, symbol: "B" },
+      { value: 1e12, symbol: "T" },
+      { value: 1e15, symbol: "Q" },
+      { value: 1e18, symbol: "Qi" },
+      { value: 1e21, symbol: "Sx" },
+      { value: 1e24, symbol: "Sp" },
+      { value: 1e27, symbol: "Oc" },
+      { value: 1e30, symbol: "Nn" },
+      { value: 1e33, symbol: "Dc" },
+      { value: 1e36, symbol: "Ut" },
+      { value: 1e39, symbol: "Dt" },
+      { value: 1e42, symbol: "Tdt" },
+      { value: 1e45, symbol: "Qddt" },
+      { value: 1e48, symbol: "Qint" },
+      { value: 1e51, symbol: "Sxdt" },
+      { value: 1e54, symbol: "Sndt" },
+      { value: 1e57, symbol: "Ocdt" },
+      { value: 1e60, symbol: "Nndt" },
+      { value: 1e63, symbol: "Vgt" },
+      { value: 1e66, symbol: "Uvgt" },
+      { value: 1e69, symbol: "Dvgt" },
+      { value: 1e72, symbol: "Ttvgt" },
+      { value: 1e75, symbol: "Qtvgt" },
+      { value: 1e78, symbol: "Qivgt" },
+      { value: 1e81, symbol: "Sxvgt" },
+      { value: 1e84, symbol: "Snvgt" },
+      { value: 1e87, symbol: "Ocvgt" },
+      { value: 1e90, symbol: "Nnvgt" },
+      { value: 1e93, symbol: "Trgt" },
+      { value: 1e96, symbol: "Utrgt" },
+      { value: 1e99, symbol: "Dtrgt" },
+      { value: 1e100, symbol: "Googol" },
+      { value: 1e130, symbol: "Skewer's" },
+    ];
+
+    for (let i = abbreviations.length - 1; i >= 0; i--) {
+      if (Math.abs(value) >= abbreviations[i].value) {
+        return (value / abbreviations[i].value).toFixed(2) + abbreviations[i].symbol;
+      }
+    }
+
+    const formattedValue = value?.toFixed(2);
+    const parts = formattedValue.split(".");
+    parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    return parts.join(".");
   }
 
   static getCostString(costs: Array<Cost>) {
@@ -166,13 +215,5 @@ export default class UIManager {
       element.style.opacity = "0";
       element.style.position = "absolute";
     });
-  }
-
-  static addCommasToNumber(num: string): string {
-    if (!num) return "NAN";
-    const parts = num.split(".");
-    parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-
-    return parts.join(".");
   }
 }
