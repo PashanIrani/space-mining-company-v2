@@ -87,7 +87,7 @@ export class Store {
       // loop each collection and add items to their respective stores
       if (!this.isAllPurchased(storeItemsAsArray)) {
         storeItemsAsArray.forEach((storeItem: StoreItem) => {
-          if (storeItem.purchased || !this.meetsDependency(storeItem)) return;
+          if (!this.meetsDependency(storeItem)) return;
 
           const storeContainers = document.querySelectorAll(`.${collection}-store`);
 
@@ -140,8 +140,9 @@ export class Store {
   }
 
   meetsDependency(storeItem: StoreItem): boolean {
+    if (storeItem.purchased) return false;
+
     for (let i = 0; i < storeItem.dependsOn.length; i++) {
-      debugger;
       const dependsOnDesc = storeItem.dependsOn[i];
       if (dependsOnDesc[2] == 0 && !this.storeItems[dependsOnDesc[0]][dependsOnDesc[1]].purchased) return false;
       if (this.storeItems[dependsOnDesc[0]][dependsOnDesc[1]].level < dependsOnDesc[2]) return false;
@@ -161,14 +162,14 @@ export class Store {
 
   loadSave(purchasedStoreItems: any) {
     Object.keys(purchasedStoreItems).forEach((collection) => {
-      for (let i = 0; i < purchasedStoreItems[collection].length; i++) {
-        const item = purchasedStoreItems[collection][i];
-        this.storeItems[collection][i].costs = item.costs;
-        this.storeItems[collection][i].description = item.description;
-        this.storeItems[collection][i].level = item.level;
-        this.storeItems[collection][i].purchased = item.purchased;
-        this.storeItems[collection][i].name = item.name;
-      }
+      Object.keys(purchasedStoreItems[collection]).forEach((itemKey) => {
+        let item = purchasedStoreItems[collection][itemKey];
+        this.storeItems[collection][itemKey].costs = item.costs;
+        this.storeItems[collection][itemKey].description = item.description;
+        this.storeItems[collection][itemKey].level = item.level;
+        this.storeItems[collection][itemKey].purchased = item.purchased;
+        this.storeItems[collection][itemKey].name = item.name;
+      });
     });
 
     this.drawStore();

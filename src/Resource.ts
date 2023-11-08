@@ -1,5 +1,6 @@
 import UIManager from "./UIManager";
 import { registerResourceButton, updateResourceButtonState } from "./Button";
+import { Globals } from "./Globals";
 
 export interface Cost {
   resource: string;
@@ -39,6 +40,8 @@ export default abstract class Resource {
   public static ALL_RESOURCES: AllResourcesObject = {};
   public static RESOURCES_UPDATE_DEPS: { [key: string]: Set<string> } = {};
   public unitSymbol: UnitSymbolDefination;
+  public buildQueue: Array<number>;
+  private _buildQueueCapacity: number;
 
   constructor(desc: ResourceDescription) {
     this.unitSymbol = desc.unitSymbol || { icon: "", infront: false };
@@ -49,6 +52,8 @@ export default abstract class Resource {
     this.buildTimeMs = desc.buildTimeMs;
     this.amount = desc.initialAmount;
     this._buildDescriptions = desc.buildDescriptions;
+    this.buildQueue = [];
+    this._buildQueueCapacity = 1;
 
     UIManager.displayText(`resource-${this.label}-buildDescription`, this.getBuildDescription());
     registerResourceButton(this, () => this.generate());
@@ -95,8 +100,30 @@ export default abstract class Resource {
       }
 
       performCostTransaction(this.costs);
+      this.buildQueue.push(this.generateAmount);
+      this.setQueueString();
+      if (this.buildQueue.length > 1) {
+        res();
+        return;
+      }
+
+      res();
       return this.beginBuilding(0);
     });
+  }
+
+  sumOfQueuedBuilds(): number {
+    return this.buildQueue?.reduce((sum, currentValue) => sum + currentValue, 0);
+  }
+
+  setQueueString() {
+    if (this.buildQueueCapacity < 2) return;
+
+    let timeLeft = UIManager.convertTime(this.buildQueue.length * (this.buildTimeMs / 1000) - (this.buildStatus / 100) * (this.buildTimeMs / 1000));
+    let totalWorth = UIManager.formatValueWithSymbol(this.sumOfQueuedBuilds(), this.unitSymbol);
+    let queueString = this.buildQueue.length > 0 ? ` (+${totalWorth}) [Q: ${this.buildQueue.length}/${this.buildQueueCapacity}] - ${timeLeft} until idle` : "";
+
+    UIManager.displayText(`resource-${this.label}-nextAdditionIndicator`, queueString);
   }
 
   beginBuilding(buildStatus: number): Promise<void> {
@@ -110,13 +137,15 @@ export default abstract class Resource {
         return { intervalDuration, incrementAmount, precision };
       };
 
+      const generateAmount = this.buildQueue[0];
       this.buildStatus = buildStatus;
 
       const totalTimeMs = this.buildTimeMs * (1 - buildStatus / 100);
 
       const { intervalDuration, incrementAmount, precision } = calculateProgressPrecision(totalTimeMs);
 
-      UIManager.displayText(`resource-${this.label}-nextAdditionIndicator`, ` (+${UIManager.formatValueWithSymbol(this.generateAmount, this.unitSymbol)})`);
+      UIManager.displayText(`resource-${this.label}-nextAdditionIndicator`, `  (+${UIManager.formatValueWithSymbol(generateAmount, this.unitSymbol)})`);
+      this.setQueueString();
 
       let perBuildPercentageTick = () => {
         UIManager.displayText(`resource-${this.label}-buildStatus`, Math.round(this.buildStatus) + "%");
@@ -125,6 +154,7 @@ export default abstract class Resource {
 
         UIManager.displayText(`resource-${this.label}-buildDescription`, this.getBuildDescription());
 
+        this.setQueueString();
         this.touch();
       };
 
@@ -132,17 +162,24 @@ export default abstract class Resource {
       let buildPercentageInterval = setInterval(perBuildPercentageTick, intervalDuration);
 
       UIManager.updateProgressBar(this, true);
+
       setTimeout(() => {
-        this.amount += this.generateAmount;
-
-        clearInterval(buildPercentageInterval);
-        this.buildStatus = 0;
-        this.touch();
-
         UIManager.displayText(`resource-${this.label}-buildStatus`, "");
         UIManager.displayText(`resource-${this.label}-buildStatusSpinner`, "");
-        UIManager.displayText(`resource-${this.label}-buildDescription`, this.getBuildDescription());
         UIManager.displayText(`resource-${this.label}-nextAdditionIndicator`, "");
+
+        this.amount += generateAmount;
+        this.buildQueue.shift();
+        clearInterval(buildPercentageInterval);
+        this.buildStatus = 0;
+
+        UIManager.displayText(`resource-${this.label}-buildDescription`, this.getBuildDescription());
+
+        if (this.buildQueue.length > 0) {
+          this.beginBuilding(0);
+        }
+
+        this.touch();
 
         res();
       }, totalTimeMs);
@@ -197,12 +234,20 @@ export default abstract class Resource {
   }
 
   get generateAmount() {
-    return this._generateAmount;
+    return this._generateAmount * (1 + Globals.cosmicBlessing);
   }
 
   set generateAmount(newValue: number) {
     this._generateAmount = newValue;
-    UIManager.displayValue(`resource-${this.label}-generateAmount`, this._generateAmount, this.unitSymbol);
+    UIManager.displayValue(`resource-${this.label}-generateAmount`, this.generateAmount, this.unitSymbol);
+  }
+
+  get buildQueueCapacity() {
+    return this._buildQueueCapacity;
+  }
+
+  set buildQueueCapacity(newValue: number) {
+    this._buildQueueCapacity = newValue;
   }
 
   get costs() {
@@ -220,6 +265,10 @@ export default abstract class Resource {
   touch() {
     this.costs = this.costs;
     updateResourceButtonState(this);
+  }
+
+  reDraw() {
+    UIManager.displayValue(`resource-${this.label}-generateAmount`, this.generateAmount, this.unitSymbol);
   }
 
   beginCalculatingRate() {

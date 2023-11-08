@@ -13,7 +13,10 @@ function registerResourceButton(resource: Resource, callback: () => Promise<void
 }
 
 function updateResourceButtonState(resource: Resource) {
-  let disabled = resource.amount == resource.capacity || !canAfford(resource.costs) || resource.buildStatus > 0;
+  let disabled =
+    (resource.capacity && resource.amount + resource.sumOfQueuedBuilds() >= resource.capacity) ||
+    !canAfford(resource.costs) ||
+    (resource.buildStatus > 0 && resource.buildQueue.length == resource.buildQueueCapacity);
 
   const buttons = document.querySelectorAll(`.resource-${resource.label}-generateButton`);
 

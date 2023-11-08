@@ -1,5 +1,5 @@
 import UIManager from "./UIManager";
-import Resource, { Cost, canAfford, performCostTransaction } from "./Resource";
+import Resource, { AllResourcesObject, Cost, canAfford, performCostTransaction } from "./Resource";
 
 const COST_SCALE_PER_LEVEL = 2;
 export class Factory {
@@ -10,6 +10,7 @@ export class Factory {
   public maxEfficiency: number;
   public active: boolean = false;
   private allowDrawing: boolean = true;
+  static ALL_RESOURCES: AllResourcesObject = {};
 
   constructor(resource: Resource, cost: Array<Cost> = [], level: number = 0, efficiency: number = 0.01) {
     this.resource = resource;
@@ -60,7 +61,9 @@ export class Factory {
 
       for (let i = 0; i < this.resource.costs.length; i++) {
         const cost = this.resource.costs[i];
-        let text = `${cost.amount * this.efficiency} ${UIManager.capitalize(cost.resource)}`;
+        let text = `${UIManager.formatValueWithSymbol(cost.amount * this.efficiency, Factory.ALL_RESOURCES[cost.resource].unitSymbol)} ${UIManager.capitalize(
+          cost.resource
+        )}`;
 
         if (i < this.resource.costs.length - 1) {
           text += ", ";

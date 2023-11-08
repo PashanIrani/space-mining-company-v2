@@ -1,4 +1,5 @@
 import { Factory } from "./Factory";
+import { Globals } from "./Globals";
 import { PacingManager } from "./PacingManager";
 import Resource, { AllResourcesObject, Cost } from "./Resource";
 import { Store } from "./Store";
@@ -9,6 +10,8 @@ interface loadedResource {
   _buildTimeMs: number;
   _capacity: number;
   _generateAmount: number;
+  _buildQueueCapacity: number;
+  buildQueue: Array<number>;
   _costs: Array<Cost>;
 }
 
@@ -19,6 +22,7 @@ export class SaveManager {
   introducedWindows: Array<string>;
   pacingManager: PacingManager;
   store: Store;
+  globals: Globals;
   factories: { [key: string]: Factory };
 
   constructor(resources: AllResourcesObject, pacingManager: PacingManager, store: Store, factories: { [key: string]: Factory }) {
@@ -39,6 +43,7 @@ export class SaveManager {
   save() {
     // Save resources
     localStorage.setItem("resources", JSON.stringify(this.resources));
+    localStorage.setItem("globals", JSON.stringify({ ...Globals }));
 
     // Save introduced Windows
     localStorage.setItem("introducedWindows", JSON.stringify(Array.from(this.pacingManager.introducedWindows)));
@@ -66,9 +71,19 @@ export class SaveManager {
   }
 
   load() {
+    console.log("loading");
+
+    let globalSavedValues = JSON.parse(localStorage.getItem("globals"));
+
+    if (globalSavedValues) {
+      Globals._maxCosmicBlessing = globalSavedValues._maxCosmicBlessing;
+      Globals.cosmicBlessing = globalSavedValues.cosmicBlessing;
+    }
     // Load windows
-    if (localStorage.getItem("introducedWindows"))
+    if (localStorage.getItem("introducedWindows")) {
       this.pacingManager.introducedWindows = new Set(JSON.parse(localStorage.getItem("introducedWindows"))) || new Set();
+      this.pacingManager.check();
+    }
 
     // load resources
     const loadedResources = localStorage.getItem("resources");
@@ -82,6 +97,8 @@ export class SaveManager {
         this.resources[key].capacity = parsedLoadedResources[key]._capacity;
         this.resources[key].generateAmount = parsedLoadedResources[key]._generateAmount;
         this.resources[key].costs = parsedLoadedResources[key]._costs;
+        this.resources[key].buildQueue = parsedLoadedResources[key].buildQueue;
+        this.resources[key].buildQueueCapacity = parsedLoadedResources[key]._buildQueueCapacity;
 
         if (parsedLoadedResources[key].buildStatus > 0) {
           this.resources[key].beginBuilding(parsedLoadedResources[key].buildStatus);
@@ -105,6 +122,6 @@ export class SaveManager {
         this.factories[key].draw();
       });
     }
-    this.pacingManager.check();
+    console.log("loading done");
   }
 }

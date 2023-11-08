@@ -1,4 +1,4 @@
-import Resource from "./Resource";
+import Resource, { AllResourcesObject } from "./Resource";
 
 // import "xp.css/dist/XP.css";
 
@@ -9,6 +9,8 @@ import { SaveManager } from "./SaveManager";
 import "./Tab.js";
 import UIManager from "./UIManager";
 import "./styles";
+import { Globals } from "./Globals";
+
 const DEV = false;
 
 class Energy extends Resource {
@@ -19,7 +21,7 @@ class Energy extends Resource {
       capacity: 10,
       generateAmount: 1,
       costs: [],
-      buildTimeMs: DEV ? 10 : 750,
+      buildTimeMs: DEV ? 10 : 1000,
       buildDescriptions: ["Generating Energy"],
       unitSymbol: { icon: "e", infront: false },
     });
@@ -43,10 +45,10 @@ class Funds extends Resource {
 const energy = new Energy();
 const funds = new Funds();
 
-// let energyFactory = new Factory(energy, [], 0);
-let fundsFactory = new Factory(funds, JSON.parse(JSON.stringify(funds.costs)), 0);
-let resources = { energy, funds };
+let resources: AllResourcesObject = { energy, funds };
+Factory.ALL_RESOURCES = resources;
 
+let fundsFactory = new Factory(funds, JSON.parse(JSON.stringify(funds.costs)), 0);
 const pacingManager = new PacingManager(resources);
 
 let store = new Store([
@@ -68,6 +70,53 @@ let store = new Store([
     },
   },
   {
+    id: "cosmic-blessing-enable",
+    collection: "main",
+    name: "Cosmin Blessing",
+    description: "Boosts amount of resources generated basic on the will of the universe (Up to 10%)",
+    costs: [
+      { resource: "funds", amount: 1 },
+      { resource: "energy", amount: 10 },
+    ],
+    level: 1,
+    dependsOn: [["main", "first-purchase", 0]],
+    onPurchase: (self: StoreItem) => {
+      Globals._maxCosmicBlessing = 0.1;
+      pacingManager.showWindow("cosmic-stat");
+    },
+  },
+  {
+    id: "queue-purchase",
+    collection: "main",
+    name: "Queues",
+    description: `Allows you to queue up to ${Math.ceil(getChangeAmount(2, 0.1, 1, true))} builds.`,
+    costs: [
+      { resource: "funds", amount: 6 },
+      { resource: "energy", amount: 18 },
+    ],
+    level: 1,
+    dependsOn: [["main", "first-purchase", 0]],
+    onPurchase: (self: StoreItem) => {
+      self.level++;
+
+      // Update buildCapacities for all resources
+      Object.keys(resources).forEach((resourceKey) => {
+        resources[resourceKey].buildQueueCapacity = Math.ceil(getChangeAmount(self.level, 0.1, resources[resourceKey].buildQueueCapacity, true));
+      });
+
+      self.purchased = false;
+
+      self.costs = self.costs.map((cost) => {
+        cost.amount = getChangeAmount(self.level, 0.35, cost.amount, true);
+        return cost;
+      });
+
+      self.name = `Queues ${self.level}`;
+
+      self.description = `Allows you to queue up to ${Math.ceil(getChangeAmount(self.level + 1, 0.1, resources["energy"].buildQueueCapacity, true))} builds.`;
+    },
+  },
+  {
     id: "funds-factory",
     collection: "funds",
     name: "Funds Factory",
@@ -77,7 +126,7 @@ let store = new Store([
       { resource: "energy", amount: 95 },
     ],
     level: 1,
-    dependsOn: [["funds", "funds-generation", 4]],
+    dependsOn: [["funds", "funds-generation", 3]],
     onPurchase: (self: StoreItem) => {
       fundsFactory.level = 1;
       pacingManager.showWindow("funds-factory");
@@ -90,17 +139,17 @@ let store = new Store([
     description: `Increases the amount of energy generated from ${UIManager.formatValueWithSymbol(
       energy.generateAmount,
       energy.unitSymbol
-    )} to ${UIManager.formatValueWithSymbol(getChangeAmount(2, 0.15, energy.generateAmount, true), energy.unitSymbol)}`,
+    )} to ${UIManager.formatValueWithSymbol(getChangeAmount(2, 0.1, energy.generateAmount, true), energy.unitSymbol)}`,
     costs: [
-      { resource: "funds", amount: 2 },
-      { resource: "energy", amount: 0.25 },
+      { resource: "funds", amount: 0.25 },
+      { resource: "energy", amount: 0.125 },
     ],
     level: 1,
     dependsOn: [],
     onPurchase: (self: StoreItem) => {
       self.level++;
 
-      let changeAmount = getChangeAmount(self.level, 0.15, energy.generateAmount, true);
+      let changeAmount = getChangeAmount(self.level, 0.1, energy.generateAmount, true);
       energy.generateAmount = changeAmount;
 
       self.purchased = false;
@@ -115,7 +164,7 @@ let store = new Store([
       self.description = `Increases the amount of energy generated from ${UIManager.formatValueWithSymbol(
         energy.generateAmount,
         energy.unitSymbol
-      )} to ${UIManager.formatValueWithSymbol(getChangeAmount(self.level, 0.15, energy.generateAmount, true), energy.unitSymbol)}`;
+      )} to ${UIManager.formatValueWithSymbol(getChangeAmount(self.level, 0.1, energy.generateAmount, true), energy.unitSymbol)}`;
     },
   },
   {
@@ -125,17 +174,17 @@ let store = new Store([
     description: `Increases the amount of funds generated from ${UIManager.formatValueWithSymbol(
       funds.generateAmount,
       funds.unitSymbol
-    )} to ${UIManager.formatValueWithSymbol(funds.generateAmount * getChangeAmount(1, 0.15, funds.generateAmount, true), funds.unitSymbol)}`,
+    )} to ${UIManager.formatValueWithSymbol(funds.generateAmount * getChangeAmount(1, 0.1, funds.generateAmount, true), funds.unitSymbol)}`,
     costs: [
-      { resource: "funds", amount: 2 },
-      { resource: "energy", amount: 0.25 },
+      { resource: "funds", amount: 0.25 },
+      { resource: "energy", amount: 0.125 },
     ],
     level: 1,
     dependsOn: [],
     onPurchase: (self: StoreItem) => {
       self.level++;
 
-      let changeAmount = getChangeAmount(self.level, 0.15, funds.generateAmount, true);
+      let changeAmount = getChangeAmount(self.level, 0.1, funds.generateAmount, true);
       funds.generateAmount = changeAmount;
 
       self.purchased = false;
@@ -150,7 +199,7 @@ let store = new Store([
       self.description = `Increases the amount of funds generated from ${UIManager.formatValueWithSymbol(
         funds.generateAmount,
         funds.unitSymbol
-      )} to ${UIManager.formatValueWithSymbol(getChangeAmount(self.level, 0.15, funds.generateAmount, true), funds.unitSymbol)}`;
+      )} to ${UIManager.formatValueWithSymbol(getChangeAmount(self.level, 0.1, funds.generateAmount, true), funds.unitSymbol)}`;
     },
   },
   {
@@ -159,11 +208,11 @@ let store = new Store([
     name: "Energy Capacity",
     description: `Increase max capacity of energy to ${UIManager.formatValueWithSymbol(getChangeAmount(1, 1, energy.capacity, true), energy.unitSymbol)}`,
     costs: [
-      { resource: "funds", amount: 10 },
+      { resource: "funds", amount: 5 },
       { resource: "energy", amount: 10 },
     ],
     level: 1,
-    dependsOn: [["energy", "energy-generation", 10]],
+    dependsOn: [],
     onPurchase: (self: StoreItem) => {
       self.level++;
       energy.capacity = getChangeAmount(self.level, 1, energy.capacity, true);
@@ -189,7 +238,7 @@ let store = new Store([
     description: `Decreases the amount of time it takes to generate funds by ${UIManager.formatValueWithSymbol(funds.buildTimeMs / 1000, {
       icon: "s",
       infront: false,
-    })} to ${UIManager.formatValueWithSymbol(getChangeAmount(1, 0.15, funds.buildTimeMs, false), { icon: "s", infront: false })}`,
+    })} to ${UIManager.formatValueWithSymbol(getChangeAmount(1, 0.15, funds.buildTimeMs, false) / 1000, { icon: "s", infront: false })}`,
     costs: [
       { resource: "funds", amount: 20 },
       { resource: "energy", amount: 12.55 },
@@ -206,7 +255,7 @@ let store = new Store([
       self.purchased = false;
 
       self.costs = self.costs.map((cost) => {
-        cost.amount = getChangeAmount(self.level, 0.15, cost.amount, true);
+        cost.amount = getChangeAmount(self.level, 0.2, cost.amount, true);
         return cost;
       });
 
@@ -214,7 +263,7 @@ let store = new Store([
       self.description = `Decreases the amount of time it takes to generate funds from ${UIManager.formatValueWithSymbol(funds.buildTimeMs / 1000, {
         icon: "s",
         infront: false,
-      })} to ${UIManager.formatValueWithSymbol(getChangeAmount(self.level, 0.15, funds.buildTimeMs, true), { icon: "s", infront: false })}`;
+      })} to ${UIManager.formatValueWithSymbol(getChangeAmount(self.level, 0.15, funds.buildTimeMs, false) / 1000, { icon: "s", infront: false })}`;
     },
   },
   ,
@@ -226,13 +275,13 @@ function getChangeAmount(level: number, strength: number = 0.15, prevNumber: num
   if (level < 1) {
     throw new Error("Level cannot be 0");
   }
-  console.log(`level: ${level}, strength: ${strength}, prevNumber: ${prevNumber}`);
 
   return (prevNumber / Math.pow(up ? 1 + strength : 1 - strength, level - 1)) * Math.pow(up ? 1 + strength : 1 - strength, level);
 }
 
 new SaveManager(resources, pacingManager, store, { fundsFactory });
 
+Globals.initCosmicBlessing(resources);
 // DEV!!!! ---------------------------------------------------------------
 let clickCount = 0;
 let lastClickTime = 0;

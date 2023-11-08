@@ -166,33 +166,33 @@ export default class UIManager {
     return str.charAt(0).toUpperCase() + str.slice(1);
   }
 
-  static convertTime(num: number): string {
-    if (isNaN(num)) {
+  static convertTime(seconds: number): string {
+    if (isNaN(seconds)) {
       return "Invalid Time";
     }
 
-    if (num < 0) {
-      num *= -1;
+    if (seconds < 0) {
+      seconds *= -1;
     }
 
-    if (num < 60) {
-      return `${this.formatNumber(num)}s`;
+    if (seconds < 60) {
+      return `${this.formatNumber(seconds)}s`;
     }
-    if (num < 3600) {
-      const mins = Math.floor(num / 60);
-      const secs = num % 60;
+    if (seconds < 3600) {
+      const mins = Math.floor(seconds / 60);
+      const secs = seconds % 60;
       return `${this.formatNumber(mins)}m ${this.formatNumber(secs)}s`;
     }
-    if (num < 86400) {
-      const hours = Math.floor(num / 3600);
-      const mins = Math.floor((num % 3600) / 60);
-      const secs = num % 60;
+    if (seconds < 86400) {
+      const hours = Math.floor(seconds / 3600);
+      const mins = Math.floor((seconds % 3600) / 60);
+      const secs = seconds % 60;
       return `${this.formatNumber(hours)}h ${this.formatNumber(mins)}m ${this.formatNumber(secs)}s`;
     }
-    const days = Math.floor(num / 86400);
-    const hours = Math.floor((num % 86400) / 3600);
-    const mins = Math.floor((num % 3600) / 60);
-    const secs = num % 60;
+    const days = Math.floor(seconds / 86400);
+    const hours = Math.floor((seconds % 86400) / 3600);
+    const mins = Math.floor((seconds % 3600) / 60);
+    const secs = seconds % 60;
     return `${this.formatNumber(days)}d ${this.formatNumber(hours)}h ${this.formatNumber(mins)}m ${this.formatNumber(secs)}s`;
   }
 
