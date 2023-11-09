@@ -13,6 +13,7 @@ export interface StoreItemDescription {
   costs: Array<Cost>;
   level: number;
   dependsOn: StoreItemDependsOn;
+  sortOrder: number;
   onPurchase: onPurchaseFunction;
 }
 
@@ -24,6 +25,7 @@ export class StoreItem {
   description: string;
   dependsOn: StoreItemDependsOn;
   level: number;
+  sortOrder: number;
   onPurchase: onPurchaseFunction;
 
   constructor(desc: StoreItemDescription) {
@@ -86,6 +88,7 @@ export class Store {
       let storeItemsAsArray = Object.keys(this.storeItems[collection]).map((key) => this.storeItems[collection][key]);
       // loop each collection and add items to their respective stores
       if (!this.isAllPurchased(storeItemsAsArray)) {
+        storeItemsAsArray = storeItemsAsArray.slice().sort((a, b) => a.sortOrder - b.sortOrder);
         storeItemsAsArray.forEach((storeItem: StoreItem) => {
           if (!this.meetsDependency(storeItem)) return;
 

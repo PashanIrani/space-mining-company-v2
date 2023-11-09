@@ -15,7 +15,7 @@ export class Globals {
       cosmicBlessing = (Globals._maxCosmicBlessing * Math.abs((f / 2) * Math.sin(x) + Math.sin(f * x))) / f;
       UIManager.displayValue("cosmic-boost-value", cosmicBlessing * 100, { icon: "%", infront: false });
 
-      x += Math.PI / 1000;
+      x += Math.PI / 6000;
       if (x >= Math.PI * 2) {
         x = 0;
       }
