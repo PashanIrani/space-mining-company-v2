@@ -91,10 +91,10 @@ export class SaveManager {
       const parsedLoadedResources: { [key: string]: loadedResource } = JSON.parse(loadedResources);
 
       Object.keys(this.resources).forEach((key: string) => {
+        this.resources[key].capacity = parsedLoadedResources[key]._capacity;
         this.resources[key].amount = parsedLoadedResources[key]._amount;
         this.resources[key].buildStatus = parsedLoadedResources[key].buildStatus;
         this.resources[key].buildTimeMs = parsedLoadedResources[key]._buildTimeMs;
-        this.resources[key].capacity = parsedLoadedResources[key]._capacity;
         this.resources[key].generateAmount = parsedLoadedResources[key]._generateAmount;
         this.resources[key].costs = parsedLoadedResources[key]._costs;
         this.resources[key].buildQueue = parsedLoadedResources[key].buildQueue;
