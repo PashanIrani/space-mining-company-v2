@@ -291,7 +291,7 @@ export default abstract class Resource {
 
       UIManager.displayText(
         `resource-${this.label}-rate`,
-        `${UIManager.formatValueWithSymbol(this.rate, this.unitSymbol)}/s ${timeLeftText != null ? `(${timeLeftText})` : ""}`
+        `${UIManager.formatValueWithSymbol(this.rate, this.unitSymbol)}/s${timeLeftText != null ? ` (${timeLeftText})` : ""}`
       );
     }, 1000);
 

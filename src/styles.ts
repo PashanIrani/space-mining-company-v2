@@ -12,6 +12,8 @@ dropdown.addEventListener("change", function () {
 if (localStorage.getItem("theme") === "7") {
   const link = document.getElementById("styleLink") as HTMLLinkElement;
   link.href = "scripts/styles/7.css";
+
+  document.body.classList.add("theme-7");
 } else {
   const link = document.getElementById("styleLink") as HTMLLinkElement;
   link.href = "scripts/styles/xp.css";
@@ -19,6 +21,8 @@ if (localStorage.getItem("theme") === "7") {
   progressBarlink.rel = "stylesheet";
   progressBarlink.href = "scripts/styles/xpProgressBar.css";
   document.head.appendChild(progressBarlink);
+
+  document.body.classList.add("theme-xp");
 }
 
 import "./styles/index.scss";

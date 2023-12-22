@@ -1,7 +1,7 @@
 <html>
 
 <head>
-  <title>Space Mining Company</title>
+  <title>Space Mining Company 2.0</title>
   <link id="styleLink" rel="stylesheet" href="/styles/xp.css" />
   <meta charset="UTF-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
@@ -17,12 +17,12 @@
       <div class="title-bar">
         <div class="title-bar-text">System</div>
         <div class="title-bar-controls">
-          <button aria-label="Minimize"></button>
-          <button aria-label="Maximize"></button>
+          <button aria-label="Minimize" data-target="general-window"></button>
+          <button aria-label="Restore" disabled></button>
           <button aria-label="Close"></button>
         </div>
       </div>
-      <div class="window-body has-space">
+      <div id="general-window" class="window-body has-space">
         <div>
           Theme:
           <select id="css-dropdown">
@@ -42,26 +42,26 @@
   <div class="resource-container energy-window">
     <div class="window active glass">
       <div class="title-bar">
-        <div class="title-bar-text"><span class="resource-energy-label"></span></div>
+        <div class="title-bar-text" id="dev-hard-reset"><span class="resource-energy-label"></span>: <span
+            class="resource-energy-amount"></span>/<span class="resource-energy-capacity"></span></div>
         <div class="title-bar-controls">
-          <button aria-label="Minimize"></button>
-          <button aria-label="Maximize"></button>
-          <button aria-label="Close" id="dev-hard-reset"></button>
+          <button aria-label="Minimize" data-target="energy-window"></button>
+          <button aria-label="Restore" disabled></button>
+          <button aria-label="Close" disabled></button>
         </div>
       </div>
-      <div class="window-body has-space">
+      <div class="window-body has-space" id="energy-window">
+        <p class="description">The lifeblood of progress, without it, all crumbles.</p>
         <p><u><b><span class="resource-energy-label"></span></b></u>: <span class="resource-energy-amount"></span>/<span
             class="resource-energy-capacity"></span><span class="resource-energy-nextAdditionIndicator"></span></p>
-        <p class="description">The lifeblood of progress, without it, all crumbles.</p>
-
-
-        <p>Cost: <span class="resource-energy-costs"></span></p>
-        <p>Rate: <span class="resource-energy-rate"></span></p>
-        <p>Build Time: <span class="resource-energy-buildTimeMs"></span></p>
 
         <div role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="40"
           class="resource-energy-progressbar-container">
           <div class="resource-energy-progressbar progressbar"></div>
+        </div>
+
+        <div class="details-container">
+          <p>Cost: <span class="resource-energy-costs"></span></p>
         </div>
 
         <div class="button-container">
@@ -73,7 +73,7 @@
               class="resource-energy-generateAmount"></span>)</button>
         </div>
 
-        <section class="tabs initially-hidden-window energy-upgrades-window" style="max-width: 500px">
+        <section class="tabs initially-hidden-window energy-upgrades-window">
           <menu role="tablist" aria-label="Sample Tabs">
             <button role="tab" aria-selected="true" aria-controls="energy-upgrades-tab"
               class="initially-hidden-window energy-upgrades-window">Upgrades</button>
@@ -91,7 +91,10 @@
       </div>
 
       <div class="status-bar">
-        <p class="status-bar-field"><span class="resource-energy-buildDescription"></span></p>
+        <div class="status-bar-field">
+          <div>Operation: <span class="resource-energy-buildDescription"></span></div>
+          <div>Rate: <span class="resource-energy-rate"></span> </div>
+        </div>
       </div>
     </div>
   </div>
@@ -100,21 +103,24 @@
   <div class="resource-container funds-window initially-hidden-window">
     <div class="window active glass">
       <div class="title-bar">
-        <div class="title-bar-text"><span class="resource-funds-label"></span></div>
+        <div class="title-bar-text"><span class="resource-funds-label"></span>: <span
+            class="resource-funds-amount"></span></div>
         <div class="title-bar-controls">
-          <button aria-label="Minimize"></button>
-          <button aria-label="Maximize"></button>
-          <button aria-label="Close"></button>
+          <button aria-label="Minimize" data-target="funds-window"></button>
+          <button aria-label="Restore" disabled></button>
+          <button aria-label="Close" disabled></button>
         </div>
       </div>
-      <div class="window-body has-space">
+      <div class="window-body has-space" id="funds-window">
+        <p class="description">The backbone of business operations, essential for growth and
+          stability.</p>
         <p><b><u><span class="resource-funds-label"></span></u></b>: <span class="resource-funds-amount"></span><span
             class="resource-funds-nextAdditionIndicator"></span></p>
 
-        <p class="description">The backbone of business operations, essential for growth and stability.</p>
-        <p>Cost: <span class="resource-funds-costs"></span></p>
-        <p>Rate: <span class="resource-funds-rate"></span></p>
-        <p>Build Time: <span class="resource-funds-buildTimeMs"></span></p>
+
+        <div class="details-container">
+          <p>Cost: <span class="resource-funds-costs"></span></p>
+        </div>
 
 
         <div class="button-container">
@@ -126,7 +132,7 @@
               class="resource-funds-generateAmount"></span>)</button>
         </div>
 
-        <section class="tabs initially-hidden-window funds-upgrades-window" style="max-width: 500px">
+        <section class="tabs initially-hidden-window funds-upgrades-window">
           <menu role="tablist" aria-label="Sample Tabs">
             <button role="tab" aria-selected="true" aria-controls="funds-upgrades-tab"
               class="initially-hidden-window funds-upgrades-window">Upgrades</button>
@@ -144,7 +150,10 @@
       </div>
 
       <div class="status-bar">
-        <p class="status-bar-field"><span class="resource-funds-buildDescription"></span></p>
+        <div class="status-bar-field">
+          <div>Operation: <span class="resource-funds-buildDescription"></span></div>
+          <div>Rate: <span class="resource-funds-rate"></span> </div>
+        </div>
       </div>
     </div>
   </div>
@@ -155,12 +164,12 @@
       <div class="title-bar">
         <div class="title-bar-text">Store</div>
         <div class="title-bar-controls">
-          <button aria-label="Minimize"></button>
-          <button aria-label="Maximize"></button>
-          <button aria-label="Close"></button>
+          <button aria-label="Minimize" data-target="store-window"></button>
+          <button aria-label="Restore" disabled></button>
+          <button aria-label="Close" disabled></button>
         </div>
       </div>
-      <div class="window-body has-space main-store">
+      <div class="window-body has-space main-store" id="store-window">
       </div>
     </div>
 
