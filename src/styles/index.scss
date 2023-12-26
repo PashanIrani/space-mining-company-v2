@@ -1,6 +1,6 @@
 $background-color: #3c6ea5;
 $base-font-size: 14px;
-$window-width: 800px;
+$window-width: 400px;
 
 @font-face {
   font-family: "Pixelated MS Sans Serif";
@@ -56,7 +56,11 @@ button {
   display: flex;
   justify-content: center;
   padding: 10px;
-  width: 100%;
+}
+
+.costs {
+  font-size: 10px !important;
+  opacity: 0.9;
 }
 
 .button-container {
@@ -125,6 +129,22 @@ button {
     justify-content: center;
   }
 
+  &.store-item-purchased {
+    filter: brightness(0.95);
+    opacity: 0.8;
+
+    h1 {
+      color: green;
+
+      &::before {
+        content: '✅ ';
+      }
+    }
+  }
+
+  &.store-item-cant-afford {
+    filter: brightness(0.8);
+  }
 
   div.button-container {
     display: flex;

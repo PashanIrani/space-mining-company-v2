@@ -12,6 +12,7 @@ export interface StoreItemDescription {
   description: string; // describes store item
   costs: Array<Cost>;
   level: number;
+  maxLevel?: number;
   dependsOn: StoreItemDependsOn;
   sortOrder: number;
   onPurchase: onPurchaseFunction;
@@ -25,6 +26,7 @@ export class StoreItem {
   description: string;
   dependsOn: StoreItemDependsOn;
   level: number;
+  maxLevel: number;
   sortOrder: number;
   onPurchase: onPurchaseFunction;
 
@@ -36,6 +38,7 @@ export class StoreItem {
     this.description = desc.description;
     this.dependsOn = desc.dependsOn;
     this.level = desc.level;
+    this.maxLevel = desc.maxLevel || -1;
     this.onPurchase = desc.onPurchase;
   }
 }
@@ -65,8 +68,13 @@ export class Store {
 
     performCostTransaction(storeItem.costs);
 
-    storeItem.purchased = true;
+    storeItem.level++;
     storeItem.onPurchase(storeItem);
+
+    if (storeItem.level >= storeItem.maxLevel && storeItem.maxLevel != -1) {
+      storeItem.purchased = true;
+    }
+
     this.drawStore();
   }
 
@@ -87,7 +95,7 @@ export class Store {
 
       let storeItemsAsArray = Object.keys(this.storeItems[collection]).map((key) => this.storeItems[collection][key]);
       // loop each collection and add items to their respective stores
-      if (!this.isAllPurchased(storeItemsAsArray)) {
+      if (storeItemsAsArray.length > 0) {
         storeItemsAsArray = storeItemsAsArray.slice().sort((a, b) => a.sortOrder - b.sortOrder);
         storeItemsAsArray.forEach((storeItem: StoreItem) => {
           if (!this.meetsDependency(storeItem)) return;
@@ -98,6 +106,9 @@ export class Store {
             const storeItemContainer = document.createElement("div");
             storeItemContainer.classList.add("store-item-container");
 
+            if (storeItem.purchased) storeItemContainer.classList.add("store-item-purchased");
+            else if (!canAfford(storeItem.costs)) storeItemContainer.classList.add("store-item-cant-afford");
+
             const infoContainer = document.createElement("div");
             infoContainer.classList.add("info-container");
 
@@ -105,18 +116,24 @@ export class Store {
             buttonContainer.classList.add("button-container");
 
             const headerText = document.createElement("h1");
-            headerText.innerHTML = storeItem.name;
+            let levelText =
+              storeItem.maxLevel == 1 || storeItem.level == 0 ? "" : `[${storeItem.level}${storeItem.maxLevel > 1 ? `/${storeItem.maxLevel}` : ""}]`;
+            headerText.innerHTML = `${storeItem.name} ${levelText}`;
 
             const descriptionText = document.createElement("h2");
             descriptionText.innerHTML = storeItem.description;
 
             const costP = document.createElement("p");
-            costP.innerHTML = `Cost: ${UIManager.getCostString(storeItem.costs)}`;
 
+            costP.innerHTML = storeItem.purchased ? "Max Level Reached." : `Cost: ${UIManager.getCostString(storeItem.costs)}`;
+
+            costP.classList.add("costs");
             const button = document.createElement("button");
             button.innerHTML = `Buy`;
 
             button.disabled = !canAfford(storeItem.costs);
+
+            if (storeItem.purchased) button.disabled = true;
             button.addEventListener("click", () => {
               this.purchase(storeItem);
             });
@@ -128,7 +145,8 @@ export class Store {
             buttonContainer.appendChild(button);
 
             storeItemContainer.appendChild(infoContainer);
-            storeItemContainer.appendChild(buttonContainer);
+
+            if (!storeItem.purchased) storeItemContainer.appendChild(buttonContainer);
             container.appendChild(storeItemContainer);
           });
         });
@@ -143,7 +161,7 @@ export class Store {
   }
 
   meetsDependency(storeItem: StoreItem): boolean {
-    if (storeItem.purchased) return false;
+    // if (storeItem.purchased) return false;
 
     for (let i = 0; i < storeItem.dependsOn.length; i++) {
       const dependsOnDesc = storeItem.dependsOn[i];
