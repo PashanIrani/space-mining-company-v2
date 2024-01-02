@@ -4,7 +4,7 @@ import UIManager from "./UIManager";
 export class PacingManager {
   introducedWindows: Set<string> = new Set(["energy"]);
   resources: AllResourcesObject;
-  initiallyHiddenWindows = ["funds", "store"];
+  initiallyHiddenWindows = ["funds", "store", "miners"];
 
   constructor(resources: AllResourcesObject) {
     this.resources = resources;

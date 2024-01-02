@@ -184,6 +184,7 @@ export class Factory {
       let genAmount = this.getGenAmount() / 10; // dividing by 10 because this will run 10 times per sec
 
       this.resource.amount += genAmount;
+
       this.active = genAmount > 0;
     }, 100);
   }

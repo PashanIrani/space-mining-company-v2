@@ -215,7 +215,7 @@ export default abstract class Resource {
       this._amount = newValue;
     }
 
-    this._amount = parseFloat(this._amount.toFixed(2));
+    // this._amount = parseFloat(this._amount.toFixed(2));
     UIManager.displayValue(`resource-${this.label}-amount`, this.amount, this.unitSymbol);
     UIManager.updateProgressBar(this);
 
