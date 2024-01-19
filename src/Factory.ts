@@ -12,7 +12,7 @@ export class Factory {
   private allowDrawing: boolean = true;
   static ALL_RESOURCES: AllResourcesObject = {};
 
-  constructor(resource: Resource, cost: Array<Cost> = [], level: number = 0, efficiency: number = 0.01) {
+  constructor(resource: Resource, cost: Array<Cost> = [], level: number = 0, efficiency: number = 0.007) {
     this.resource = resource;
     this.upgradeCost = cost;
     this.efficiency = 0;
@@ -190,7 +190,7 @@ export class Factory {
   }
 
   getGenAmount() {
-    return (this.resource.generateAmount * this.efficiency * (1.05 * this.level)) / (this.resource.buildTimeMs / 1000);
+    return this.resource.generateAmount * this.efficiency * (1.05 * this.level);
   }
 
   upgrade() {

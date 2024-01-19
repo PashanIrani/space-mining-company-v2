@@ -107,8 +107,7 @@ export default abstract class Resource {
         return;
       }
 
-      res();
-      return this.beginBuilding(0);
+      return this.beginBuilding(0).then(() => res());
     });
   }
 

@@ -2,6 +2,7 @@ import { Factory } from "./Factory";
 import { Globals } from "./Globals";
 import { PacingManager } from "./PacingManager";
 import Resource, { AllResourcesObject, Cost } from "./Resource";
+import { StaffResource, StaffMember } from "./Staff";
 import { Store } from "./Store";
 
 interface loadedResource {
@@ -24,12 +25,14 @@ export class SaveManager {
   store: Store;
   globals: Globals;
   factories: { [key: string]: Factory };
+  staffResource: StaffResource;
 
-  constructor(resources: AllResourcesObject, pacingManager: PacingManager, store: Store, factories: { [key: string]: Factory }) {
+  constructor(resources: AllResourcesObject, pacingManager: PacingManager, store: Store, factories: { [key: string]: Factory }, staffResource: StaffResource) {
     this.resources = resources;
     this.pacingManager = pacingManager;
     this.store = store;
     this.factories = factories;
+    this.staffResource = staffResource;
     this.load();
     this.beginSave();
   }
@@ -68,6 +71,8 @@ export class SaveManager {
     });
 
     localStorage.setItem("purchasedStoreItems", JSON.stringify(this.store.storeItems));
+
+    localStorage.setItem("staffMembers", JSON.stringify(this.staffResource.members));
   }
 
   load() {
@@ -122,6 +127,15 @@ export class SaveManager {
         this.factories[key].draw();
       });
     }
+
+    let staffMembers = JSON.parse(localStorage.getItem("staffMembers"));
+    if (staffMembers) {
+      staffMembers.forEach((memberDetails: any) => {
+        this.staffResource.members.push(new StaffMember(memberDetails._gender, memberDetails._firstName, memberDetails._lastName, memberDetails._facePic));
+      });
+    }
+
+    this.staffResource.draw();
     console.log("loading done");
   }
 }

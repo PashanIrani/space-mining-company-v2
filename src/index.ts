@@ -8,6 +8,7 @@ import "./Tab.js";
 import UIManager from "./UIManager";
 import "./styles";
 import { Globals } from "./Globals";
+import { StaffResource } from "./Staff";
 
 const DEV = false;
 
@@ -32,7 +33,7 @@ class Funds extends Resource {
       label: "funds",
       initialAmount: 0,
       generateAmount: 1,
-      costs: [{ resource: "energy", amount: 4 }],
+      costs: [{ resource: "energy", amount: 10 }],
       buildTimeMs: DEV ? 100 : 10000,
       buildDescriptions: ["Analyzing Market", "Executing Plan", "Generating Funds"],
       unitSymbol: { icon: "$", infront: true },
@@ -42,12 +43,13 @@ class Funds extends Resource {
 
 const energy = new Energy();
 const funds = new Funds();
+const staff = new StaffResource();
 
-let resources: AllResourcesObject = { energy, funds };
+let resources: AllResourcesObject = { energy, funds, staff };
 Factory.ALL_RESOURCES = resources;
 
 let energyFactory = new Factory(energy, [], 0);
-let fundsFactory = new Factory(funds, [], 0);
+
 const pacingManager = new PacingManager(resources);
 
 let store = new Store([
@@ -70,24 +72,24 @@ let store = new Store([
       pacingManager.showWindow("funds-upgrades");
     },
   },
-  {
-    sortOrder: 2,
-    id: "cosmic-blessing-enable",
-    collection: "main",
-    name: "Cosmic Blessing",
-    description: "Amplifies resource yields in accordance with cosmic alignment (Up to a 35% surge).",
-    costs: [
-      { resource: "funds", amount: 1000 },
-      { resource: "energy", amount: 250 },
-    ],
-    level: 0,
-    maxLevel: 1,
-    dependsOn: [["main", "first-purchase", 0]],
-    onPurchase: (self: StoreItem) => {
-      Globals._maxCosmicBlessing = 0.35;
-      pacingManager.showWindow("cosmic-stat");
-    },
-  },
+  // {
+  //   sortOrder: 2,
+  //   id: "cosmic-blessing-enable",
+  //   collection: "main",
+  //   name: "Cosmic Blessing",
+  //   description: "Amplifies resource yields in accordance with cosmic alignment (Up to a 35% surge).",
+  //   costs: [
+  //     { resource: "funds", amount: 1000 },
+  //     { resource: "energy", amount: 250 },
+  //   ],
+  //   level: 0,
+  //   maxLevel: 1,
+  //   dependsOn: [["main", "first-purchase", 0]],
+  //   onPurchase: (self: StoreItem) => {
+  //     Globals._maxCosmicBlessing = 0.35;
+  //     pacingManager.showWindow("cosmic-stat");
+  //   },
+  // },
   {
     sortOrder: 3,
     id: "queue-purchase",
@@ -117,9 +119,9 @@ let store = new Store([
   },
   {
     sortOrder: 4,
-    id: "miner-purchase",
+    id: "staff-purchase",
     collection: "main",
-    name: "Miner Requirtment",
+    name: "Staff Requirtment",
     description: `sdfsdfsdfsf`,
     costs: [
       { resource: "funds", amount: 1 },
@@ -129,7 +131,7 @@ let store = new Store([
     maxLevel: 1,
     dependsOn: [["main", "first-purchase", 0]],
     onPurchase: (self: StoreItem) => {
-      pacingManager.showWindow("miners");
+      pacingManager.showWindow("staff");
     },
   },
   {
@@ -164,20 +166,20 @@ let store = new Store([
   },
   {
     sortOrder: 3,
-    id: "funds-factory",
-    collection: "funds",
-    name: "Funds Fabrication",
-    description: "Generates Funds Passively",
+    id: "energy-factory",
+    collection: "energy",
+    name: "Solar Fabrication",
+    description: "Generates Energy Passively",
     costs: [
-      { resource: "funds", amount: 45 },
-      { resource: "energy", amount: 15 },
+      { resource: "funds", amount: 450 },
+      { resource: "energy", amount: 55 },
     ],
     level: 0,
     maxLevel: 1,
-    dependsOn: [["funds", "funds-generation", 3]],
+    dependsOn: [["energy", "energy-generation", 3]],
     onPurchase: (self: StoreItem) => {
-      fundsFactory.level = 1;
-      pacingManager.showWindow("funds-factory");
+      energyFactory.level = 1;
+      pacingManager.showWindow("energy-factory");
     },
   },
   {
@@ -205,7 +207,7 @@ let store = new Store([
       energy.generateAmount = changeAmount;
 
       self.costs = self.costs.map((cost) => {
-        cost.amount = getChangeAmount(self.level, startingLevel * 7.5, cost.amount, true); // max change is 0.75, since starting level will be 0.1 as max
+        cost.amount = getChangeAmount(self.level, startingLevel * 1.85, cost.amount, true); // max change is 0.75, since starting level will be 0.1 as max
         return cost;
       });
     },
@@ -236,24 +238,6 @@ let store = new Store([
       )}`;
     },
   },
-  {
-    sortOrder: 3,
-    id: "energy-factory",
-    collection: "energy",
-    name: "Energy Fabrication",
-    description: "Generates Energy Passively",
-    costs: [
-      { resource: "funds", amount: 9.5 },
-      { resource: "energy", amount: 19.5 },
-    ],
-    level: 0,
-    maxLevel: 1,
-    dependsOn: [["energy", "energy-generation", 3]],
-    onPurchase: (self: StoreItem) => {
-      energyFactory.level = 1;
-      pacingManager.showWindow("energy-factory");
-    },
-  },
 ]);
 
 // strength: 0-1 value: 1 will reduce by 50% at level 1.
@@ -266,7 +250,7 @@ function getChangeAmount(level: number, strength: number = 0.15, prevNumber: num
   return (prevNumber / Math.pow(up ? 1 + strength : 1 - strength, level - 1)) * Math.pow(up ? 1 + strength : 1 - strength, level);
 }
 
-new SaveManager(resources, pacingManager, store, { fundsFactory, energyFactory });
+new SaveManager(resources, pacingManager, store, { fundsFactory: energyFactory }, staff);
 
 Globals.initCosmicBlessing(resources);
 

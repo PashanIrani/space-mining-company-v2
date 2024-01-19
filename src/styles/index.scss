@@ -230,3 +230,29 @@ button[disabled] {
     border-top: 1px solid rgba(0, 0, 0, .7);
   }
 }
+
+.staff-list-container {
+  border-left: 1px solid hsla(0, 0%, 100%, .75);
+  box-shadow: inset 0 1px 2px grey;
+  padding: 2px;
+}
+
+.staff-member-container {
+  display: flex;
+  padding: 4px;
+  margin: 2px;
+  background-color: #fff;
+  box-shadow: inset 0 0 0 1px #f3f3f388, 0 0 0 1px #eaeaea88;
+  border: 1px solid #9e9e9e;
+}
+
+.staff-face-pic-container {
+  // background-color: #ece9d8;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  text-align: center;
+  justify-content: center;
+  box-shadow: inset 0 0 0 1px rgba(243, 243, 243, 0.5333333333), 0 0 0 1px rgba(234, 234, 234, 0.5333333333);
+  border: 1px solid #9e9e9e;
+}
