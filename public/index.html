@@ -23,6 +23,14 @@
         </div>
       </div>
       <div id="general-window" class="window-body has-space">
+        <p>
+          In a world drained of resources, humanity survives through asteroid mining, where courageous space miners
+          equipped with
+          jetpacks and spacesuits extract essential materials from celestial bodies. At the core of this survival is a
+          basic computer program, managing space operations and safeguarding the prosperity of the human race.</p>
+        <div>
+          <p>Oxy: <span class="resource-oxy-amount"></span></p>
+        </div>
         <div>
           Theme:
           <select id="css-dropdown">
@@ -154,6 +162,39 @@
         <div class="status-bar-field">
           <div>Operation: <span class="resource-funds-buildDescription"></span></div>
           <div>Rate: <span class="resource-funds-rate"></span> </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- astroid -->
+  <div class="resource-container astroid-window initially-hidden-window">
+    <div class="window active glass">
+      <div class="title-bar">
+        <div class="title-bar-text">astroid</div>
+        <div class="title-bar-controls">
+          <button aria-label="Minimize" data-target="astroid-window"></button>
+          <button aria-label="Restore" disabled></button>
+          <button aria-label="Close"></button>
+        </div>
+      </div>
+      <div id="astroid-window" class="window-body has-space">
+        <p><b><u>Astroid</u></b>: <span class="resource-astroid-amount"></span>/<span
+            class="resource-astroid-capacity"></span><span class="resource-astroid-nextAdditionIndicator"></span>
+        </p>
+
+        <p class="description">Some astroid description.</p>
+
+        <button class="resource-astroid-generateButton">Hire</button>
+        <div class="details-container">
+          <p>Cost: <span class="resource-astroid-costs"></span></p>
+        </div>
+        <div class="astroid-list-container"></div>
+        <div class="window-body has-space astroid-store" id="store-window"></div>
+      </div>
+      <div class="status-bar">
+        <div class="status-bar-field">
+          <div>Operation: <span class="resource-astroid-buildDescription"></span></div>
         </div>
       </div>
     </div>

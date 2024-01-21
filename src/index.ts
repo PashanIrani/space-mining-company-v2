@@ -9,8 +9,9 @@ import UIManager from "./UIManager";
 import "./styles";
 import { Globals } from "./Globals";
 import { StaffResource } from "./Staff";
+import { AstroidResource } from "./Astroid";
 
-const DEV = false;
+const DEV = true;
 
 class Energy extends Resource {
   constructor() {
@@ -41,11 +42,27 @@ class Funds extends Resource {
   }
 }
 
+class Oxy extends Resource {
+  constructor() {
+    super({
+      label: "oxy",
+      initialAmount: 0,
+      generateAmount: 1,
+      costs: [],
+      buildTimeMs: 10000,
+      buildDescriptions: ["Analyzing Market", "Executing Plan", "Generating Funds"],
+      unitSymbol: { icon: "oxy", infront: false },
+    });
+  }
+}
+
 const energy = new Energy();
 const funds = new Funds();
 const staff = new StaffResource();
+const oxy = new Oxy();
+const astroids = new AstroidResource({ oxy });
 
-let resources: AllResourcesObject = { energy, funds, staff };
+let resources: AllResourcesObject = { energy, funds, staff, astroids };
 Factory.ALL_RESOURCES = resources;
 
 let energyFactory = new Factory(energy, [], 0);
@@ -60,7 +77,7 @@ let store = new Store([
     name: "OS Update",
     description: "Upgrades... Upgrades... Upgrades...",
     costs: [
-      { resource: "funds", amount: 2.99 },
+      { resource: "funds", amount: 1.5 },
       { resource: "energy", amount: 10 },
     ],
     level: 0,
@@ -118,6 +135,24 @@ let store = new Store([
     },
   },
   {
+    sortOrder: 5,
+    id: "astroid-purchase",
+    collection: "main",
+    name: "Astroid Finder",
+    description: `sdfsdfsdfsf`,
+    costs: [
+      { resource: "funds", amount: 1 },
+      { resource: "energy", amount: 1 },
+    ],
+    level: 0,
+    maxLevel: 1,
+    dependsOn: [["main", "first-purchase", 0]],
+    onPurchase: (self: StoreItem) => {
+      pacingManager.showWindow("astroid");
+    },
+  },
+
+  {
     sortOrder: 4,
     id: "staff-purchase",
     collection: "main",
@@ -129,7 +164,7 @@ let store = new Store([
     ],
     level: 0,
     maxLevel: 1,
-    dependsOn: [["main", "first-purchase", 0]],
+    dependsOn: [["main", "astroid-purchase", 0]],
     onPurchase: (self: StoreItem) => {
       pacingManager.showWindow("staff");
     },
@@ -250,9 +285,9 @@ function getChangeAmount(level: number, strength: number = 0.15, prevNumber: num
   return (prevNumber / Math.pow(up ? 1 + strength : 1 - strength, level - 1)) * Math.pow(up ? 1 + strength : 1 - strength, level);
 }
 
-new SaveManager(resources, pacingManager, store, { fundsFactory: energyFactory }, staff);
+new SaveManager(resources, pacingManager, store, { fundsFactory: energyFactory }, staff, astroids);
 
-Globals.initCosmicBlessing(resources);
+// Globals.initCosmicBlessing(resources);
 
 // DEV!!!! ---------------------------------------------------------------
 let clickCount = 0;

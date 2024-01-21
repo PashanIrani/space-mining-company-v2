@@ -1,3 +1,4 @@
+import { Astroid, AstroidResource } from "./Astroid";
 import { Factory } from "./Factory";
 import { Globals } from "./Globals";
 import { PacingManager } from "./PacingManager";
@@ -26,13 +27,22 @@ export class SaveManager {
   globals: Globals;
   factories: { [key: string]: Factory };
   staffResource: StaffResource;
+  astroidResource: AstroidResource;
 
-  constructor(resources: AllResourcesObject, pacingManager: PacingManager, store: Store, factories: { [key: string]: Factory }, staffResource: StaffResource) {
+  constructor(
+    resources: AllResourcesObject,
+    pacingManager: PacingManager,
+    store: Store,
+    factories: { [key: string]: Factory },
+    staffResource: StaffResource,
+    astroidResource: AstroidResource
+  ) {
     this.resources = resources;
     this.pacingManager = pacingManager;
     this.store = store;
     this.factories = factories;
     this.staffResource = staffResource;
+    this.astroidResource = astroidResource;
     this.load();
     this.beginSave();
   }
@@ -73,6 +83,7 @@ export class SaveManager {
     localStorage.setItem("purchasedStoreItems", JSON.stringify(this.store.storeItems));
 
     localStorage.setItem("staffMembers", JSON.stringify(this.staffResource.members));
+    localStorage.setItem("astroids", JSON.stringify(this.astroidResource.astroids));
   }
 
   load() {
@@ -135,7 +146,15 @@ export class SaveManager {
       });
     }
 
+    let astroids = JSON.parse(localStorage.getItem("astroids"));
+    if (astroids) {
+      astroids.forEach((astroid: any) => {
+        this.astroidResource.astroids.push(new Astroid(astroid.name));
+      });
+    }
+
     this.staffResource.draw();
+    this.astroidResource.draw();
     console.log("loading done");
   }
 }
