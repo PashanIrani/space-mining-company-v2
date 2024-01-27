@@ -10,245 +10,257 @@
 
 <body>
 
+  <div class="column">
 
-  <!-- General -->
-  <div class="resource-container system-window initially-hidden-window">
-    <div class="window active glass">
-      <div class="title-bar">
-        <div class="title-bar-text">System</div>
-        <div class="title-bar-controls">
-          <button aria-label="Minimize" data-target="general-window"></button>
-          <button aria-label="Restore" disabled></button>
-          <button aria-label="Close"></button>
-        </div>
-      </div>
-      <div id="general-window" class="window-body has-space">
-        <p>
-          In a world drained of resources, humanity survives through asteroid mining, where courageous space miners
-          equipped with
-          jetpacks and spacesuits extract essential materials from celestial bodies. At the core of this survival is a
-          basic computer program, managing space operations and safeguarding the prosperity of the human race.</p>
-        <div>
-          <p>Oxy: <span class="resource-oxy-amount"></span></p>
-        </div>
-        <div>
-          Theme:
-          <select id="css-dropdown">
-            <option value="xp">Windows XP</option>
-            <option value="7">Windows 7</option>
-          </select>
-        </div>
-        <div class="cosmic-stat-window initially-hidden-window">
-          Cosmic Blessing: <span class="cosmic-boost-value">0%</span>
-        </div>
 
-      </div>
-    </div>
-  </div>
-
-  <!-- Energy -->
-  <div class="resource-container energy-window">
-    <div class="window active glass">
-      <div class="title-bar">
-        <div class="title-bar-text" id="dev-hard-reset"><span class="resource-energy-label"></span>: <span
-            class="resource-energy-amount"></span>/<span class="resource-energy-capacity"></span></div>
-        <div class="title-bar-controls">
-          <button aria-label="Minimize" data-target="energy-window"></button>
-          <button aria-label="Restore" disabled></button>
-          <button aria-label="Close" disabled></button>
+    <!-- Energy -->
+    <div class="resource-container energy-window">
+      <div class="window active glass">
+        <div class="title-bar">
+          <div class="title-bar-text" id="dev-hard-reset"><span class="resource-energy-label"></span>: <span
+              class="resource-energy-amount"></span>/<span class="resource-energy-capacity"></span></div>
+          <div class="title-bar-controls">
+            <button aria-label="Minimize" data-target="energy-window"></button>
+            <button aria-label="Restore" disabled></button>
+            <button aria-label="Close" disabled></button>
+          </div>
         </div>
-      </div>
-      <div class="window-body has-space" id="energy-window">
-        <p><u><b><span class="resource-energy-label"></span></b></u>: <span class="resource-energy-amount"></span>/<span
-            class="resource-energy-capacity"></span><span class="resource-energy-nextAdditionIndicator"></span></p>
+        <div class="window-body has-space" id="energy-window">
+          <p><u><b><span class="resource-energy-label"></span></b></u>: <span
+              class="resource-energy-amount"></span>/<span class="resource-energy-capacity"></span><span
+              class="resource-energy-nextAdditionIndicator"></span></p>
 
-        <p class="description">The lifeblood of progress, without it, all crumbles.</p>
+          <p class="description">The lifeblood of progress, without it, all crumbles.</p>
 
-        <div role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="40"
-          class="resource-energy-progressbar-container">
-          <div class="resource-energy-progressbar progressbar"></div>
+          <div role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="40"
+            class="resource-energy-progressbar-container">
+            <div class="resource-energy-progressbar progressbar"></div>
+          </div>
+
+          <div class="details-container">
+            <p>Cost: <span class="resource-energy-costs"></span></p>
+          </div>
+
+          <div class="button-container">
+            <span class="resource-energy-buildStatusSpinner spinner-container"></span>
+            &nbsp;
+            <span class="resource-energy-buildStatus"></span>
+            &nbsp;
+            <button class="resource-energy-generateButton">Generate <span class="resource-energy-label"></span> (+<span
+                class="resource-energy-generateAmount"></span>)</button>
+          </div>
+
+          <section class="tabs initially-hidden-window energy-upgrades-window">
+            <menu role="tablist" aria-label="Sample Tabs">
+              <button role="tab" aria-selected="true" aria-controls="energy-upgrades-tab"
+                class="initially-hidden-window energy-upgrades-window">Upgrades</button>
+              <button role="tab" aria-controls="energy-factory-tab"
+                class="initially-hidden-window energy-factory-window">Solar</button>
+            </menu>
+            <article role="tabpanel" id="energy-upgrades-tab">
+              <div class="energy-store initially-hidden-window energy-upgrades-window">
+                </fieldset>
+            </article>
+            <article role="tabpanel" hidden id="energy-factory-tab">
+              <div class="factory-container initially-hidden-window energy-factory energy-factory-window"></div>
+            </article>
+          </section>
         </div>
 
-        <div class="details-container">
-          <p>Cost: <span class="resource-energy-costs"></span></p>
-        </div>
-
-        <div class="button-container">
-          <span class="resource-energy-buildStatusSpinner spinner-container"></span>
-          &nbsp;
-          <span class="resource-energy-buildStatus"></span>
-          &nbsp;
-          <button class="resource-energy-generateButton">Generate <span class="resource-energy-label"></span> (+<span
-              class="resource-energy-generateAmount"></span>)</button>
-        </div>
-
-        <section class="tabs initially-hidden-window energy-upgrades-window">
-          <menu role="tablist" aria-label="Sample Tabs">
-            <button role="tab" aria-selected="true" aria-controls="energy-upgrades-tab"
-              class="initially-hidden-window energy-upgrades-window">Upgrades</button>
-            <button role="tab" aria-controls="energy-factory-tab"
-              class="initially-hidden-window energy-factory-window">Solar</button>
-          </menu>
-          <article role="tabpanel" id="energy-upgrades-tab">
-            <div class="energy-store initially-hidden-window energy-upgrades-window">
-              </fieldset>
-          </article>
-          <article role="tabpanel" hidden id="energy-factory-tab">
-            <div class="factory-container initially-hidden-window energy-factory energy-factory-window"></div>
-          </article>
-        </section>
-      </div>
-
-      <div class="status-bar">
-        <div class="status-bar-field">
-          <div>Operation: <span class="resource-energy-buildDescription"></span></div>
-          <div>Rate: <span class="resource-energy-rate"></span> </div>
+        <div class="status-bar">
+          <div class="status-bar-field">
+            <div>Operation: <span class="resource-energy-buildDescription"></span></div>
+            <div>Rate: <span class="resource-energy-rate"></span> </div>
+          </div>
         </div>
       </div>
     </div>
-  </div>
 
-  <!-- Funds -->
-  <div class="resource-container funds-window initially-hidden-window">
-    <div class="window active glass">
-      <div class="title-bar">
-        <div class="title-bar-text"><span class="resource-funds-label"></span>: <span
-            class="resource-funds-amount"></span></div>
-        <div class="title-bar-controls">
-          <button aria-label="Minimize" data-target="funds-window"></button>
-          <button aria-label="Restore" disabled></button>
-          <button aria-label="Close" disabled></button>
+    <!-- General -->
+    <div class="resource-container system-window initially-hidden-window">
+      <div class="window active glass">
+        <div class="title-bar">
+          <div class="title-bar-text">System</div>
+          <div class="title-bar-controls">
+            <button aria-label="Minimize" data-target="general-window"></button>
+            <button aria-label="Restore" disabled></button>
+            <button aria-label="Close"></button>
+          </div>
+        </div>
+        <div id="general-window" class="window-body has-space">
+          <p>
+            In a world drained of resources, humanity survives through asteroid mining, where courageous space miners
+            equipped with
+            jetpacks and spacesuits extract essential materials from celestial bodies. At the core of this survival is a
+            basic computer program, managing space operations and safeguarding the prosperity of the human race.</p>
+          <div>
+            <p>Dirt: <span class="resource-dirt-amount"></span></p>
+            <p>Gold: <span class="resource-gold-amount"></span></p>
+          </div>
+          <div>
+            Theme:
+            <select id="css-dropdown">
+              <option value="xp">Windows XP</option>
+              <option value="7">Windows 7</option>
+            </select>
+          </div>
+          <div class="cosmic-stat-window initially-hidden-window">
+            Cosmic Blessing: <span class="cosmic-boost-value">0%</span>
+          </div>
+
         </div>
       </div>
-      <div class="window-body has-space" id="funds-window">
-        <p><b><u><span class="resource-funds-label"></span></u></b>: <span class="resource-funds-amount"></span><span
-            class="resource-funds-nextAdditionIndicator"></span></p>
+    </div>
 
-        <p class="description">The backbone of business operations, essential for growth and
-          stability.</p>
-
-        <div class="details-container">
-          <p>Cost: <span class="resource-funds-costs"></span></p>
+    <!-- Astroids -->
+    <div class="resource-container astroid-window initially-hidden-window">
+      <div class="window active glass">
+        <div class="title-bar">
+          <div class="title-bar-text">Astroids Panel (v1.0)</div>
+          <div class="title-bar-controls">
+            <button aria-label="Minimize" data-target="astroid-window"></button>
+            <button aria-label="Restore" disabled></button>
+            <button aria-label="Close"></button>
+          </div>
         </div>
+        <div id="astroid-window" class="window-body has-space">
+          <p><b><u>Astroid's In Radar</u></b>: <span class="resource-astroid-amount"></span>/<span
+              class="resource-astroid-capacity"></span><span class="resource-astroid-nextAdditionIndicator"></span>
+          </p>
 
+          <p class="description">Some astroid description.</p>
 
-        <div class="button-container">
-          <span class="resource-funds-buildStatusSpinner spinner-container"></span>
-          &nbsp;
-          <span class="resource-funds-buildStatus"></span>
-          &nbsp;
-          <button class="resource-funds-generateButton">Generate <span class="resource-funds-label"></span> (+<span
-              class="resource-funds-generateAmount"></span>)</button>
+          <button class="resource-astroid-generateButton">Locate Astroid</button>
+          <button class="resource-astroid-beginMining">Allocate Staff</button>
+          <div class="details-container">
+            <p>Cost: <span class="resource-astroid-costs"></span></p>
+          </div>
+          <div class="astroid-list-container"></div>
+          <div class="window-body has-space astroid-store" id="store-window"></div>
         </div>
-
-        <section class="tabs initially-hidden-window funds-upgrades-window">
-          <menu role="tablist" aria-label="Sample Tabs">
-            <button role="tab" aria-selected="true" aria-controls="funds-upgrades-tab"
-              class="initially-hidden-window funds-upgrades-window">Upgrades</button>
-            <button role="tab" aria-controls="funds-factory-tab"
-              class="initially-hidden-window funds-factory-window">Factory</button>
-          </menu>
-          <article role="tabpanel" id="funds-upgrades-tab">
-            <div class="funds-store initially-hidden-window funds-upgrades-window">
-              </fieldset>
-          </article>
-          <article role="tabpanel" hidden id="funds-factory-tab">
-            <div class="factory-container initially-hidden-window funds-factory funds-factory-window"></div>
-          </article>
-        </section>
-      </div>
-
-      <div class="status-bar">
-        <div class="status-bar-field">
-          <div>Operation: <span class="resource-funds-buildDescription"></span></div>
-          <div>Rate: <span class="resource-funds-rate"></span> </div>
+        <div class="status-bar">
+          <div class="status-bar-field">
+            <div>Operation: <span class="resource-astroid-buildDescription"></span></div>
+          </div>
         </div>
       </div>
     </div>
   </div>
+  <div class="column">
 
-  <!-- astroid -->
-  <div class="resource-container astroid-window initially-hidden-window">
-    <div class="window active glass">
-      <div class="title-bar">
-        <div class="title-bar-text">astroid</div>
-        <div class="title-bar-controls">
-          <button aria-label="Minimize" data-target="astroid-window"></button>
-          <button aria-label="Restore" disabled></button>
-          <button aria-label="Close"></button>
+
+
+
+    <!-- Funds -->
+    <div class="resource-container funds-window initially-hidden-window">
+      <div class="window active glass">
+        <div class="title-bar">
+          <div class="title-bar-text"><span class="resource-funds-label"></span>: <span
+              class="resource-funds-amount"></span></div>
+          <div class="title-bar-controls">
+            <button aria-label="Minimize" data-target="funds-window"></button>
+            <button aria-label="Restore" disabled></button>
+            <button aria-label="Close" disabled></button>
+          </div>
         </div>
-      </div>
-      <div id="astroid-window" class="window-body has-space">
-        <p><b><u>Astroid</u></b>: <span class="resource-astroid-amount"></span>/<span
-            class="resource-astroid-capacity"></span><span class="resource-astroid-nextAdditionIndicator"></span>
-        </p>
+        <div class="window-body has-space" id="funds-window">
+          <p><b><u><span class="resource-funds-label"></span></u></b>: <span class="resource-funds-amount"></span><span
+              class="resource-funds-nextAdditionIndicator"></span></p>
 
-        <p class="description">Some astroid description.</p>
+          <p class="description">The backbone of business operations, essential for growth and
+            stability.</p>
 
-        <button class="resource-astroid-generateButton">Hire</button>
-        <div class="details-container">
-          <p>Cost: <span class="resource-astroid-costs"></span></p>
+          <div class="details-container">
+            <p>Cost: <span class="resource-funds-costs"></span></p>
+          </div>
+
+
+          <div class="button-container">
+            <span class="resource-funds-buildStatusSpinner spinner-container"></span>
+            &nbsp;
+            <span class="resource-funds-buildStatus"></span>
+            &nbsp;
+            <button class="resource-funds-generateButton">Generate <span class="resource-funds-label"></span> (+<span
+                class="resource-funds-generateAmount"></span>)</button>
+          </div>
+
+          <section class="tabs initially-hidden-window funds-upgrades-window">
+            <menu role="tablist" aria-label="Sample Tabs">
+              <button role="tab" aria-selected="true" aria-controls="funds-upgrades-tab"
+                class="initially-hidden-window funds-upgrades-window">Upgrades</button>
+              <button role="tab" aria-controls="funds-factory-tab"
+                class="initially-hidden-window funds-factory-window">Factory</button>
+            </menu>
+            <article role="tabpanel" id="funds-upgrades-tab">
+              <div class="funds-store initially-hidden-window funds-upgrades-window">
+                </fieldset>
+            </article>
+            <article role="tabpanel" hidden id="funds-factory-tab">
+              <div class="factory-container initially-hidden-window funds-factory funds-factory-window"></div>
+            </article>
+          </section>
         </div>
-        <div class="astroid-list-container"></div>
-        <div class="window-body has-space astroid-store" id="store-window"></div>
-      </div>
-      <div class="status-bar">
-        <div class="status-bar-field">
-          <div>Operation: <span class="resource-astroid-buildDescription"></span></div>
-        </div>
-      </div>
-    </div>
-  </div>
 
-  <!-- Staff -->
-  <div class="resource-container staff-window initially-hidden-window">
-    <div class="window active glass">
-      <div class="title-bar">
-        <div class="title-bar-text">Staff</div>
-        <div class="title-bar-controls">
-          <button aria-label="Minimize" data-target="staff-window"></button>
-          <button aria-label="Restore" disabled></button>
-          <button aria-label="Close"></button>
-        </div>
-      </div>
-      <div id="staff-window" class="window-body has-space">
-        <p><b><u>Staff</u></b>: <span class="resource-staffmember-amount"></span>/<span
-            class="resource-staffmember-capacity"></span><span
-            class="resource-staffmember-nextAdditionIndicator"></span>
-        </p>
-
-        <p class="description">Some staff description.</p>
-
-        <button class="resource-staffmember-generateButton">Hire</button>
-        <div class="details-container">
-          <p>Cost: <span class="resource-staffmember-costs"></span></p>
-        </div>
-        <div class="staff-list-container"></div>
-        <div class="window-body has-space staff-store" id="store-window"></div>
-      </div>
-      <div class="status-bar">
-        <div class="status-bar-field">
-          <div>Operation: <span class="resource-staffmember-buildDescription"></span></div>
+        <div class="status-bar">
+          <div class="status-bar-field">
+            <div>Operation: <span class="resource-funds-buildDescription"></span></div>
+            <div>Rate: <span class="resource-funds-rate"></span> </div>
+          </div>
         </div>
       </div>
     </div>
-  </div>
 
-  <!-- Store -->
-  <div class="resource-container store-window initially-hidden-window">
-    <div class="window active glass">
-      <div class="title-bar">
-        <div class="title-bar-text">Store</div>
-        <div class="title-bar-controls">
-          <button aria-label="Minimize" data-target="store-window"></button>
-          <button aria-label="Restore" disabled></button>
-          <button aria-label="Close" disabled></button>
+
+
+    <!-- Staff -->
+    <div class="resource-container staff-window initially-hidden-window">
+      <div class="window active glass">
+        <div class="title-bar">
+          <div class="title-bar-text">Staff</div>
+          <div class="title-bar-controls">
+            <button aria-label="Minimize" data-target="staff-window"></button>
+            <button aria-label="Restore" disabled></button>
+            <button aria-label="Close"></button>
+          </div>
+        </div>
+        <div id="staff-window" class="window-body has-space">
+          <p><b><u>Staff</u></b>: <span class="resource-staffmember-amount"></span>/<span
+              class="resource-staffmember-capacity"></span><span
+              class="resource-staffmember-nextAdditionIndicator"></span>
+          </p>
+
+          <p class="description">Some staff description.</p>
+
+          <button class="resource-staffmember-generateButton">Hire</button>
+          <div class="details-container">
+            <p>Cost: <span class="resource-staffmember-costs"></span></p>
+          </div>
+          <div class="staff-list-container"></div>
+          <div class="window-body has-space staff-store" id="store-window"></div>
+        </div>
+        <div class="status-bar">
+          <div class="status-bar-field">
+            <div>Operation: <span class="resource-staffmember-buildDescription"></span></div>
+          </div>
         </div>
       </div>
-      <div class="window-body has-space main-store" id="store-window"></div>
     </div>
 
+    <!-- Store -->
+    <div class="resource-container store-window initially-hidden-window">
+      <div class="window active glass">
+        <div class="title-bar">
+          <div class="title-bar-text">Store</div>
+          <div class="title-bar-controls">
+            <button aria-label="Minimize" data-target="store-window"></button>
+            <button aria-label="Restore" disabled></button>
+            <button aria-label="Close" disabled></button>
+          </div>
+        </div>
+        <div class="window-body has-space main-store" id="store-window"></div>
+      </div>
 
+    </div>
 
 
 

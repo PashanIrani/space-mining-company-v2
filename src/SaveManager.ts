@@ -142,19 +142,28 @@ export class SaveManager {
     let staffMembers = JSON.parse(localStorage.getItem("staffMembers"));
     if (staffMembers) {
       staffMembers.forEach((memberDetails: any) => {
-        this.staffResource.members.push(new StaffMember(memberDetails._gender, memberDetails._firstName, memberDetails._lastName, memberDetails._facePic));
+        this.staffResource.members.push(
+          new StaffMember({
+            gender: memberDetails._gender,
+            firstName: memberDetails._firstName,
+            lastName: memberDetails._lastName,
+            facePic: memberDetails._facePic,
+            id: memberDetails.id,
+            efficiency: memberDetails.efficiency,
+          })
+        );
       });
     }
 
     let astroids = JSON.parse(localStorage.getItem("astroids"));
     if (astroids) {
       astroids.forEach((astroid: any) => {
-        this.astroidResource.astroids.push(new Astroid(astroid.name));
+        this.astroidResource.astroids.push(new Astroid(astroid.name, astroid.resources, astroid.assignedStaff));
       });
     }
 
     this.staffResource.draw();
     this.astroidResource.draw();
-    console.log("loading done");
+    this.astroidResource.beginTicking();
   }
 }

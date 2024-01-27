@@ -34,7 +34,7 @@ class Funds extends Resource {
       label: "funds",
       initialAmount: 0,
       generateAmount: 1,
-      costs: [{ resource: "energy", amount: 10 }],
+      costs: [{ resource: "energy", amount: 1 }],
       buildTimeMs: DEV ? 100 : 10000,
       buildDescriptions: ["Analyzing Market", "Executing Plan", "Generating Funds"],
       unitSymbol: { icon: "$", infront: true },
@@ -42,16 +42,30 @@ class Funds extends Resource {
   }
 }
 
-class Oxy extends Resource {
+class Dirt extends Resource {
   constructor() {
     super({
-      label: "oxy",
+      label: "dirt",
       initialAmount: 0,
       generateAmount: 1,
       costs: [],
       buildTimeMs: 10000,
-      buildDescriptions: ["Analyzing Market", "Executing Plan", "Generating Funds"],
-      unitSymbol: { icon: "oxy", infront: false },
+      buildDescriptions: [],
+      unitSymbol: { icon: "Dirt", infront: false },
+    });
+  }
+}
+
+class Gold extends Resource {
+  constructor() {
+    super({
+      label: "gold",
+      initialAmount: 0,
+      generateAmount: 1,
+      costs: [],
+      buildTimeMs: 10000,
+      buildDescriptions: [],
+      unitSymbol: { icon: "G$", infront: true },
     });
   }
 }
@@ -59,10 +73,11 @@ class Oxy extends Resource {
 const energy = new Energy();
 const funds = new Funds();
 const staff = new StaffResource();
-const oxy = new Oxy();
-const astroids = new AstroidResource({ oxy });
+const dirt = new Dirt();
+const gold = new Gold();
+const astroids = new AstroidResource({ dirt, gold }, staff);
 
-let resources: AllResourcesObject = { energy, funds, staff, astroids };
+let resources: AllResourcesObject = { energy, funds, staff, astroids, dirt, gold };
 Factory.ALL_RESOURCES = resources;
 
 let energyFactory = new Factory(energy, [], 0);

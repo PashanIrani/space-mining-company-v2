@@ -1,5 +1,7 @@
+import { Astroid, AstroidResource } from "./Astroid";
 import { femaleNames, lastNames, maleNames } from "./Names";
 import Resource, { Cost, canAfford, performCostTransaction } from "./Resource";
+import UIManager from "./UIManager";
 
 enum StaffGender {
   MALE,
@@ -8,6 +10,7 @@ enum StaffGender {
 }
 
 export class StaffMember {
+  // TODO: use up eneregy as they mine
   private _gender: StaffGender;
 
   private _firstName: string;
@@ -15,12 +18,31 @@ export class StaffMember {
   private _lastName: string;
 
   private _facePic: string;
+  public id: string;
+  public efficiency: number;
+  currentAssignedAstroid: any;
 
-  constructor(gender: StaffGender, firstName: string, lastName: string, facePic: string) {
+  constructor({
+    gender,
+    firstName,
+    lastName,
+    facePic,
+    id,
+    efficiency,
+  }: {
+    gender: StaffGender;
+    firstName: string;
+    lastName: string;
+    facePic: string;
+    id: string;
+    efficiency: number;
+  }) {
     this.gender = gender;
     this.firstName = firstName || StaffMember.genFirstName(this.gender);
     this.lastName = lastName || StaffMember.genLastName();
     this.facePic = facePic;
+    this.id = id;
+    this.efficiency = efficiency;
   }
 
   public get gender(): StaffGender {
@@ -63,6 +85,10 @@ export class StaffMember {
     if (prob >= 0.8) gender = StaffGender.FEMALE; // Other
 
     return gender;
+  }
+
+  static genId() {
+    return `S${Date.now()}${Math.floor(Math.random() * 1000)}`;
   }
 
   static genFirstName(gender: StaffGender) {
@@ -134,13 +160,21 @@ export class StaffMember {
 }
 
 export class StaffResource extends Resource {
+  getById(staffId: string): StaffMember {
+    for (let i = 0; i < this._members.length; ++i) {
+      if (this._members[i].id === staffId) {
+        return this._members[i];
+      }
+    }
+  }
+
   private _members: StaffMember[] = [];
 
   constructor() {
     super({
       label: "staffmember",
       initialAmount: 0,
-      capacity: 2,
+      capacity: 20,
       generateAmount: 1,
       costs: [
         { resource: "funds", amount: 2 },
@@ -158,6 +192,7 @@ export class StaffResource extends Resource {
 
   public set members(value: StaffMember[]) {
     this._members = value;
+    this.amount = value.length;
     this.draw();
   }
 
@@ -166,7 +201,16 @@ export class StaffResource extends Resource {
     let firstName = StaffMember.genFirstName(gender);
 
     super.generate().then(() => {
-      this.members.push(new StaffMember(gender, firstName, StaffMember.genLastName(), StaffMember.generateRandomLennyFace()));
+      this.members.push(
+        new StaffMember({
+          gender,
+          firstName,
+          lastName: StaffMember.genLastName(),
+          facePic: StaffMember.generateRandomLennyFace(),
+          id: StaffMember.genId(),
+          efficiency: Math.random(),
+        })
+      );
       this.draw();
     });
 
@@ -190,22 +234,53 @@ export class StaffResource extends Resource {
 
           const facePicContainer = document.createElement("div");
           facePicContainer.classList.add("staff-face-pic-container");
+
+          const infoContainer = document.createElement("div");
+          infoContainer.classList.add("staff-info-container");
+
           const nameContainer = document.createElement("div");
           nameContainer.classList.add("staff-name-container");
-          const genderContainer = document.createElement("div");
-          genderContainer.classList.add("staff-gender-container");
+          const efficiencyContainer = document.createElement("div");
+          efficiencyContainer.classList.add("staff-efficiency-container");
+
+          const currentAstroidContainer = document.createElement("div");
+          currentAstroidContainer.classList.add("staff-site-container");
 
           facePicContainer.innerHTML = member.facePic;
-          nameContainer.innerHTML = `${member.firstName} ${member.lastName}`;
-          genderContainer.innerHTML = `${member.gender == StaffGender.MALE ? "♂" : member.gender == StaffGender.FEMALE ? "♀" : "⚥"}`;
+          nameContainer.innerHTML = `${member.firstName} ${member.lastName} ${
+            member.gender == StaffGender.MALE ? "♂" : member.gender == StaffGender.FEMALE ? "♀" : "⚥"
+          }`;
+          efficiencyContainer.innerHTML = `[${UIManager.formatValueWithSymbol(member.efficiency * 100, {
+            icon: "%",
+            infront: false,
+          })} Efficiency]`;
+          currentAstroidContainer.innerHTML = `${member.currentAssignedAstroid === "" ? "Home" : member.currentAssignedAstroid}`;
+
+          const buttonContainer = document.createElement("div");
+          buttonContainer.classList.add("button-container");
+
+          const button = document.createElement("button");
+          button.innerHTML = `Fire`;
+
+          button.addEventListener("click", () => {
+            this.fire(member.id);
+          });
 
           staffMemberContainer.appendChild(facePicContainer);
-          staffMemberContainer.appendChild(nameContainer);
-          staffMemberContainer.appendChild(genderContainer);
+          infoContainer.appendChild(nameContainer);
+          infoContainer.appendChild(efficiencyContainer);
+          infoContainer.appendChild(currentAstroidContainer);
+          buttonContainer.appendChild(button);
+          staffMemberContainer.appendChild(infoContainer);
+          staffMemberContainer.appendChild(buttonContainer);
 
           container.appendChild(staffMemberContainer);
         });
       }
     });
+  }
+  fire(id: string) {
+    this.members = this.members.filter((member) => member.id !== id);
+    this.draw();
   }
 }

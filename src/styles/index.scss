@@ -27,6 +27,7 @@ html {
 }
 
 body {
+  display: flex;
   margin: 10px;
   padding: 5px;
   background-color: $background-color;
@@ -226,22 +227,46 @@ button[disabled] {
 
 .theme-7 {
   .status-bar-field {
-
     border-top: 1px solid rgba(0, 0, 0, .7);
   }
 }
 
 .staff-list-container {
-  border-left: 1px solid hsla(0, 0%, 100%, .75);
-  box-shadow: inset 0 1px 2px grey;
+  border: 1px solid #9e9e9e;
   padding: 2px;
+  max-height: 150px;
+  z-index: 10 !important;
+  overflow-y: scroll;
 }
 
 .staff-member-container {
   display: flex;
   padding: 4px;
+  z-index: 2 !important;
   margin: 2px;
   background-color: #fff;
+  box-shadow: inset 0 0 0 1px #f3f3f388, 0 0 0 1px #eaeaea88;
+  border: 1px solid #9e9e9e;
+}
+
+.staff-info-container {
+  display: flex;
+  justify-content: space-between;
+  flex: 1;
+  margin-left: 2px;
+}
+
+.staff-name-container {
+  padding: 2px;
+  font-size: 14px;
+}
+
+.staff-site-container {
+  display: flex;
+  padding: 4px;
+  margin: 2px;
+  font-weight: bold;
+  float: right;
   box-shadow: inset 0 0 0 1px #f3f3f388, 0 0 0 1px #eaeaea88;
   border: 1px solid #9e9e9e;
 }
@@ -255,4 +280,18 @@ button[disabled] {
   justify-content: center;
   box-shadow: inset 0 0 0 1px rgba(243, 243, 243, 0.5333333333), 0 0 0 1px rgba(234, 234, 234, 0.5333333333);
   border: 1px solid #9e9e9e;
+}
+
+.astroid-container {
+  padding: 2px;
+  box-shadow: inset 0 0 0 1px #f3f3f388, 0 0 0 1px #eaeaea88;
+  border: 1px solid #9e9e9e;
+
+  .astroid-name-container {
+    text-decoration: underline;
+  }
+
+  div {
+    margin: 2px;
+  }
 }
