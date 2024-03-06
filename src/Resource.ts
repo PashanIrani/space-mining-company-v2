@@ -40,7 +40,7 @@ export default abstract class Resource {
   public static ALL_RESOURCES: AllResourcesObject = {};
   public static RESOURCES_UPDATE_DEPS: { [key: string]: Set<string> } = {};
   public unitSymbol: UnitSymbolDefination;
-  public buildQueue: Array<number>;
+  public buildQueue: Array<{ amount: number; callback: Function }>;
   private _buildQueueCapacity: number;
 
   constructor(desc: ResourceDescription) {
@@ -95,15 +95,15 @@ export default abstract class Resource {
   generate(): Promise<void> {
     return new Promise((res, rej) => {
       if (!canAfford(this.costs)) {
-        res();
+        rej();
         return;
       }
 
       performCostTransaction(this.costs);
-      this.buildQueue.push(this.generateAmount);
+      this.buildQueue.push({ amount: this.generateAmount, callback: res });
       this.setQueueString();
+
       if (this.buildQueue.length > 1) {
-        res();
         return;
       }
 
@@ -112,7 +112,7 @@ export default abstract class Resource {
   }
 
   sumOfQueuedBuilds(): number {
-    return this.buildQueue?.reduce((sum, currentValue) => sum + currentValue, 0);
+    return this.buildQueue?.reduce((sum, currentValue) => sum + currentValue.amount, 0);
   }
 
   setQueueString() {
@@ -136,14 +136,17 @@ export default abstract class Resource {
         return { intervalDuration, incrementAmount, precision };
       };
 
-      const generateAmount = this.buildQueue[0];
+      const currentBuildDetails = this.buildQueue[0];
       this.buildStatus = buildStatus;
 
       const totalTimeMs = this.buildTimeMs * (1 - buildStatus / 100);
 
       const { intervalDuration, incrementAmount, precision } = calculateProgressPrecision(totalTimeMs);
 
-      UIManager.displayText(`resource-${this.label}-nextAdditionIndicator`, `  (+${UIManager.formatValueWithSymbol(generateAmount, this.unitSymbol)})`);
+      UIManager.displayText(
+        `resource-${this.label}-nextAdditionIndicator`,
+        `  (+${UIManager.formatValueWithSymbol(currentBuildDetails.amount, this.unitSymbol)})`
+      );
       this.setQueueString();
 
       let perBuildPercentageTick = () => {
@@ -167,10 +170,12 @@ export default abstract class Resource {
         UIManager.displayText(`resource-${this.label}-buildStatusSpinner`, "");
         UIManager.displayText(`resource-${this.label}-nextAdditionIndicator`, "");
 
-        this.amount += generateAmount;
+        this.amount += currentBuildDetails.amount;
+
         this.buildQueue.shift();
         clearInterval(buildPercentageInterval);
         this.buildStatus = 0;
+        currentBuildDetails.callback();
 
         UIManager.displayText(`resource-${this.label}-buildDescription`, this.getBuildDescription());
 

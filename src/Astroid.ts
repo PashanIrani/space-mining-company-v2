@@ -80,12 +80,24 @@ export class AstroidResource extends Resource {
       capacity: 20,
       generateAmount: 1,
       costs: [
-        { resource: "funds", amount: 2 },
-        { resource: "energy", amount: 2 },
+        { resource: "funds", amount: 1250 },
+        { resource: "energy", amount: 20 },
       ],
-      buildTimeMs: 2000,
-      buildDescriptions: ["A", "B", "C", "D", "A", "B", "C", "D", "A", "B", "C", "D"],
-      unitSymbol: { icon: "a", infront: false },
+      buildTimeMs: 80 * 1000,
+      buildDescriptions: [
+        "Scanning the Sky",
+        "Identifying Celestial Objects",
+        "Recording Orbital Parameters",
+        "Calculating Trajectories",
+        "Confirming Potential Asteroids",
+        "Cross-referencing with Known Objects",
+        "Continued Surveillance",
+        "Monitoring Orbital Movements",
+        "Estimating Future Positions",
+        "Validating Asteroid Presence",
+        "Notifying Relevant Authorities",
+      ],
+      unitSymbol: { icon: "🪨", infront: false },
     });
 
     this.resources = resources;
@@ -163,6 +175,14 @@ export class AstroidResource extends Resource {
       }
     });
 
+    document.querySelectorAll(".resources-minable-resources").forEach((container) => {
+      container.innerHTML = "";
+
+      Object.keys(this.resources).forEach((resourceKey) => {
+        let resource = this.resources[resourceKey];
+        container.innerHTML += `<div>${UIManager.capitalize(resource.label)}: ${UIManager.formatValueWithSymbol(resource.amount, resource.unitSymbol)}</div>`;
+      });
+    });
     this.setStaffAssignedAstroid();
     this.staff.draw();
   }

@@ -13,7 +13,7 @@ interface loadedResource {
   _capacity: number;
   _generateAmount: number;
   _buildQueueCapacity: number;
-  buildQueue: Array<number>;
+  buildQueue: Array<{ amount: number; callback: Function }>;
   _costs: Array<Cost>;
 }
 

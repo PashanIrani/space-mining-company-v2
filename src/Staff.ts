@@ -174,14 +174,33 @@ export class StaffResource extends Resource {
     super({
       label: "staffmember",
       initialAmount: 0,
-      capacity: 20,
+      capacity: 5,
       generateAmount: 1,
       costs: [
-        { resource: "funds", amount: 2 },
-        { resource: "energy", amount: 2 },
+        { resource: "funds", amount: 625 },
+        { resource: "energy", amount: 10 },
       ],
-      buildTimeMs: 2000,
-      buildDescriptions: ["A", "B", "C", "D", "A", "B", "C", "D", "A", "B", "C", "D"],
+      buildTimeMs: 40 * 1000,
+      buildDescriptions: [
+        "Recruitment: Advertising",
+        "Recruitment: Receiving",
+        "Recruitment: Reviewing",
+        "Screening: Assessing",
+        "Screening: Evaluating",
+        "Screening: Shortlisting",
+        "Interview: Questioning",
+        "Interview: Engaging",
+        "Interview: Assessing",
+        "Evaluate: Analyzing",
+        "Evaluate: Comparing",
+        "Evaluate: Selecting",
+        "Negotiate: Discussing",
+        "Negotiate: Bargaining",
+        "Negotiate: Finalizing",
+        "Onboard: Welcoming",
+        "Onboard: Orienting",
+        "Onboard: Integrating",
+      ],
       unitSymbol: { icon: "🧍‍♂️", infront: false },
     });
   }
@@ -201,6 +220,8 @@ export class StaffResource extends Resource {
     let firstName = StaffMember.genFirstName(gender);
 
     super.generate().then(() => {
+      console.log("callback called");
+
       this.members.push(
         new StaffMember({
           gender,

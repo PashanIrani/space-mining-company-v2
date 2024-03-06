@@ -85,7 +85,7 @@ export class Factory {
       description.innerHTML = `${UIManager.capitalize(this.resource.label)} is generated at a rate of <b>${UIManager.formatValueWithSymbol(
         this.getGenAmount(),
         this.resource.unitSymbol
-      )} per second</b> by manufacturers${this.resource.costs.length > 0 ? ` while consuming ${costsContainer.innerHTML} per second.` : "."}`;
+      )} per second</b> ${this.resource.costs.length > 0 ? ` while consuming ${costsContainer.innerHTML} per second.` : "."}`;
 
       const costP = document.createElement("p");
       costP.innerHTML = `Upgrade Cost: ${UIManager.getCostString(this.upgradeCost)}`;
@@ -157,7 +157,7 @@ export class Factory {
       infoContainer.appendChild(statusP);
 
       container.innerHTML = "";
-      factoryContainer.appendChild(title);
+      // factoryContainer.appendChild(title);
       factoryContainer.appendChild(description);
       factoryContainer.appendChild(sliderContainer);
       factoryContainer.appendChild(infoContainer);

@@ -10,8 +10,55 @@
 
 <body>
 
+  <div id="overlay">
+    <div id="content">
+      <p>In a world drained of resources, humanity survives through asteroid mining, where courageous space miners
+        equipped with
+        jetpacks and spacesuits extract essential materials from celestial bodies. At the core of this survival is a
+        basic computer program, managing space operations and safeguarding the prosperity of the human race.</p>
+      <button id="closeBtn" onclick="hideOverlay()">Continue...</button>
+    </div>
+  </div>
+
   <div class="column">
 
+    <!-- General -->
+    <div class="resource-container system-window initially-hidden-window">
+      <div class="window active glass">
+        <div class="title-bar">
+          <div class="title-bar-text">System</div>
+          <div class="title-bar-controls">
+            <button aria-label="Minimize" data-target="general-window"></button>
+            <button aria-label="Restore" disabled></button>
+            <button aria-label="Close" disabled></button>
+          </div>
+        </div>
+        <div id="general-window" class="window-body has-space">
+          <div class="window-body has-space missions-store" id="general-window"></div>
+          <fieldset>
+            <legend>Stock Pile</legend>
+            <div class="resources-minable-resources">
+
+              <!-- <p>Dirt: <span class="resource-dirt-amount"></span></p>
+                <p>Gold: <span class="resource-gold-amount"></span></p> -->
+            </div>
+          </fieldset>
+
+          <div style="display: none;">
+            Theme:
+            <select id="css-dropdown">
+              <option value="xp">Windows XP</option>
+              <option value="7">Windows 7</option>
+            </select>
+          </div>
+
+          <!-- <div class="cosmic-stat-window initially-hidden-window">
+                Cosmic Blessing: <span class="cosmic-boost-value">0%</span>
+              </div> -->
+
+        </div>
+      </div>
+    </div>
 
     <!-- Energy -->
     <div class="resource-container energy-window">
@@ -59,7 +106,6 @@
             </menu>
             <article role="tabpanel" id="energy-upgrades-tab">
               <div class="energy-store initially-hidden-window energy-upgrades-window">
-                </fieldset>
             </article>
             <article role="tabpanel" hidden id="energy-factory-tab">
               <div class="factory-container initially-hidden-window energy-factory energy-factory-window"></div>
@@ -75,81 +121,6 @@
         </div>
       </div>
     </div>
-
-    <!-- General -->
-    <div class="resource-container system-window initially-hidden-window">
-      <div class="window active glass">
-        <div class="title-bar">
-          <div class="title-bar-text">System</div>
-          <div class="title-bar-controls">
-            <button aria-label="Minimize" data-target="general-window"></button>
-            <button aria-label="Restore" disabled></button>
-            <button aria-label="Close"></button>
-          </div>
-        </div>
-        <div id="general-window" class="window-body has-space">
-          <p>
-            In a world drained of resources, humanity survives through asteroid mining, where courageous space miners
-            equipped with
-            jetpacks and spacesuits extract essential materials from celestial bodies. At the core of this survival is a
-            basic computer program, managing space operations and safeguarding the prosperity of the human race.</p>
-          <div>
-            <p>Dirt: <span class="resource-dirt-amount"></span></p>
-            <p>Gold: <span class="resource-gold-amount"></span></p>
-          </div>
-          <div>
-            Theme:
-            <select id="css-dropdown">
-              <option value="xp">Windows XP</option>
-              <option value="7">Windows 7</option>
-            </select>
-          </div>
-          <div class="cosmic-stat-window initially-hidden-window">
-            Cosmic Blessing: <span class="cosmic-boost-value">0%</span>
-          </div>
-
-        </div>
-      </div>
-    </div>
-
-    <!-- Astroids -->
-    <div class="resource-container astroid-window initially-hidden-window">
-      <div class="window active glass">
-        <div class="title-bar">
-          <div class="title-bar-text">Astroids Panel (v1.0)</div>
-          <div class="title-bar-controls">
-            <button aria-label="Minimize" data-target="astroid-window"></button>
-            <button aria-label="Restore" disabled></button>
-            <button aria-label="Close"></button>
-          </div>
-        </div>
-        <div id="astroid-window" class="window-body has-space">
-          <p><b><u>Astroid's In Radar</u></b>: <span class="resource-astroid-amount"></span>/<span
-              class="resource-astroid-capacity"></span><span class="resource-astroid-nextAdditionIndicator"></span>
-          </p>
-
-          <p class="description">Some astroid description.</p>
-
-          <button class="resource-astroid-generateButton">Locate Astroid</button>
-          <button class="resource-astroid-beginMining">Allocate Staff</button>
-          <div class="details-container">
-            <p>Cost: <span class="resource-astroid-costs"></span></p>
-          </div>
-          <div class="astroid-list-container"></div>
-          <div class="window-body has-space astroid-store" id="store-window"></div>
-        </div>
-        <div class="status-bar">
-          <div class="status-bar-field">
-            <div>Operation: <span class="resource-astroid-buildDescription"></span></div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div class="column">
-
-
-
 
     <!-- Funds -->
     <div class="resource-container funds-window initially-hidden-window">
@@ -189,7 +160,7 @@
               <button role="tab" aria-selected="true" aria-controls="funds-upgrades-tab"
                 class="initially-hidden-window funds-upgrades-window">Upgrades</button>
               <button role="tab" aria-controls="funds-factory-tab"
-                class="initially-hidden-window funds-factory-window">Factory</button>
+                class="initially-hidden-window funds-factory-window">Printer</button>
             </menu>
             <article role="tabpanel" id="funds-upgrades-tab">
               <div class="funds-store initially-hidden-window funds-upgrades-window">
@@ -211,6 +182,61 @@
     </div>
 
 
+  </div>
+  <div class="column">
+
+
+    <!-- Astroids -->
+    <div class="resource-container astroid-window initially-hidden-window">
+      <div class="window active glass">
+        <div class="title-bar">
+          <div class="title-bar-text">Astroids</div>
+          <div class="title-bar-controls">
+            <button aria-label="Minimize" data-target="astroid-window"></button>
+            <button aria-label="Restore" disabled></button>
+            <button aria-label="Close" disabled></button>
+          </div>
+        </div>
+        <div id="astroid-window" class="window-body has-space">
+          <p><b><u>Astroid</u></b>: <span class="resource-astroid-amount"></span>/<span
+              class="resource-astroid-capacity"></span><span class="resource-astroid-nextAdditionIndicator"></span>
+          </p>
+
+
+          <p class="description">The silent architects of cosmic balance.</p>
+
+          <div role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="40"
+            class="resource-astroid-progressbar-container">
+            <div class="resource-astroid-progressbar progressbar"></div>
+          </div>
+
+          <div class="details-container">
+            <p>Cost: <span class="resource-astroid-costs"></span></p>
+          </div>
+
+          <div class="button-container">
+            <span class="resource-astroid-buildStatusSpinner spinner-container"></span>
+            &nbsp;
+            <span class="resource-astroid-buildStatus"></span>
+            &nbsp;
+            <button class="resource-astroid-generateButton">Locate <span class="resource-astroid-label"></span> (+<span
+                class="resource-astroid-generateAmount"></span>)</button>
+          </div>
+          <div class="astroid-list-container"></div>
+          <button class="resource-astroid-beginMining">Allocate Staff</button>
+          <div class="window-body has-space astroid-store" id="store-window"></div>
+        </div>
+        <div class="status-bar">
+          <div class="status-bar-field">
+            <div>Operation: <span class="resource-astroid-buildDescription"></span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+
+
 
     <!-- Staff -->
     <div class="resource-container staff-window initially-hidden-window">
@@ -220,7 +246,7 @@
           <div class="title-bar-controls">
             <button aria-label="Minimize" data-target="staff-window"></button>
             <button aria-label="Restore" disabled></button>
-            <button aria-label="Close"></button>
+            <button aria-label="Close" disabled></button>
           </div>
         </div>
         <div id="staff-window" class="window-body has-space">
@@ -252,12 +278,12 @@
         <div class="title-bar">
           <div class="title-bar-text">Store</div>
           <div class="title-bar-controls">
-            <button aria-label="Minimize" data-target="store-window"></button>
+            <button aria-label="Minimize" data-target="store-frame-window"></button>
             <button aria-label="Restore" disabled></button>
             <button aria-label="Close" disabled></button>
           </div>
         </div>
-        <div class="window-body has-space main-store" id="store-window"></div>
+        <div class="window-body has-space main-store" id="store-frame-window"></div>
       </div>
 
     </div>
@@ -265,6 +291,16 @@
 
 
     <script src="/scripts/index.js"></script>
+    <script>
+      if (localStorage.getItem('overlay-hidden')) {
+        document.getElementById('overlay').style.display = 'none';
+      }
+
+      function hideOverlay() {
+        document.getElementById('overlay').style.display = 'none';
+        localStorage.setItem('overlay-hidden', true);
+      }
+    </script>
 </body>
 
 </html>
