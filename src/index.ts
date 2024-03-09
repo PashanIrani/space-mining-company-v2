@@ -1,4 +1,4 @@
-import Resource, { AllResourcesObject, Cost } from "./Resource";
+import Resource, { AllResourcesObject } from "./Resource";
 
 import { Store, StoreItem } from "./Store";
 import { Factory } from "./Factory";
@@ -10,6 +10,8 @@ import "./styles";
 import { Globals } from "./Globals";
 import { StaffResource } from "./Staff";
 import { AstroidResource } from "./Astroid";
+import { getChangeAmount } from "./Helpers";
+import { generateMissionNameAndCost } from "./Helpers";
 
 const DEV = false;
 
@@ -21,7 +23,7 @@ class Energy extends Resource {
       capacity: 10,
       generateAmount: 1,
       costs: [],
-      buildTimeMs: DEV ? 10 : 100,
+      buildTimeMs: DEV ? 10 : 500,
       buildDescriptions: ["Generating Energy"],
       unitSymbol: { icon: "e", infront: false },
     });
@@ -42,44 +44,44 @@ class Funds extends Resource {
   }
 }
 
-class Metals extends Resource {
+class RawMetals extends Resource {
   constructor() {
     super({
-      label: "metals",
+      label: "raw_metals",
       initialAmount: 0,
       generateAmount: 1,
       costs: [],
       buildTimeMs: 10000,
       buildDescriptions: [],
-      unitSymbol: { icon: "lbs", infront: false },
+      unitSymbol: { icon: "ppm", infront: false },
     });
   }
 }
 
-class Water extends Resource {
+class WaterIce extends Resource {
   constructor() {
     super({
-      label: "water",
+      label: "water_ice",
       initialAmount: 0,
       generateAmount: 1,
       costs: [],
       buildTimeMs: 10000,
       buildDescriptions: [],
-      unitSymbol: { icon: "l", infront: true },
+      unitSymbol: { icon: "g", infront: false },
     });
   }
 }
 
-class CarbonCompounds extends Resource {
+class CarbonaceousMaterial extends Resource {
   constructor() {
     super({
-      label: "carbonCompounds",
+      label: "carbonaceous_material",
       initialAmount: 0,
       generateAmount: 1,
       costs: [],
       buildTimeMs: 10000,
       buildDescriptions: [],
-      unitSymbol: { icon: "cc", infront: true },
+      unitSymbol: { icon: "g", infront: false },
     });
   }
 }
@@ -87,7 +89,7 @@ class CarbonCompounds extends Resource {
 class SocialCredit extends Resource {
   constructor() {
     super({
-      label: "socialcredit",
+      label: "social_credit",
       initialAmount: 0,
       generateAmount: 1,
       costs: [],
@@ -101,17 +103,26 @@ class SocialCredit extends Resource {
 const energy = new Energy();
 const funds = new Funds();
 const staff = new StaffResource();
-const metals = new Metals();
-const water = new Water();
-const carbonCompounds = new CarbonCompounds();
+export const rawMetals = new RawMetals();
+export const waterIce = new WaterIce();
+export const carbonaceousMaterial = new CarbonaceousMaterial();
 const socialcredit = new SocialCredit();
-const astroids = new AstroidResource({ metals, water, carbonCompounds }, staff);
+const astroids = new AstroidResource({ raw_metals: rawMetals, water_ice: waterIce, carbonaceous_material: carbonaceousMaterial }, staff);
 
-let resources: AllResourcesObject = { energy, funds, staff, astroids, metals, water, carbonCompounds, socialcredit };
+let resources: AllResourcesObject = {
+  energy,
+  funds,
+  staff,
+  astroids,
+  raw_metals: rawMetals,
+  water_ice: waterIce,
+  carbonaceous_material: carbonaceousMaterial,
+  socialcredit,
+};
 Factory.ALL_RESOURCES = resources;
 
-let energyFactory = new Factory(energy, [{ resource: "socialcredit", amount: 1 }], 0, 0.1);
-let fundsFactory = new Factory(funds, [{ resource: "socialcredit", amount: 1 }], 0, 0.01);
+let energyFactory = new Factory(energy, [{ resource: "social_credit", amount: 1 }], 0, 0.1);
+let fundsFactory = new Factory(funds, [{ resource: "social_credit", amount: 1 }], 0, 0.01);
 
 const pacingManager = new PacingManager(resources);
 
@@ -138,24 +149,6 @@ let store = new Store([
       pacingManager.showWindow("funds-upgrades");
     },
   },
-  // {
-  //   sortOrder: 2,
-  //   id: "cosmic-blessing-enable",
-  //   collection: "main",
-  //   name: "Cosmic Blessing",
-  //   description: "Amplifies resource yields in accordance with cosmic alignment (Up to a 35% surge).",
-  //   costs: [
-  //     { resource: "funds", amount: 1000 },
-  //     { resource: "energy", amount: 250 },
-  //   ],
-  //   level: 0,
-  //   maxLevel: 1,
-  //   dependsOn: [["main", "first-purchase", 0]],
-  //   onPurchase: (self: StoreItem) => {
-  //     Globals._maxCosmicBlessing = 0.35;
-  //     pacingManager.showWindow("cosmic-stat");
-  //   },
-  // },
   {
     sortOrder: 3,
     id: "queue-purchase",
@@ -226,7 +219,6 @@ let store = new Store([
       { resource: "energy", amount: 2.58 },
     ],
     level: 0,
-    // maxLevel: 10,
     dependsOn: [],
     onPurchase: (self: StoreItem) => {
       let startingLevel = 1,
@@ -286,37 +278,6 @@ let store = new Store([
       pacingManager.showWindow("energy-factory");
     },
   },
-  // {
-  //   sortOrder: 1,
-  //   id: "energy-generation",
-  //   collection: "energy",
-  //   name: "Energy Generation",
-  //   description: `Increases the amount of energy generated by ${(35).toFixed(2)}%`,
-  //   costs: [
-  //     { resource: "funds", amount: 5 },
-  //     { resource: "energy", amount: 5 },
-  //   ],
-  //   level: 0,
-  //   maxLevel: 55,
-  //   dependsOn: [],
-  //   onPurchase: (self: StoreItem) => {
-  //     let startingLevel = 0.35,
-  //       cap = 0.01,
-  //       step = 0.0001;
-  //     startingLevel -= (self.level - 1) * step; // minus by one to get last level's amount.
-  //     startingLevel = startingLevel < cap ? cap : startingLevel; // Cap
-
-  //     self.description = `Increases the amount of energy generated by ${((startingLevel - step) * 100).toFixed(2)}%`;
-
-  //     let changeAmount = getChangeAmount(self.level, startingLevel, energy.generateAmount, true);
-  //     energy.generateAmount = changeAmount;
-
-  //     self.costs = self.costs.map((cost) => {
-  //       cost.amount = getChangeAmount(self.level, startingLevel * 1.85, cost.amount, true); // max change is 0.75, since starting level will be 0.1 as max
-  //       return cost;
-  //     });
-  //   },
-  // },
   {
     sortOrder: 2,
     id: "energy-capacity",
@@ -328,7 +289,6 @@ let store = new Store([
       { resource: "energy", amount: 9.5 },
     ],
     level: 0,
-    maxLevel: 10,
     dependsOn: [],
     onPurchase: (self: StoreItem) => {
       energy.capacity = getChangeAmount(self.level, 1, energy.capacity, true);
@@ -351,8 +311,8 @@ let store = new Store([
     name: "Astroid Capacity",
     description: `Increase max capacity of astroid to ${UIManager.formatValueWithSymbol(getChangeAmount(1, 1, astroids.capacity, true), astroids.unitSymbol)}`,
     costs: [
-      { resource: "funds", amount: 1000 },
-      { resource: "energy", amount: 20 },
+      { resource: "funds", amount: 5000 },
+      { resource: "energy", amount: 40 },
     ],
     level: 0,
     maxLevel: 10,
@@ -375,11 +335,11 @@ let store = new Store([
     sortOrder: 1,
     id: "staff-capacity",
     collection: "staff",
-    name: "staff Capacity",
+    name: "Staff Capacity",
     description: `Increase max capacity of staff to ${UIManager.formatValueWithSymbol(getChangeAmount(1, 1, staff.capacity, true), staff.unitSymbol)}`,
     costs: [
-      { resource: "funds", amount: 100 },
-      { resource: "energy", amount: 10 },
+      { resource: "funds", amount: 1000 },
+      { resource: "energy", amount: 20 },
     ],
     level: 0,
     maxLevel: 10,
@@ -403,7 +363,7 @@ let store = new Store([
     id: "mission-solt1",
     collection: "missions",
     name: slot1MissionDetails.missionName,
-    description: `Do mission`,
+    description: `Reward: 1 Social Credit`,
     costs: slot1MissionDetails.cost,
     level: 0,
     dependsOn: [],
@@ -412,7 +372,7 @@ let store = new Store([
       self.name = missionDetails.missionName;
       self.costs = missionDetails.cost;
 
-      socialcredit.amount += 2;
+      socialcredit.amount += 1;
     },
   },
   {
@@ -420,7 +380,7 @@ let store = new Store([
     id: "mission-solt2",
     collection: "missions",
     name: slot2MissionDetails.missionName,
-    description: `Do mission`,
+    description: `Reward: 1 Social Credit`,
     costs: slot2MissionDetails.cost,
     level: 0,
     dependsOn: [],
@@ -429,54 +389,12 @@ let store = new Store([
       self.name = missionDetails.missionName;
       self.costs = missionDetails.cost;
 
-      socialcredit.amount += 2;
+      socialcredit.amount += 1;
     },
   },
 ]);
 
-function generateMissionNameAndCost(): { missionName: string; cost: Cost[] } {
-  const missionTypes = ["Exploration", "Extraction", "Delivery", "Rescue", "Recovery", "Research"];
-  const resourceTypes = [water, metals, carbonCompounds];
-
-  // Choose a random mission type
-  const randomMissionType = missionTypes[Math.floor(Math.random() * missionTypes.length)];
-
-  // Shuffle resource types to randomize which resources will be needed
-  const shuffledResources = resourceTypes.sort(() => Math.random() - 0.5);
-
-  // Determine how many resource types are needed (1, 2, or 3)
-  const numResourcesNeeded = Math.floor(Math.random() * 3) + 1; // Random number between 1 and 3
-
-  // Select the first `numResourcesNeeded` resources
-  const resourcesNeeded = shuffledResources.slice(0, numResourcesNeeded);
-
-  // Generate mission name based on the selected mission type and resource types
-  let missionName = `${randomMissionType} Mission`;
-  let cost: Cost[] = [];
-
-  // Add resource types to the mission name and determine their costs
-  resourcesNeeded.forEach((resourceType) => {
-    let amount = Math.floor(Math.random() * 10) + 5; // Random amount between 5 and 14
-    missionName += ` for ${resourceType.label}`;
-    cost.push({ resource: resourceType.label, amount });
-  });
-
-  return { missionName, cost };
-}
-
-// strength: 0-1 value: 1 will reduce by 50% at level 1.
-// tension: controls the depth function goes to. tension of 1 will result in 0 change, while 0 will allow the strength to function without restriction.
-function getChangeAmount(level: number, strength: number = 0.15, prevNumber: number, up: boolean = true) {
-  if (level < 1) {
-    throw new Error("Level cannot be 0");
-  }
-
-  return (prevNumber / Math.pow(up ? 1 + strength : 1 - strength, level - 1)) * Math.pow(up ? 1 + strength : 1 - strength, level);
-}
-
 new SaveManager(resources, pacingManager, store, { fundsFactory: energyFactory }, staff, astroids);
-
-// Globals.initCosmicBlessing(resources);
 
 // DEV!!!! ---------------------------------------------------------------
 let clickCount = 0;

@@ -37,9 +37,15 @@ export class Astroid {
   }
 
   isEmpty() {
-    return this.resources.every((resource) => {
-      return resource.amount > 0;
-    });
+    for (let i = 0; i < this.resources.length; i++) {
+      const resource = this.resources[i];
+
+      if (resource.amount > 0) {
+        return false;
+      }
+    }
+
+    return true;
   }
 }
 
@@ -77,13 +83,13 @@ export class AstroidResource extends Resource {
     super({
       label: "astroid",
       initialAmount: 0,
-      capacity: 20,
+      capacity: 2,
       generateAmount: 1,
       costs: [
         { resource: "funds", amount: 1250 },
         { resource: "energy", amount: 20 },
       ],
-      buildTimeMs: 80 * 1000,
+      buildTimeMs: 40 * 1000,
       buildDescriptions: [
         "Scanning the Sky",
         "Identifying Celestial Objects",
@@ -180,7 +186,10 @@ export class AstroidResource extends Resource {
 
       Object.keys(this.resources).forEach((resourceKey) => {
         let resource = this.resources[resourceKey];
-        container.innerHTML += `<div>${UIManager.capitalize(resource.label)}: ${UIManager.formatValueWithSymbol(resource.amount, resource.unitSymbol)}</div>`;
+        container.innerHTML += `<div>${UIManager.capitalize(UIManager.removeUnderscore(resource.label))}: ${UIManager.formatValueWithSymbol(
+          resource.amount,
+          resource.unitSymbol
+        )}</div>`;
       });
     });
     this.setStaffAssignedAstroid();
@@ -189,7 +198,7 @@ export class AstroidResource extends Resource {
 
   clearJunkAstroids(astroids: Astroid[]) {
     let res = astroids.filter((astroid) => {
-      let res = astroid.isEmpty();
+      let res = !astroid.isEmpty();
       return res;
     });
 

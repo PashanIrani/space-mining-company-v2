@@ -180,7 +180,7 @@ export class StaffResource extends Resource {
         { resource: "funds", amount: 625 },
         { resource: "energy", amount: 10 },
       ],
-      buildTimeMs: 40 * 1000,
+      buildTimeMs: 20 * 1000,
       buildDescriptions: [
         "Recruitment: Advertising",
         "Recruitment: Receiving",
@@ -220,8 +220,6 @@ export class StaffResource extends Resource {
     let firstName = StaffMember.genFirstName(gender);
 
     super.generate().then(() => {
-      console.log("callback called");
-
       this.members.push(
         new StaffMember({
           gender,

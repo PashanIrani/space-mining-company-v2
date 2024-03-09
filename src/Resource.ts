@@ -196,7 +196,7 @@ export default abstract class Resource {
 
   set label(newValue: string) {
     this._label = newValue;
-    UIManager.displayText(`resource-${this.label}-label`, UIManager.capitalize(this.label));
+    UIManager.displayText(`resource-${this.label}-label`, UIManager.capitalize(UIManager.removeUnderscore(this.label)));
   }
 
   get buildTimeMs() {

@@ -1,6 +1,10 @@
 import Resource, { Cost, UnitSymbolDefination } from "./Resource";
 
 export default class UIManager {
+  static removeUnderscore(label: string): string {
+    return label.replace(/_/g, " ");
+  }
+
   static setProgressBarToYellow(resource: Resource) {
     const elements = document.querySelectorAll<HTMLElement>(`.resource-${resource.label}-progressbar-container`);
 
@@ -152,7 +156,7 @@ export default class UIManager {
         Resource.ALL_RESOURCES[cost.resource].unitSymbol
       )}</span>/${UIManager.formatValueWithSymbol(cost.amount, Resource.ALL_RESOURCES[cost.resource].unitSymbol)} <span class="resource-${
         Resource.ALL_RESOURCES[cost.resource].label
-      }-label">${UIManager.capitalize(Resource.ALL_RESOURCES[cost.resource].label)}</span></span>`;
+      }-label">${UIManager.capitalize(UIManager.removeUnderscore(Resource.ALL_RESOURCES[cost.resource].label))}</span></span>`;
 
       if (i < costs.length - 1) {
         costDisplayText += ", ";
@@ -163,7 +167,10 @@ export default class UIManager {
   }
 
   static capitalize(str: string) {
-    return str.charAt(0).toUpperCase() + str.slice(1);
+    return str
+      .split(" ")
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(" ");
   }
 
   static convertTime(seconds: number): string {
