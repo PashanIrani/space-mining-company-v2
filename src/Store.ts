@@ -125,7 +125,7 @@ export class Store {
 
             const costP = document.createElement("p");
 
-            costP.innerHTML = storeItem.purchased ? "Max Level Reached." : `Cost: ${UIManager.getCostString(storeItem.costs)}`;
+            costP.innerHTML = storeItem.purchased ? (storeItem.level > 1 ? "Max Level Reached." : "") : `Cost: ${UIManager.getCostString(storeItem.costs)}`;
 
             costP.classList.add("costs");
             const button = document.createElement("button");
