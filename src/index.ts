@@ -198,7 +198,7 @@ let store = new Store([
     name: "Staff Recruitment",
     description: `Enables you to recruit staff (space miners).`,
     costs: [
-      { resource: "funds", amount: 750 },
+      { resource: "funds", amount: 200 },
       { resource: "energy", amount: 35 },
     ],
     level: 0,
