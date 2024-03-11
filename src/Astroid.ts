@@ -86,7 +86,7 @@ export class AstroidResource extends Resource {
       capacity: 2,
       generateAmount: 1,
       costs: [
-        { resource: "funds", amount: 1250 },
+        { resource: "funds", amount: 750 },
         { resource: "energy", amount: 20 },
       ],
       buildTimeMs: 40 * 1000,

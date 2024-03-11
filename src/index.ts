@@ -311,7 +311,7 @@ let store = new Store([
     name: "Astroid Capacity",
     description: `Increase max capacity of astroid to ${UIManager.formatValueWithSymbol(getChangeAmount(1, 1, astroids.capacity, true), astroids.unitSymbol)}`,
     costs: [
-      { resource: "funds", amount: 5000 },
+      { resource: "funds", amount: 1000 },
       { resource: "energy", amount: 40 },
     ],
     level: 0,
@@ -338,7 +338,7 @@ let store = new Store([
     name: "Staff Capacity",
     description: `Increase max capacity of staff to ${UIManager.formatValueWithSymbol(getChangeAmount(1, 1, staff.capacity, true), staff.unitSymbol)}`,
     costs: [
-      { resource: "funds", amount: 1000 },
+      { resource: "funds", amount: 321 },
       { resource: "energy", amount: 20 },
     ],
     level: 0,

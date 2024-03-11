@@ -174,10 +174,10 @@ export class StaffResource extends Resource {
     super({
       label: "staffmember",
       initialAmount: 0,
-      capacity: 5,
+      capacity: 1,
       generateAmount: 1,
       costs: [
-        { resource: "funds", amount: 625 },
+        { resource: "funds", amount: 325 },
         { resource: "energy", amount: 10 },
       ],
       buildTimeMs: 20 * 1000,
