@@ -13,7 +13,7 @@ export function getChangeAmount(level: number, strength: number = 0.15, prevNumb
   return (prevNumber / Math.pow(up ? 1 + strength : 1 - strength, level - 1)) * Math.pow(up ? 1 + strength : 1 - strength, level);
 }
 export function generateMissionNameAndCost(): { missionName: string; cost: Cost[] } {
-  const missionTypes = ["Exploration", "Extraction", "Delivery", "Rescue", "Recovery", "Research"];
+  const missionTypes = ["Endeavor", "Venture", "Initiative", "Assignment", "Mission", "Operation", "Scheme", "Project"];
   const resourceTypes = [waterIce, rawMetals, carbonaceousMaterial];
 
   // Choose a random mission type
@@ -29,7 +29,7 @@ export function generateMissionNameAndCost(): { missionName: string; cost: Cost[
   const resourcesNeeded = shuffledResources.slice(0, numResourcesNeeded);
 
   // Generate mission name based on the selected mission type and resource types
-  let missionName = `${randomMissionType} Mission`;
+  let missionName = `${randomMissionType}`;
   let cost: Cost[] = [];
 
   // Add resource types to the mission name and determine their costs
