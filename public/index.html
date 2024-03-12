@@ -262,10 +262,19 @@
 
           <p class="description">Space miners, equipped with jetpacks, harvesting resources from asteroids.</p>
 
-          <button class="resource-staffmember-generateButton">Hire</button>
+          <div role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="40"
+            class="resource-staffmember-progressbar-container">
+            <div class="resource-staffmember-progressbar progressbar"></div>
+          </div>
+
           <div class="details-container">
             <p>Cost: <span class="resource-staffmember-costs"></span></p>
           </div>
+
+          <div class="button-container">
+            <button class="resource-staffmember-generateButton">Hire</button>
+          </div>
+
           <div class="staff-list-container"></div>
           <div class="window-body has-space staff-store" id="store-window"></div>
         </div>

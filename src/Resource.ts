@@ -241,6 +241,7 @@ export default abstract class Resource {
   set capacity(newValue: number) {
     this._capacity = newValue;
     UIManager.displayValue(`resource-${this.label}-capacity`, this.capacity, this.unitSymbol);
+    UIManager.updateProgressBar(this);
   }
 
   get generateAmount() {
