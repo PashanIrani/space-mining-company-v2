@@ -2,6 +2,7 @@ import { Astroid, AstroidResource } from "./Astroid";
 import { femaleNames, lastNames, maleNames } from "./Names";
 import Resource, { Cost, canAfford, performCostTransaction } from "./Resource";
 import UIManager from "./UIManager";
+import config from "./config";
 
 enum StaffGender {
   MALE,
@@ -180,7 +181,7 @@ export class StaffResource extends Resource {
         { resource: "funds", amount: 325 },
         { resource: "energy", amount: 10 },
       ],
-      buildTimeMs: 20 * 1000,
+      buildTimeMs: config.DEV ? 1000 : 20 * 1000,
       buildDescriptions: [
         "Recruitment: Advertising",
         "Recruitment: Receiving",
@@ -201,7 +202,7 @@ export class StaffResource extends Resource {
         "Onboard: Orienting",
         "Onboard: Integrating",
       ],
-      unitSymbol: { icon: "🧍‍♂️", infront: false },
+      unitSymbol: { icon: "🙋‍♂️", infront: false },
     });
   }
 
@@ -216,28 +217,32 @@ export class StaffResource extends Resource {
   }
 
   generate(): Promise<void> {
-    let gender = StaffMember.genGender();
-    let firstName = StaffMember.genFirstName(gender);
-
-    super.generate().then(() => {
-      this.members.push(
-        new StaffMember({
-          gender,
-          firstName,
-          lastName: StaffMember.genLastName(),
-          facePic: StaffMember.generateRandomLennyFace(),
-          id: StaffMember.genId(),
-          efficiency: Math.random(),
-        })
-      );
-      this.draw();
-    });
+    super.generate();
 
     return;
   }
 
+  afterGenerateCallback() {
+    let gender = StaffMember.genGender();
+    let firstName = StaffMember.genFirstName(gender);
+
+    this.members.push(
+      new StaffMember({
+        gender,
+        firstName,
+        lastName: StaffMember.genLastName(),
+        facePic: StaffMember.generateRandomLennyFace(),
+        id: StaffMember.genId(),
+        efficiency: Math.random(),
+      })
+    );
+    this.draw();
+  }
+
   draw() {
     const staffListContainers = document.querySelectorAll(`.staff-list-container`);
+
+    let idleCount = 0;
 
     staffListContainers.forEach((container) => {
       container.innerHTML = "";
@@ -248,6 +253,12 @@ export class StaffResource extends Resource {
         container.appendChild(message);
       } else {
         this.members.forEach((member) => {
+          if (member.currentAssignedAstroid == "") {
+            idleCount++;
+          }
+
+          UIManager.displayText("idle-staff-count", idleCount > 0 ? `${idleCount} idle staff members...` : "");
+
           const staffMemberContainer = document.createElement("div");
           staffMemberContainer.classList.add("staff-member-container");
 

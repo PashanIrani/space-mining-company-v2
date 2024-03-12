@@ -16,6 +16,7 @@ export interface StoreItemDescription {
   dependsOn: StoreItemDependsOn;
   sortOrder: number;
   onPurchase: onPurchaseFunction;
+  missionFormat?: boolean;
 }
 
 export class StoreItem {
@@ -29,6 +30,7 @@ export class StoreItem {
   maxLevel: number;
   sortOrder: number;
   onPurchase: onPurchaseFunction;
+  missionFormat?: boolean;
 
   constructor(desc: StoreItemDescription) {
     this.purchased = false;
@@ -40,6 +42,7 @@ export class StoreItem {
     this.level = desc.level;
     this.maxLevel = desc.maxLevel || -1;
     this.onPurchase = desc.onPurchase;
+    this.missionFormat = desc.missionFormat;
   }
 }
 
@@ -118,6 +121,11 @@ export class Store {
             const headerText = document.createElement("h1");
             let levelText =
               storeItem.maxLevel == 1 || storeItem.level == 0 ? "" : `[${storeItem.level}${storeItem.maxLevel > 1 ? `/${storeItem.maxLevel}` : ""}]`;
+
+            if (storeItem.missionFormat) {
+              levelText = "";
+            }
+
             headerText.innerHTML = `${storeItem.name} ${levelText}`;
 
             const descriptionText = document.createElement("h2");
@@ -127,6 +135,25 @@ export class Store {
 
             costP.innerHTML = storeItem.purchased ? (storeItem.level > 1 ? "Max Level Reached." : "") : `Cost: ${UIManager.getCostString(storeItem.costs)}`;
 
+            if (storeItem.missionFormat) {
+              costP.innerHTML = `<p>Requires:</p><div class="needs-container">`;
+
+              storeItem.costs.forEach((cost) => {
+                costP.innerHTML += `<div class="need-resource-container"><div class="needs-progressbar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="40"
+            class="resource-dummy-progressbar-container">
+            <div class="resource-dummy-progressbar progressbar" style="width: ${(Resource.ALL_RESOURCES[cost.resource].amount / cost.amount) * 100}%"></div>
+          </div><span class="costs ${Resource.ALL_RESOURCES[cost.resource].amount < cost.amount ? "highlight" : ""}"><span class="resource-${
+                  Resource.ALL_RESOURCES[cost.resource].label
+                }-amount">${UIManager.formatValueWithSymbol(
+                  Resource.ALL_RESOURCES[cost.resource].amount,
+                  Resource.ALL_RESOURCES[cost.resource].unitSymbol
+                )}</span>/${UIManager.formatValueWithSymbol(cost.amount, Resource.ALL_RESOURCES[cost.resource].unitSymbol)}</span></div>`;
+
+                costP.innerHTML += ``;
+              });
+
+              costP.innerHTML += "</div>";
+            }
             costP.classList.add("costs");
             const button = document.createElement("button");
             button.innerHTML = `Buy`;

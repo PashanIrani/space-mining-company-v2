@@ -331,3 +331,20 @@ button[disabled] {
     margin: 2px;
   }
 }
+
+.needs-container {
+  width: 200px;
+}
+
+.need-resource-container {
+  div.needs-progressbar {
+    display: inline-flex;
+    width: 90px;
+    margin: 0px;
+    margin-right: 5px;
+  }
+}
+
+.missions-store {
+  margin: 10px 0px;
+}

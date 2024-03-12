@@ -12,8 +12,7 @@ import { StaffResource } from "./Staff";
 import { AstroidResource } from "./Astroid";
 import { getChangeAmount } from "./Helpers";
 import { generateMissionNameAndCost } from "./Helpers";
-
-const DEV = false;
+import config from "./config";
 
 class Energy extends Resource {
   constructor() {
@@ -21,9 +20,9 @@ class Energy extends Resource {
       label: "energy",
       initialAmount: 0,
       capacity: 10,
-      generateAmount: 1,
+      generateAmount: config.DEV ? 100 : 1,
       costs: [],
-      buildTimeMs: DEV ? 10 : 500,
+      buildTimeMs: config.DEV ? 10 : 500,
       buildDescriptions: ["Generating Energy"],
       unitSymbol: { icon: "e", infront: false },
     });
@@ -35,9 +34,9 @@ class Funds extends Resource {
     super({
       label: "funds",
       initialAmount: 0,
-      generateAmount: 1,
+      generateAmount: config.DEV ? 100000 : 1,
       costs: [{ resource: "energy", amount: 5 }],
-      buildTimeMs: DEV ? 100 : 5000,
+      buildTimeMs: config.DEV ? 100 : 4000,
       buildDescriptions: ["Analyzing Market", "Executing Plan", "Generating Funds"],
       unitSymbol: { icon: "$", infront: true },
     });
@@ -53,7 +52,7 @@ class RawMetals extends Resource {
       costs: [],
       buildTimeMs: 10000,
       buildDescriptions: [],
-      unitSymbol: { icon: "ppm", infront: false },
+      unitSymbol: { icon: "🔗", infront: false },
     });
   }
 }
@@ -67,7 +66,7 @@ class WaterIce extends Resource {
       costs: [],
       buildTimeMs: 10000,
       buildDescriptions: [],
-      unitSymbol: { icon: "g", infront: false },
+      unitSymbol: { icon: "💧", infront: false },
     });
   }
 }
@@ -81,7 +80,7 @@ class CarbonaceousMaterial extends Resource {
       costs: [],
       buildTimeMs: 10000,
       buildDescriptions: [],
-      unitSymbol: { icon: "g", infront: false },
+      unitSymbol: { icon: "🌿", infront: false },
     });
   }
 }
@@ -127,7 +126,9 @@ let fundsFactory = new Factory(funds, [{ resource: "social_credit", amount: 1 }]
 const pacingManager = new PacingManager(resources);
 
 let slot1MissionDetails = generateMissionNameAndCost();
-let slot2MissionDetails = generateMissionNameAndCost();
+let slot2MissionReward = Math.round(Math.random() * 4 + 1);
+let slot2MissionDetails = generateMissionNameAndCost(slot2MissionReward);
+let slot2FundReward = JSON.parse(localStorage.getItem("slot2FundReward")) || 0;
 
 let store = new Store([
   {
@@ -318,17 +319,14 @@ let store = new Store([
     maxLevel: 10,
     dependsOn: [],
     onPurchase: (self: StoreItem) => {
-      astroids.capacity = getChangeAmount(self.level, 1, astroids.capacity, true);
+      astroids.capacity += 1;
 
       self.costs = self.costs.map((cost) => {
-        cost.amount = getChangeAmount(self.level, 0.95, cost.amount, true);
+        cost.amount = getChangeAmount(self.level, 0.05, cost.amount, true);
         return cost;
       });
 
-      self.description = `Increase max capacity of astroids to ${UIManager.formatValueWithSymbol(
-        getChangeAmount(self.level, 1, astroids.capacity, true),
-        astroids.unitSymbol
-      )}`;
+      self.description = `Increase max capacity of astroids to ${UIManager.formatValueWithSymbol(astroids.capacity + 1, astroids.unitSymbol)}`;
     },
   },
   {
@@ -342,20 +340,16 @@ let store = new Store([
       { resource: "energy", amount: 20 },
     ],
     level: 0,
-    maxLevel: 10,
     dependsOn: [],
     onPurchase: (self: StoreItem) => {
-      staff.capacity = getChangeAmount(self.level, 1, staff.capacity, true);
+      staff.capacity += 1;
 
       self.costs = self.costs.map((cost) => {
-        cost.amount = getChangeAmount(self.level, 0.95, cost.amount, true);
+        cost.amount = getChangeAmount(self.level, 0.02, cost.amount, true);
         return cost;
       });
 
-      self.description = `Increase max capacity of staff to ${UIManager.formatValueWithSymbol(
-        getChangeAmount(self.level, 1, staff.capacity, true),
-        staff.unitSymbol
-      )}`;
+      self.description = `Increase max capacity of staff to ${UIManager.formatValueWithSymbol(staff.capacity + 1, staff.unitSymbol)}`;
     },
   },
   {
@@ -367,6 +361,7 @@ let store = new Store([
     costs: slot1MissionDetails.cost,
     level: 0,
     dependsOn: [],
+    missionFormat: true,
     onPurchase: (self: StoreItem) => {
       let missionDetails = generateMissionNameAndCost();
       self.name = missionDetails.missionName;
@@ -380,23 +375,37 @@ let store = new Store([
     id: "mission-solt2",
     collection: "missions",
     name: slot2MissionDetails.missionName,
-    description: `Reward: 1 Social Credit`,
+    description: `Reward: ${slot2MissionReward} Social Credit`,
     costs: slot2MissionDetails.cost,
     level: 0,
     dependsOn: [],
+    missionFormat: true,
     onPurchase: (self: StoreItem) => {
-      let missionDetails = generateMissionNameAndCost();
+      let reward = Math.round(Math.random() * 4 + 1);
+
+      let missionDetails = generateMissionNameAndCost(reward);
       self.name = missionDetails.missionName;
       self.costs = missionDetails.cost;
 
-      socialcredit.amount += 1;
+      socialcredit.amount += reward;
+      funds.amount += slot2FundReward;
+
+      if (Math.random() <= 0.62) {
+        slot2FundReward = Math.random() * funds.generateAmount * funds.buildQueueCapacity * reward;
+
+        localStorage.setItem("slot2FundReward", slot2FundReward + "");
+        self.description = `Reward: ${reward} Social Credit, ${UIManager.formatValueWithSymbol(slot2FundReward, funds.unitSymbol)} Funds`;
+      } else {
+        slot2FundReward = 0;
+        self.description = `Reward: ${reward} Social Credit`;
+      }
     },
   },
 ]);
 
 new SaveManager(resources, pacingManager, store, { fundsFactory: energyFactory }, staff, astroids);
 
-// DEV!!!! ---------------------------------------------------------------
+// config.DEV!!!! ---------------------------------------------------------------
 let clickCount = 0;
 let lastClickTime = 0;
 

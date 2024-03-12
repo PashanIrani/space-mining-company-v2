@@ -1,7 +1,7 @@
 import UIManager from "./UIManager";
 import Resource, { AllResourcesObject, Cost, canAfford, performCostTransaction } from "./Resource";
 
-const COST_SCALE_PER_LEVEL = 2;
+const COST_SCALE_PER_LEVEL = 1.12;
 export class Factory {
   private resource: Resource;
   private _level: number;

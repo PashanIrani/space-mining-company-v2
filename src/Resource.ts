@@ -175,7 +175,8 @@ export default abstract class Resource {
         this.buildQueue.shift();
         clearInterval(buildPercentageInterval);
         this.buildStatus = 0;
-        currentBuildDetails.callback();
+
+        this.afterGenerateCallback();
 
         UIManager.displayText(`resource-${this.label}-buildDescription`, this.getBuildDescription());
 
@@ -188,6 +189,10 @@ export default abstract class Resource {
         res();
       }, totalTimeMs);
     });
+  }
+
+  afterGenerateCallback() {
+    // do nothing
   }
 
   get label() {

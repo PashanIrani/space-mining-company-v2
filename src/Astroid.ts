@@ -2,6 +2,7 @@ import { femaleNames, lastNames, maleNames } from "./Names";
 import Resource, { Cost, UnitSymbolDefination, canAfford, performCostTransaction } from "./Resource";
 import { StaffMember, StaffResource } from "./Staff";
 import UIManager from "./UIManager";
+import config from "./config";
 
 interface AstroidResourceDetails {
   label: string;
@@ -89,7 +90,7 @@ export class AstroidResource extends Resource {
         { resource: "funds", amount: 750 },
         { resource: "energy", amount: 20 },
       ],
-      buildTimeMs: 40 * 1000,
+      buildTimeMs: config.DEV ? 1000 : 40 * 1000,
       buildDescriptions: [
         "Scanning the Sky",
         "Identifying Celestial Objects",
@@ -103,7 +104,7 @@ export class AstroidResource extends Resource {
         "Validating Asteroid Presence",
         "Notifying Relevant Authorities",
       ],
-      unitSymbol: { icon: "🪨", infront: false },
+      unitSymbol: { icon: "☄️", infront: false },
     });
 
     this.resources = resources;
@@ -119,6 +120,13 @@ export class AstroidResource extends Resource {
   }
 
   generate(): Promise<void> {
+    super.generate();
+
+    this.amount = this.astroids.length;
+    return;
+  }
+
+  afterGenerateCallback() {
     let resources: AstroidResourceDetails[] = [];
     Object.values(this._resources).forEach((resource) => {
       resources.push({
@@ -128,14 +136,9 @@ export class AstroidResource extends Resource {
       });
     });
 
-    super.generate().then(() => {
-      let asteroidName = Astroid.generateAsteroidName();
-      this.astroids.push(new Astroid(asteroidName, resources, []));
-      this.draw();
-    });
-
-    this.amount = this.astroids.length;
-    return;
+    let asteroidName = Astroid.generateAsteroidName();
+    this.astroids.push(new Astroid(asteroidName, resources, []));
+    this.draw();
   }
 
   draw() {
