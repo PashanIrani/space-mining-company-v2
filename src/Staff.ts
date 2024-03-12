@@ -233,7 +233,7 @@ export class StaffResource extends Resource {
         lastName: StaffMember.genLastName(),
         facePic: StaffMember.generateRandomLennyFace(),
         id: StaffMember.genId(),
-        efficiency: Math.random(),
+        efficiency: Math.random() * 0.5 + 0.5,
       })
     );
     this.draw();
