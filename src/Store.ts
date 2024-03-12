@@ -156,7 +156,7 @@ export class Store {
             }
             costP.classList.add("costs");
             const button = document.createElement("button");
-            button.innerHTML = `Buy`;
+            button.innerHTML = storeItem.missionFormat ? "Complete" : `Buy`;
 
             button.disabled = !canAfford(storeItem.costs);
 
