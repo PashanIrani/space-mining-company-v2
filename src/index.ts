@@ -243,24 +243,24 @@ let store = new Store([
       });
     },
   },
-  {
-    sortOrder: 2,
-    id: "funds-factory",
-    collection: "funds",
-    name: "Passive Income",
-    description: "Generates Funds Passively",
-    costs: [
-      { resource: "funds", amount: 10000 },
-      { resource: "energy", amount: 55 },
-    ],
-    level: 0,
-    maxLevel: 1,
-    dependsOn: [["funds", "funds-generation", 5]],
-    onPurchase: (self: StoreItem) => {
-      fundsFactory.level = 1;
-      pacingManager.showWindow("funds-factory");
-    },
-  },
+  // {
+  //   sortOrder: 2,
+  //   id: "funds-factory",
+  //   collection: "funds",
+  //   name: "Passive Income",
+  //   description: "Generates Funds Passively",
+  //   costs: [
+  //     { resource: "funds", amount: 10000 },
+  //     { resource: "energy", amount: 55 },
+  //   ],
+  //   level: 0,
+  //   maxLevel: 1,
+  //   dependsOn: [["funds", "funds-generation", 5]],
+  //   onPurchase: (self: StoreItem) => {
+  //     fundsFactory.level = 1;
+  //     pacingManager.showWindow("funds-factory");
+  //   },
+  // },
   {
     sortOrder: 3,
     id: "energy-factory",
