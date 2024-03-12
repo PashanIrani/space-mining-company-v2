@@ -255,7 +255,7 @@ export class AstroidResource extends Resource {
           }
 
           amount += (1 / getNonZeroResourceCount(astroid)) * staffMember.efficiency;
-          staffMember.efficiency *= 0.999;
+          if (amount > 0) staffMember.efficiency *= 0.999;
           return true;
         });
 
