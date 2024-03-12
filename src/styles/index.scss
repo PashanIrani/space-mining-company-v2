@@ -267,13 +267,15 @@ button[disabled] {
   }
 }
 
-.staff-list-container {
+.staff-list-container,
+.astroid-list-container {
   border: 1px solid #9e9e9e;
   padding: 2px;
   max-height: 150px;
   z-index: 10 !important;
   overflow-y: scroll;
 }
+
 
 .staff-member-container {
   display: flex;
