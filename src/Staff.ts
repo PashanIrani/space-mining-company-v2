@@ -1,4 +1,4 @@
-import { Astroid, AstroidResource } from "./Astroid";
+import { Asteroid, AsteroidResource } from "./Asteroid";
 import { femaleNames, lastNames, maleNames } from "./Names";
 import Resource, { Cost, canAfford, performCostTransaction } from "./Resource";
 import UIManager from "./UIManager";
@@ -21,7 +21,7 @@ export class StaffMember {
   private _facePic: string;
   public id: string;
   public efficiency: number;
-  currentAssignedAstroid: any;
+  currentAssignedAsteroid: any;
 
   constructor({
     gender,
@@ -253,7 +253,7 @@ export class StaffResource extends Resource {
         container.appendChild(message);
       } else {
         this.members.forEach((member) => {
-          if (member.currentAssignedAstroid == "") {
+          if (member.currentAssignedAsteroid == "") {
             idleCount++;
           }
 
@@ -273,8 +273,8 @@ export class StaffResource extends Resource {
           const efficiencyContainer = document.createElement("div");
           efficiencyContainer.classList.add("staff-efficiency-container");
 
-          const currentAstroidContainer = document.createElement("div");
-          currentAstroidContainer.classList.add("staff-site-container");
+          const currentAsteroidContainer = document.createElement("div");
+          currentAsteroidContainer.classList.add("staff-site-container");
 
           facePicContainer.innerHTML = member.facePic;
           nameContainer.innerHTML = `${member.firstName} ${member.lastName} ${
@@ -284,7 +284,7 @@ export class StaffResource extends Resource {
             icon: "%",
             infront: false,
           })} Efficiency]`;
-          currentAstroidContainer.innerHTML = `${member.currentAssignedAstroid === "" ? "Home" : member.currentAssignedAstroid}`;
+          currentAsteroidContainer.innerHTML = `${member.currentAssignedAsteroid === "" ? "Home" : member.currentAssignedAsteroid}`;
 
           const buttonContainer = document.createElement("div");
           buttonContainer.classList.add("button-container");
@@ -299,7 +299,7 @@ export class StaffResource extends Resource {
           staffMemberContainer.appendChild(facePicContainer);
           infoContainer.appendChild(nameContainer);
           infoContainer.appendChild(efficiencyContainer);
-          infoContainer.appendChild(currentAstroidContainer);
+          infoContainer.appendChild(currentAsteroidContainer);
           buttonContainer.appendChild(button);
           staffMemberContainer.appendChild(infoContainer);
           staffMemberContainer.appendChild(buttonContainer);

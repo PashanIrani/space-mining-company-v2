@@ -1,4 +1,4 @@
-import { Astroid, AstroidResource } from "./Astroid";
+import { Asteroid, AsteroidResource } from "./Asteroid";
 import { Factory } from "./Factory";
 import { Globals } from "./Globals";
 import { PacingManager } from "./PacingManager";
@@ -27,7 +27,7 @@ export class SaveManager {
   globals: Globals;
   factories: { [key: string]: Factory };
   staffResource: StaffResource;
-  astroidResource: AstroidResource;
+  asteroidResource: AsteroidResource;
 
   constructor(
     resources: AllResourcesObject,
@@ -35,14 +35,14 @@ export class SaveManager {
     store: Store,
     factories: { [key: string]: Factory },
     staffResource: StaffResource,
-    astroidResource: AstroidResource
+    asteroidResource: AsteroidResource
   ) {
     this.resources = resources;
     this.pacingManager = pacingManager;
     this.store = store;
     this.factories = factories;
     this.staffResource = staffResource;
-    this.astroidResource = astroidResource;
+    this.asteroidResource = asteroidResource;
     this.load();
     this.beginSave();
   }
@@ -83,7 +83,7 @@ export class SaveManager {
     localStorage.setItem("purchasedStoreItems", JSON.stringify(this.store.storeItems));
 
     localStorage.setItem("staffMembers", JSON.stringify(this.staffResource.members));
-    localStorage.setItem("astroids", JSON.stringify(this.astroidResource.astroids));
+    localStorage.setItem("asteroids", JSON.stringify(this.asteroidResource.asteroids));
   }
 
   load() {
@@ -155,15 +155,15 @@ export class SaveManager {
       });
     }
 
-    let astroids = JSON.parse(localStorage.getItem("astroids"));
-    if (astroids) {
-      astroids.forEach((astroid: any) => {
-        this.astroidResource.astroids.push(new Astroid(astroid.name, astroid.resources, astroid.assignedStaff));
+    let asteroids = JSON.parse(localStorage.getItem("asteroids"));
+    if (asteroids) {
+      asteroids.forEach((asteroid: any) => {
+        this.asteroidResource.asteroids.push(new Asteroid(asteroid.name, asteroid.resources, asteroid.assignedStaff));
       });
     }
 
     this.staffResource.draw();
-    this.astroidResource.draw();
-    this.astroidResource.beginTicking();
+    this.asteroidResource.draw();
+    this.asteroidResource.beginTicking();
   }
 }

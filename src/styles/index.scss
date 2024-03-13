@@ -268,7 +268,7 @@ button[disabled] {
 }
 
 .staff-list-container,
-.astroid-list-container {
+.asteroid-list-container {
   border: 1px solid #9e9e9e;
   padding: 2px;
   max-height: 150px;
@@ -320,12 +320,12 @@ button[disabled] {
   border: 1px solid #9e9e9e;
 }
 
-.astroid-container {
+.asteroid-container {
   padding: 2px;
   box-shadow: inset 0 0 0 1px #f3f3f388, 0 0 0 1px #eaeaea88;
   border: 1px solid #9e9e9e;
 
-  .astroid-name-container {
+  .asteroid-name-container {
     text-decoration: underline;
   }
 

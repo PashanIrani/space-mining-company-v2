@@ -9,7 +9,7 @@ import UIManager from "./UIManager";
 import "./styles";
 import { Globals } from "./Globals";
 import { StaffResource } from "./Staff";
-import { AstroidResource } from "./Astroid";
+import { AsteroidResource } from "./Asteroid";
 import { getChangeAmount } from "./Helpers";
 import { generateMissionNameAndCost } from "./Helpers";
 import config from "./config";
@@ -106,13 +106,13 @@ export const rawMetals = new RawMetals();
 export const waterIce = new WaterIce();
 export const carbonaceousMaterial = new CarbonaceousMaterial();
 const socialcredit = new SocialCredit();
-const astroids = new AstroidResource({ raw_metals: rawMetals, water_ice: waterIce, carbonaceous_material: carbonaceousMaterial }, staff);
+const asteroids = new AsteroidResource({ raw_metals: rawMetals, water_ice: waterIce, carbonaceous_material: carbonaceousMaterial }, staff);
 
 let resources: AllResourcesObject = {
   energy,
   funds,
   staff,
-  astroids,
+  asteroids,
   raw_metals: rawMetals,
   water_ice: waterIce,
   carbonaceous_material: carbonaceousMaterial,
@@ -176,10 +176,10 @@ let store = new Store([
   },
   {
     sortOrder: 5,
-    id: "astroid-purchase",
+    id: "asteroid-purchase",
     collection: "main",
-    name: "Astroid Finder",
-    description: `Enables you to locate astroids.`,
+    name: "Asteroid Finder",
+    description: `Enables you to locate asteroids.`,
     costs: [
       { resource: "funds", amount: 100 },
       { resource: "energy", amount: 15 },
@@ -188,7 +188,7 @@ let store = new Store([
     maxLevel: 1,
     dependsOn: [["main", "first-purchase", 0]],
     onPurchase: (self: StoreItem) => {
-      pacingManager.showWindow("astroid");
+      pacingManager.showWindow("asteroid");
     },
   },
 
@@ -204,7 +204,7 @@ let store = new Store([
     ],
     level: 0,
     maxLevel: 1,
-    dependsOn: [["main", "astroid-purchase", 0]],
+    dependsOn: [["main", "asteroid-purchase", 0]],
     onPurchase: (self: StoreItem) => {
       pacingManager.showWindow("staff");
     },
@@ -307,10 +307,10 @@ let store = new Store([
   },
   {
     sortOrder: 1,
-    id: "astroid-capacity",
-    collection: "astroid",
-    name: "Astroid Capacity",
-    description: `Increase max capacity of astroid to ${UIManager.formatValueWithSymbol(astroids.capacity + 1, astroids.unitSymbol)}`,
+    id: "asteroid-capacity",
+    collection: "asteroid",
+    name: "Asteroid Capacity",
+    description: `Increase max capacity of asteroid to ${UIManager.formatValueWithSymbol(asteroids.capacity + 1, asteroids.unitSymbol)}`,
     costs: [
       { resource: "funds", amount: 1000 },
       { resource: "energy", amount: 40 },
@@ -319,14 +319,14 @@ let store = new Store([
     maxLevel: 10,
     dependsOn: [],
     onPurchase: (self: StoreItem) => {
-      astroids.capacity += 1;
+      asteroids.capacity += 1;
 
       self.costs = self.costs.map((cost) => {
         cost.amount = getChangeAmount(self.level, 0.05, cost.amount, true);
         return cost;
       });
 
-      self.description = `Increase max capacity of astroids to ${UIManager.formatValueWithSymbol(astroids.capacity + 1, astroids.unitSymbol)}`;
+      self.description = `Increase max capacity of asteroids to ${UIManager.formatValueWithSymbol(asteroids.capacity + 1, asteroids.unitSymbol)}`;
     },
   },
   {
@@ -403,7 +403,7 @@ let store = new Store([
   },
 ]);
 
-new SaveManager(resources, pacingManager, store, { fundsFactory: energyFactory }, staff, astroids);
+new SaveManager(resources, pacingManager, store, { fundsFactory: energyFactory }, staff, asteroids);
 
 // config.DEV!!!! ---------------------------------------------------------------
 let clickCount = 0;

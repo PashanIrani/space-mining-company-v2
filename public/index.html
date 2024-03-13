@@ -188,52 +188,52 @@
   <div class="column">
 
 
-    <!-- Astroids -->
-    <div class="resource-container astroid-window initially-hidden-window">
+    <!-- Asteroids -->
+    <div class="resource-container asteroid-window initially-hidden-window">
       <div class="window active glass">
         <div class="title-bar">
-          <div class="title-bar-text">Astroids</div>
+          <div class="title-bar-text">Asteroids</div>
           <div class="title-bar-controls">
-            <button aria-label="Minimize" data-target="astroid-window"></button>
+            <button aria-label="Minimize" data-target="asteroid-window"></button>
             <button aria-label="Restore" disabled></button>
             <button aria-label="Close" disabled></button>
           </div>
         </div>
-        <div id="astroid-window" class="window-body has-space">
-          <p><b><u>Astroid</u></b>: <span class="resource-astroid-amount"></span>/<span
-              class="resource-astroid-capacity"></span><span class="resource-astroid-nextAdditionIndicator"></span>
+        <div id="asteroid-window" class="window-body has-space">
+          <p><b><u>Asteroid</u></b>: <span class="resource-asteroid-amount"></span>/<span
+              class="resource-asteroid-capacity"></span><span class="resource-asteroid-nextAdditionIndicator"></span>
           </p>
 
 
           <p class="description">The silent architects of cosmic balance.</p>
 
           <div role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="40"
-            class="resource-astroid-progressbar-container">
-            <div class="resource-astroid-progressbar progressbar"></div>
+            class="resource-asteroid-progressbar-container">
+            <div class="resource-asteroid-progressbar progressbar"></div>
           </div>
 
           <div class="details-container">
-            <p>Cost: <span class="resource-astroid-costs"></span></p>
+            <p>Cost: <span class="resource-asteroid-costs"></span></p>
           </div>
 
           <div class="button-container">
-            <span class="resource-astroid-buildStatusSpinner spinner-container"></span>
+            <span class="resource-asteroid-buildStatusSpinner spinner-container"></span>
             &nbsp;
-            <span class="resource-astroid-buildStatus"></span>
+            <span class="resource-asteroid-buildStatus"></span>
             &nbsp;
-            <button class="resource-astroid-generateButton">Locate <span class="resource-astroid-label"></span> (+<span
-                class="resource-astroid-generateAmount"></span>)</button>
+            <button class="resource-asteroid-generateButton">Locate <span class="resource-asteroid-label"></span>
+              (+<span class="resource-asteroid-generateAmount"></span>)</button>
           </div>
-          <div class="astroid-list-container"></div>
+          <div class="asteroid-list-container"></div>
           <div class="button-container">
             <span class="idle-staff-count" style="padding-right: 5px;"></span>
-            <button class="resource-astroid-beginMining">Allocate Staff</button>
+            <button class="resource-asteroid-beginMining">Allocate Staff</button>
           </div>
-          <div class="window-body has-space astroid-store" id="store-window"></div>
+          <div class="window-body has-space asteroid-store" id="store-window"></div>
         </div>
         <div class="status-bar">
           <div class="status-bar-field">
-            <div>Operation: <span class="resource-astroid-buildDescription"></span></div>
+            <div>Operation: <span class="resource-asteroid-buildDescription"></span></div>
           </div>
         </div>
       </div>
